@@ -7,7 +7,7 @@ Workshop นี้ทุกคนจะได้ใช้ agent บนเคร�
 ## สิ่งที่จะได้เรียน { #outcomes }
 
 1. **Run app บน iPad ของตัวเอง**: สร้าง SwiftUI project แล้วติดตั้งลง iPad ด้วย Apple ID ฟรี
-2. **ใช้ Git และ GitHub กับทีม**: commit, branch, push, pull, merge และแก้ conflict ทั้งจาก Xcode และ Terminal ให้แต่ละคนทำ feature บน branch ของตัวเองแล้วรวมกันได้
+2. **ใช้ Git และ GitHub กับทีม**: commit, branch, push, pull, merge และแก้ conflict ให้แต่ละคนทำ feature บน branch ของตัวเองแล้วรวมกันได้
 3. **ใช้ coding agent ครบ loop**: plan → implement → build → review diff → test บน iPad → commit ด้วย **Xcode agents** บน {{ mac.apple }} หรือ **OpenCode** บน {{ mac.intel }}
 4. **ใช้ agent อย่างปลอดภัย**: ไม่ใส่ข้อมูลลับใน prompt, แบ่งงานให้เล็ก และรู้ว่าเมื่อไหร่ควรหยุดแล้วย้อนกลับ
 
@@ -23,7 +23,7 @@ Agent แก้โค้ดได้ทีละหลายไฟล์ใน�
 | 2. Plan | เขียน prompt ตาม template แล้วขอ plan ก่อน อย่าให้แก้โค้ดทันที | [Prompt template](prompting.md#prompt-template) |
 | 3. Implement | Approve plan แล้วให้ agent แก้โค้ดและ build จนผ่าน | [Xcode agents](xcode-agents.md) · [OpenCode](opencode.md) |
 | 4. Review | อ่าน diff ทุกไฟล์ แล้ว run บน iPad | [Guardrails](prompting.md#guardrails) |
-| 5. Push | Push branch แล้วเปิด pull request | [Git cheat sheet](git.md#cheat-sheet) |
+| 5. Push | Push branch แล้วเปิด pull request | [Git operations](git.md#operations) |
 
 ## MacBook แต่ละเครื่องทำอะไรได้บ้าง { #machines }
 
@@ -40,7 +40,7 @@ Agent แก้โค้ดได้ทีละหลายไฟล์ใน�
 | ใช้ที่ไหน | Panel ใน Xcode 27 | Terminal เปิดคู่กับ Xcode 26 |
 | Model | Claude, Codex หรือ Gemini ผ่าน account ของทีม | Free model จาก OpenCode Zen เปลี่ยนได้ภายหลัง |
 | แก้โค้ด, ใช้ Git | ✓ | ✓ |
-| Build project | ✓ ผ่าน Xcode | ✓ ผ่านคำสั่ง `xcodebuild` |
+| Build project | ✓ ผ่าน Xcode | ✗ เรา build เองใน Xcode แล้วส่ง error ให้ agent แก้ |
 | ดู SwiftUI Preview | ✓ ตรวจ UI ที่ตัวเองสร้างได้ | ✗ เราต้องดูเองใน Xcode |
 | ค้น Apple documentation | ✓ | ✗ ใช้ความรู้ของ model และ `AGENTS.md` |
 | ค่าใช้จ่าย | ใช้ usage ของ account ทีม | ฟรี |
@@ -50,7 +50,7 @@ Agent แก้โค้ดได้ทีละหลายไฟล์ใน�
 | หน้า | เนื้อหา |
 |---|---|
 | [Hardware](hardware.md) | อุปกรณ์ของทีม และเครื่องไหนทำอะไรได้ |
-| [Git cheat sheet](git.md) | คำสั่ง Git ที่ต้องใช้ ทั้งใน Xcode และ Terminal พร้อมวิธีแก้ conflict |
+| [Git & GitHub](git.md) | Git operations ที่ต้องรู้, workflow ของทีม และวิธีแก้ conflict |
 | [Xcode agents](xcode-agents.md) | ใช้ agent ใน Xcode 27 บน {{ mac.apple }} |
 | [OpenCode](opencode.md) | ใช้ agent ใน Terminal บน {{ mac.intel }} |
 | [Prompting & best practices](prompting.md) | Prompt template, สิ่งที่ห้ามทำ และเทคนิคให้ agent ทำงานได้ดี |

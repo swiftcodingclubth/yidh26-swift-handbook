@@ -67,7 +67,7 @@ nav:
   - "Workshop 1: Coding agents":
       - workshop-1/index.md
       - Hardware: workshop-1/hardware.md
-      - Git cheat sheet: workshop-1/git.md
+      - Git & GitHub: workshop-1/git.md
       - Xcode agents: workshop-1/xcode-agents.md
       - OpenCode: workshop-1/opencode.md
       - Prompting & best practices: workshop-1/prompting.md

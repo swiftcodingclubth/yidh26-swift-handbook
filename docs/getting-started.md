@@ -4,7 +4,7 @@
 
 - [ ] สร้าง **Apple ID** (ฟรี ไม่ต้องสมัคร Apple Developer Program)
 - [ ] สร้าง **GitHub account** แล้วส่ง username ให้ผู้จัด
-- [ ] ลองอ่าน [Git cheat sheet](workshop-1/git.md) ถ้ายังไม่เคยใช้ Git
+- [ ] ลองอ่าน [Git & GitHub](workshop-1/git.md) ถ้ายังไม่เคยใช้ Git
 
 ## วันงาน: Setup 5 ขั้นตอน
 

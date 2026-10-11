@@ -49,25 +49,12 @@ OpenCode มี 2 mode กด ++tab++ เพื่อสลับ
 | `/undo` | ย้อนการแก้ไฟล์ครั้งล่าสุดของ agent |
 | `/help` | ดูคำสั่งทั้งหมด |
 
-## ให้ OpenCode build project
-
-OpenCode มองไม่เห็น Xcode จึงไม่รู้ว่าโค้ดที่แก้ compile ผ่านหรือเปล่า เว้นแต่จะ build ผ่าน Terminal บอกใน prompt ให้ใช้คำสั่งนี้เช็ก ถ้ามี error agent จะอ่านแล้วแก้ต่อเอง
-
-```bash
-xcodebuild -scheme TeamCard \
-  -destination 'generic/platform=iOS Simulator' build
-```
-
-เปลี่ยน `TeamCard` เป็นชื่อ scheme ของ project ตัวเอง ใส่คำสั่งนี้ไว้ใน `AGENTS.md` ด้วย agent จะได้ใช้ทุกครั้งโดยไม่ต้องบอก
-
 ## ทำงานคู่กับ Xcode
 
-OpenCode **มองไม่เห็น SwiftUI Preview** จึงตรวจไม่ได้ว่าหน้าจอหน้าตาถูกไหม ให้เปิด Xcode ไว้ข้างกันแล้วตรวจเอง
+OpenCode มองไม่เห็น Xcode จึงไม่รู้ว่าโค้ดที่แก้ build ผ่านไหม และ **มองไม่เห็น SwiftUI Preview** ให้เปิด Xcode ไว้ข้างกัน แล้ว build และตรวจเอง
 
 1. OpenCode แก้ไฟล์ใน Terminal
 2. Xcode อัปเดตไฟล์ที่เปิดอยู่ให้อัตโนมัติ
-3. ดู Preview หรือกด ++cmd+r++ เพื่อ run บน iPad
-4. Review diff ใน Source Control navigator แล้ว commit
-
-!!! warning "Privacy ของ free model"
-    Free model บางตัวอาจนำ prompt ไปใช้ปรับปรุง model ห้ามส่ง API key, ข้อมูลส่วนตัว หรือข้อมูลลับผ่าน OpenCode ถ้าทีมเปลี่ยนไปใช้ provider อื่น ให้เช็ก data policy ของ provider นั้นด้วย
+3. กด ++cmd+b++ เพื่อ build ถ้ามี error ให้ copy ข้อความ error ไปวางใน OpenCode แล้วให้ agent แก้ต่อ
+4. ดู Preview หรือกด ++cmd+r++ เพื่อ run บน iPad
+5. Review diff ใน Source Control navigator แล้ว commit
