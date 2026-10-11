@@ -30,7 +30,7 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 | [Barometer](core-motion.md#barometer) | Core Motion | ทุกรุ่นที่ใช้ในงาน (เช็กในโค้ดเสมอ) | ขึ้นลงชั้น การเปลี่ยนความสูง |
 | [Microphone](sound.md) | Sound Analysis | ทุกเครื่อง | แจ้งเตือนเมื่อได้ยินเสียงสำคัญ, จดจำเสียงที่ train เอง |
 | [LiDAR](lidar.md) | ARKit | iPad Pro และ iPhone Pro เท่านั้น | วัดขนาดและระยะ, เตือนสิ่งกีดขวาง, เช็กว่าของวางพอดีไหม |
-| Camera | AVFoundation, Vision | ทุกเครื่อง | ดู [Workshop 5](../index.md#workshops) |
+| Camera | AVFoundation, Vision | ทุกเครื่อง | ดู [Workshop 5](../workshop-5/index.md) |
 | Apple Pencil | PencilKit | เมื่อเชื่อม Pencil | จดจำลายมือหรือภาพวาดจากแรงกดและมุมเอียง |
 
 !!! tip "ใช้ iPhone เป็น sensor เพิ่มได้"

@@ -9,3 +9,23 @@ venv/
 
 # macOS
 .DS_Store
+
+# Xcode: per-user state (window layout, breakpoints, personal schemes)
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# Xcode: build output
+DerivedData/
+build/
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager (keep Package.resolved so everyone gets the same versions)
+.build/
+.swiftpm/
+
+# Secrets: HackathonAI team key (see workshop-2/hackathon-ai.md)
+Secrets.plist
