@@ -1,8 +1,8 @@
 # Give your app sight with Vision and VisionKit
 
+!!! review "Comment ถึงผู้สอน"
+    อยากให้เนื้อหาพูดถึงความแตกต่างของ Vision และ VisionKit ด้วย
 Workshop นี้ทำให้ app ของทีม **มองเห็น**: อ่านข้อความจากกล้องหรือรูป, scan เอกสาร, อ่าน QR code และรู้ว่ามือของผู้ใช้กำลังทำท่าอะไร ทุกอย่างทำงานบน iPad โดยไม่ต้องต่อ internet และไม่ต้อง train model เอง
-
-Workshop นี้เป็นส่วนเสริม แต่ละหัวข้อเป็นชิ้นส่วนที่ copy ไปใส่ app ของทีมได้เลย ถ้าท่ามือที่ต้องการซับซ้อนกว่าการนับนิ้ว ให้ train model ต่อตาม [Workshop 3](../workshop-3/create-ml.md)
 
 ## สิ่งที่จะได้เรียน { #outcomes }
 
@@ -15,13 +15,13 @@ Workshop นี้เป็นส่วนเสริม แต่ละหั�
 
 ### เลือกเครื่องมือ
 
-| ถ้าต้องการ… | ใช้ | ปริมาณโค้ด |
-|---|---|---|
-| ชี้กล้องแล้วอ่านข้อความหรือ QR สด | **VisionKit** `DataScannerViewController` | น้อยมาก |
-| Scan เอกสารเป็นรูป ตัดขอบให้อัตโนมัติ | **VisionKit** `VNDocumentCameraViewController` | น้อยมาก |
-| อ่านข้อความจากรูปที่มีอยู่แล้ว | **Vision** `RecognizeTextRequest` | ปานกลาง |
-| รู้ตำแหน่งนิ้วมือหรือข้อต่อร่างกาย | **Vision** `DetectHumanHandPoseRequest` | ปานกลาง |
-| จำแนกรูปตามหมวดที่เรากำหนดเอง | **Create ML** Image Classifier | ดู [Workshop 3](../workshop-3/create-ml.md) |
+| ถ้าต้องการ… | ใช้ |
+|---|---|
+| ชี้กล้องแล้วอ่านข้อความหรือ QR สด | **VisionKit** `DataScannerViewController` |
+| Scan เอกสารเป็นรูป ตัดขอบให้อัตโนมัติ | **VisionKit** `VNDocumentCameraViewController` |
+| อ่านข้อความจากรูปที่มีอยู่แล้ว | **Vision** `RecognizeTextRequest` |
+| รู้ตำแหน่งนิ้วมือหรือข้อต่อร่างกาย | **Vision** `DetectHumanHandPoseRequest` |
+| จำแนกรูปตามหมวดที่เรากำหนดเอง | **Create ML** Image Classifier ดู [Workshop 3](../workshop-3/create-ml.md) |
 
 ### Pattern เดียวของ Vision
 
@@ -64,6 +64,9 @@ VisionKit คือหน้าจอที่ Apple ห่อ Vision กับ�
 ## ลงมือปฏิบัติ { #hands-on }
 
 Starter project อยู่ในโฟลเดอร์ [`starter/workshop-5`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-5) ของ repo handbook นี้ ดูวิธีเอามาใช้ใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
+
+!!! review "Comment ถึงผู้สอน"
+    ผมคิดว่าลงมือปฏิบัติไม่ควรต้อง depend กับโปรเจคหลักของนักเรียน
 
 เลือก 1 track ที่ตรงกับ idea ของทีม แล้วใส่ลงใน app จริงของทีม ถ้ายังไม่พร้อมแก้ project ของทีม ให้ทำ "ภารกิจเสริม" ใน [Hand pose](hand-pose.md#extra) บน starter project แทน
 

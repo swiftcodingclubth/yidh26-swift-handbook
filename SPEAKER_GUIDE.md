@@ -99,6 +99,7 @@ Reference pages (cheat sheets, hardware lists, prompt templates) can skip the ta
 | `danger` | Secrets, privacy, health data |
 | `failure` | One exact error message and its fix |
 | `??? note` (collapsed) | Optional material: install on another machine, deep dive |
+| `review` | A comment for the speaker to fix (red box). Remove it once fixed, before print |
 
 ## Before you submit
 
