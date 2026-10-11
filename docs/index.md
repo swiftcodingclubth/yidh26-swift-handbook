@@ -47,7 +47,7 @@
 
     Scan เอกสาร อ่านข้อความ และ track มือ/ร่างกายจากกล้อง
 
-    *เร็วๆ นี้*
+    [:octicons-arrow-right-24: เริ่ม Workshop 5](workshop-5/index.md)
 
 </div>
 

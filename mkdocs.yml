@@ -86,3 +86,9 @@ nav:
       - Create ML: workshop-3/create-ml.md
       - Core ML: workshop-3/core-ml.md
       - Core AI: workshop-3/core-ai.md
+  - "Workshop 5: Vision & VisionKit":
+      - workshop-5/index.md
+      - VisionKit: workshop-5/visionkit.md
+      - อ่านข้อความจากรูป: workshop-5/text-recognition.md
+      - Hand pose: workshop-5/hand-pose.md
+      - ใส่ใน app ของทีม: workshop-5/add-to-your-app.md
