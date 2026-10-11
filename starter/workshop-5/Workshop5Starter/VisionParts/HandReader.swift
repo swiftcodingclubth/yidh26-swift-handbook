@@ -74,7 +74,7 @@ final class HandModel {
         }
     }
 
-    /// เปลี่ยนท่าเมื่อได้ท่าเดิมติดกัน 5 frame เพื่อไม่ให้กระพริบ
+    /// เปลี่ยนท่าเมื่อได้ท่าเดิมติดกัน 5 frame เพื่อไม่ให้กะพริบ
     private func update(with newSign: HandSign) {
         sameCount = (newSign == lastSign) ? sameCount + 1 : 0
         lastSign = newSign
