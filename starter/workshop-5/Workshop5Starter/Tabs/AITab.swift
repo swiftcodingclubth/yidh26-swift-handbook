@@ -88,7 +88,7 @@ private struct ImagePromptScreen: View {
         case .available:
             model.capabilities.contains(.vision)
                 ? "✅ พร้อมใช้ และรับรูปได้"
-                : "❌ model พร้อมใช้ แต่เครื่องนี้ส่งรูปให้ไม่ได้"
+                : "❌ model พร้อมใช้ แต่เครื่องนี้ยังรับรูปไม่ได้"
         case .unavailable(let reason):
             "❌ ใช้ไม่ได้: \(reason)"
         }

@@ -23,7 +23,7 @@ Starter project ของ Workshop 5 · iOS 26 · ไม่มี dependency ภ
 
 ## `VisionParts/`: ไฟล์ที่ copy ไปใส่ app ของทีมได้
 
-ไฟล์ในโฟลเดอร์นี้ไม่พึ่งไฟล์อื่นใน project copy เฉพาะที่ใช้ได้ และ build ผ่านทั้ง Swift 5 และ Swift 6 ไม่ว่าจะตั้ง default actor isolation เป็น MainActor หรือ nonisolated
+ไฟล์ในโฟลเดอร์นี้ไม่ขึ้นต่อไฟล์อื่นใน project จึง copy เฉพาะไฟล์ที่ต้องใช้ได้ และ build ผ่านทั้ง Swift 5 และ Swift 6 ไม่ว่าจะตั้ง default actor isolation เป็น MainActor หรือ nonisolated
 
 | Feature | ไฟล์ |
 |---|---|
