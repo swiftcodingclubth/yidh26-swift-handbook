@@ -1,15 +1,14 @@
 # Hardware
 
-แต่ละทีมมีเครื่องสองแบบที่ทำงานได้ไม่เท่ากัน รู้ไว้ก่อนจะได้แบ่งงานถูก: งานที่ต้องใช้ iOS 27 ทำบน {{ mac.apple }} ส่วนงานอื่นทั้งหมดทำบน {{ mac.intel }} ได้
+แต่ละทีมมีอุปกรณ์พัฒนา 2 แบบที่แตกต่างกัน คือ {{ mac.apple }} และ {{ mac.intel }}  ในงานที่จำเป็นต้องใช้ feature บน iOS 27 จะต้องทำบน {{ mac.apple }} ส่วนงานอื่นๆทั้งหมดสามารถทำบน {{ mac.intel }} ได้
 
 ## อุปกรณ์ของแต่ละทีม
 
 | อุปกรณ์ | จำนวน | Software | หน้าที่ |
 |---|---|---|---|
-| MacBook Pro M chip | 1 | macOS Tahoe 26.6+ · Xcode 27 | เครื่องหลักของทีม ใช้ API ใหม่ของ iOS 27 และ Xcode agents |
-| MacBook Pro Intel | 2 | macOS Sequoia 15.6+ · Xcode 26 | งานที่ไม่ต้องใช้ iOS 27: เขียนโค้ด, build, test บน iPad, Git และ OpenCode |
-| iPad M chip | 3 | iPadOS 27 · Developer Mode | Test device คนละเครื่อง รองรับ Apple Intelligence และมีกล้อง |
-| AI cluster ของงาน | ใช้ร่วมกันทุกทีม | ผ่าน package HackathonAI | Model ทั่วไป ภาษาไทย และการแพทย์ ไม่มีค่าใช้จ่าย ข้อมูลไม่ออกนอกงาน ดู [Workshop 2](../workshop-2/index.md) |
+| {{ mac.apple }} | 1 | macOS Tahoe 26.6+ · Xcode 27 | เครื่องหลักของทีม ใช้ API ใหม่ของ iOS 27 และ Xcode agents |
+| {{ mac.intel }} | 2 | macOS Sequoia 15.6+ · Xcode 26 | งานที่ไม่จำเป็นต้องใช้ iOS 27: เขียนโค้ด, build, test บน iPad, Git และ OpenCode |
+| iPad M chip | 1 | iPadOS 27 · Developer Mode | Test device รองรับ Apple Intelligence และมีกล้อง |
 
 ## เครื่องไหนทำอะไรได้
 
@@ -20,7 +19,6 @@
 | OpenCode | ✓ | ✓ |
 | Xcode agents | ✗ | ✓ |
 | API ใหม่ของ iOS 27 | ✗ | ✓ |
-| Simulator ที่รองรับ Apple Intelligence | ✗ | ✓ |
 
 !!! intel "{{ mac.intel }} · Xcode 26"
     ใช้ Xcode 27 ไม่ได้ เพราะ Xcode 27 รองรับเฉพาะ Apple silicon ส่วน Xcode agents ต้องใช้ macOS 26.2 ขึ้นไป {{ mac.intel }} จึงใช้ Xcode 26 กับ OpenCode แทน
