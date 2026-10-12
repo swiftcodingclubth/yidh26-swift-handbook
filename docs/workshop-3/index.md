@@ -1,8 +1,15 @@
 # Build sensor-aware intelligence with Core AI and Create ML
 
-iPad มี sensor ที่เว็บไซต์ไม่มีทางเข้าถึงได้: **การเคลื่อนไหว** จาก accelerometer และ gyroscope, **เสียง** จากไมโครโฟน, **ความลึก** จาก LiDAR และภาพจากกล้อง เมื่อนำข้อมูลเหล่านี้มาให้ AI ที่ run บนเครื่องวิเคราะห์ app จะรับรู้สิ่งที่เกิดขึ้นรอบตัวผู้ใช้ได้ทันที เช่น นับจำนวนครั้งที่ออกกำลังกาย ได้ยินเสียงสัญญาณเตือน หรือวัดระยะห่างของสิ่งของ
+iPhone และ iPad มี sensor หลายตัวที่รับรู้สิ่งรอบตัวได้ เช่น
 
-Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส่วน workshop นี้จะ **train model ของเราเอง** จากข้อมูล sensor แล้ว run บน iPad และใช้ Core AI เปลี่ยนผลลัพธ์ให้เป็นคำแนะนำที่อ่านเข้าใจง่าย
+* **การเคลื่อนไหว** จาก accelerometer และ gyroscope
+* **เสียง** จากไมโครโฟน
+* **ความลึก** จาก LiDAR
+* **ภาพ** จากกล้อง
+
+เมื่อให้ AI ที่ run บนเครื่องวิเคราะห์ข้อมูลเหล่านี้ app จะรู้ทันทีว่าเกิดอะไรขึ้นรอบตัวผู้ใช้ เช่น นับจำนวนครั้งที่ออกกำลังกาย แจ้งเตือนเมื่อได้ยินเสียงสัญญาณ หรือวัดระยะห่างของสิ่งของ
+
+Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส่วน workshop นี้จะ **train model ของเราเอง** จากข้อมูล sensor แล้ว run บน iPad และใช้ Core AI เปลี่ยนผลลัพธ์ให้เป็นคำแนะนำที่เข้าใจง่าย
 
 ## สิ่งที่จะได้เรียน { #outcomes }
 
@@ -17,9 +24,11 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 
 | ถ้าต้องการ… | ใช้ | ตัวอย่าง |
 |---|---|---|
+| อ่านการเคลื่อนไหว หรือตรวจจับท่าง่าย ๆ โดยไม่ต้อง train | **Core Motion** | รู้ว่าผู้ใช้เขย่าหรือเอียง iPad, นับการขึ้นลงชั้นด้วย barometer |
+| วัดความลึกและระยะ | **ARKit** (LiDAR) | วัดขนาดโต๊ะ, เตือนเมื่อมีสิ่งกีดขวางใกล้เกินไป |
 | จดจำเสียงทั่วไปโดยไม่ต้อง train | **Sound Analysis** | ได้ยินเสียงกริ่ง เสียงเด็กร้อง เสียงสัญญาณเตือน |
 | จดจำท่าทาง เสียง หรือภาพแบบที่เรากำหนดเอง | **Create ML** (train) | Train ให้รู้จัก 3 ท่า: เขย่า เอียง วาดวงกลม |
-| Run model ที่ train แล้วใน app | **Core ML** | ส่งข้อมูล gyroscope สดๆ ให้ model ทายท่า |
+| Run model ที่ train แล้วใน app | **Core ML** | ส่งข้อมูล gyroscope ให้ model ทายท่า |
 | ให้ language model run บนเครื่อง | **Core AI** | เปลี่ยนผลที่ทายได้ เป็นคำแนะนำการออกกำลังกาย |
 
 ### Sensor ที่ใช้ได้
@@ -36,6 +45,36 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 !!! tip "ใช้ iPhone เป็น sensor เพิ่มได้"
     ถ้า iPhone ของตัวเองลงทะเบียนสำหรับ development แล้ว ใช้ run app เพื่อเทียบ sensor กับ iPad ได้
 
+## ลองจับคู่ { #tool-sort }
+
+ลาก card แต่ละใบไปวางที่เครื่องมือที่ใช้ทำงานนั้น บน iPad ใช้นิ้วลากได้ หรือแตะ card แล้วแตะเครื่องมือก็ได้
+
+<div class="tool-sort" markdown="0">
+  <div class="tool-sort__status" aria-live="polite">
+    <span class="tool-sort__score"></span>
+    <span class="tool-sort__feedback"></span>
+    <button type="button" class="tool-sort__reset">เริ่มใหม่</button>
+  </div>
+  <div class="tool-sort__pool">
+    <button type="button" class="tool-sort__card" data-answer="motion" data-hint="ใช้ค่า userAcceleration จาก Core Motion ตั้งเงื่อนไขเอง ไม่ต้อง train">รู้ว่าผู้ใช้เขย่า iPad</button>
+    <button type="button" class="tool-sort__card" data-answer="motion" data-hint="Barometer อยู่ใน Core Motion: CMAltimeter">นับว่าเดินขึ้นบันไดไปกี่ชั้น</button>
+    <button type="button" class="tool-sort__card" data-answer="lidar" data-hint="ความลึกจาก LiDAR อ่านผ่าน ARKit">วัดความกว้างของโต๊ะ</button>
+    <button type="button" class="tool-sort__card" data-answer="lidar" data-hint="ต้องรู้ระยะของสิ่งที่อยู่ข้างหน้า ใช้ความลึกจาก LiDAR">เตือนเมื่อมีสิ่งกีดขวางใกล้กว่า 1 เมตร</button>
+    <button type="button" class="tool-sort__card" data-answer="sound" data-hint="เสียงกริ่งเป็นหนึ่งในกว่า 300 เสียงที่ classifier ในตัวรู้จักอยู่แล้ว">แจ้งเตือนเมื่อได้ยินเสียงกริ่งประตู</button>
+    <button type="button" class="tool-sort__card" data-answer="createml" data-hint="ท่าที่เรากำหนดเองต้อง train model ก่อน ใน Create ML">สอนให้รู้จักท่าวาดวงกลมในอากาศ</button>
+    <button type="button" class="tool-sort__card" data-answer="coreml" data-hint="Model ที่ train แล้ว run ใน app ด้วย Core ML">ทายท่าจาก gyroscope ใน app</button>
+    <button type="button" class="tool-sort__card" data-answer="coreai" data-hint="เปลี่ยนตัวเลขเป็นข้อความที่อ่านง่าย เป็นงานของ language model">เปลี่ยนผล "squat 10 ครั้ง" เป็นคำแนะนำ</button>
+  </div>
+  <div class="tool-sort__zones">
+    <div class="tool-sort__zone" data-tool="motion" role="button" tabindex="0"><strong>Core Motion</strong><small>การเคลื่อนไหว, barometer</small><div class="tool-sort__drop"></div></div>
+    <div class="tool-sort__zone" data-tool="lidar" role="button" tabindex="0"><strong>ARKit (LiDAR)</strong><small>ความลึกและระยะ</small><div class="tool-sort__drop"></div></div>
+    <div class="tool-sort__zone" data-tool="sound" role="button" tabindex="0"><strong>Sound Analysis</strong><small>เสียงทั่วไป ไม่ต้อง train</small><div class="tool-sort__drop"></div></div>
+    <div class="tool-sort__zone" data-tool="createml" role="button" tabindex="0"><strong>Create ML</strong><small>train model เอง</small><div class="tool-sort__drop"></div></div>
+    <div class="tool-sort__zone" data-tool="coreml" role="button" tabindex="0"><strong>Core ML</strong><small>run model ใน app</small><div class="tool-sort__drop"></div></div>
+    <div class="tool-sort__zone" data-tool="coreai" role="button" tabindex="0"><strong>Core AI</strong><small>language model บนเครื่อง</small><div class="tool-sort__drop"></div></div>
+  </div>
+</div>
+
 ## MacBook แต่ละเครื่องทำอะไรได้บ้าง { #machines }
 
 !!! mchip "{{ mac.apple }} · Xcode 27"
@@ -44,7 +83,7 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 !!! intel "{{ mac.intel }} · Xcode 26"
     ทำได้เกือบทั้ง workshop: อ่าน sensor, จดจำเสียง, train model ใน Create ML และ run ด้วย Core ML บน iPad ส่วน Core AI ต้องใช้ Xcode 27 ให้นั่งคู่กับเพื่อนที่ใช้ {{ mac.apple }} ช่วงนั้น
 
-    Create ML บน {{ mac.intel }} train ช้ากว่า ให้ใช้ข้อมูลน้อยๆ: 3 ท่า ท่าละไม่กี่ครั้ง
+    Create ML บน {{ mac.intel }} train ช้ากว่า ให้ใช้ข้อมูลน้อย ๆ: 3 ท่า ท่าละไม่กี่ครั้ง
 
 ## หัวข้อหลัก { #pages }
 
@@ -65,10 +104,12 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 
 สร้าง app ที่จดจำท่าทางจากการเคลื่อนไหวของ iPad แบบ real time แล้วแสดงชื่อท่าและความมั่นใจบนจอ
 
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ใช้เฉพาะโค้ดจากหน้า [Core Motion](core-motion.md) พร้อม use case ให้ลอง: ที่วัดระดับน้ำ, เขย่าสุ่มเมนู และนับชั้นที่เดินขึ้นบันได
+
 1. **เลือก 3 ท่า** เช่น เขย่า, เอียงซ้าย-ขวา และวาดวงกลมในอากาศ ท่าควรต่างกันชัดเจน model จะได้แยกออก
-2. **อัดข้อมูล** แต่ละคนใช้ recorder app ใน starter repo อัดท่าละไม่กี่วินาที หลายๆ รอบ ดู [Create ML](create-ml.md#activity-classifier)
+2. **อัดข้อมูล** แต่ละคนใช้ recorder app ใน starter repo อัดท่าละไม่กี่วินาที หลาย ๆ รอบ ดู [Create ML](create-ml.md#activity-classifier)
 3. **Train** รวมข้อมูลของทั้งทีมแล้ว train activity classifier ใน Create ML
-4. **Run ใน app** ส่งข้อมูล Core Motion สดให้ model แสดงชื่อท่าและความมั่นใจบนจอ ดู [Core ML](core-ml.md)
+4. **Run ใน app** ส่งข้อมูล Core Motion สดให้ model แสดงชื่อท่าบนจอ ดู [Core ML](core-ml.md)
 5. **ทำให้นิ่ง** ใช้ผลหลายครั้งล่าสุดช่วยตัดสิน หน้าจอจะได้ไม่กระพริบไปมา ดู [ทำให้ผลลัพธ์นิ่ง](core-ml.md#smoothing)
 
 !!! tip "ตามไม่ทัน"

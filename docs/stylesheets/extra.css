@@ -119,6 +119,60 @@
   }
 }
 
+/* แบบฝึกหัดลาก card ไปวางที่เครื่องมือ (javascripts/tool-sort.js) */
+.tool-sort { margin: 1em 0 2em; user-select: none; -webkit-user-select: none; }
+.tool-sort__status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.tool-sort__score { font-weight: 700; color: var(--md-primary-fg-color); }
+.tool-sort__feedback { flex: 1; min-width: 12em; color: var(--md-default-fg-color--light); }
+.tool-sort.is-done .tool-sort__feedback { color: #4CAF50; font-weight: 700; }
+.md-typeset .tool-sort__reset {
+  padding: 4px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--md-default-fg-color--lighter); color: inherit; background: none; font: inherit;
+}
+.md-typeset .tool-sort__reset:hover { border-color: var(--md-primary-fg-color); }
+.tool-sort__pool {
+  display: flex; flex-wrap: wrap; gap: 8px; min-height: 52px; padding: 12px;
+  border: 1px dashed var(--md-default-fg-color--lighter); border-radius: 12px; margin-bottom: 16px;
+}
+.tool-sort.is-done .tool-sort__pool { display: none; }
+.md-typeset .tool-sort__card {
+  padding: 8px 14px; border-radius: 10px; font: inherit; font-size: .9em; color: inherit; text-align: left;
+  background: #1C1C1E; border: 1px solid var(--md-default-fg-color--lighter);
+  cursor: grab; touch-action: none; transition: border-color .15s, transform .15s, opacity .15s;
+}
+.md-typeset .tool-sort__card:hover { border-color: var(--md-primary-fg-color); }
+.md-typeset .tool-sort__card.is-selected {
+  border-color: var(--md-primary-fg-color); background: var(--md-accent-fg-color--transparent); transform: translateY(-2px);
+}
+.md-typeset .tool-sort__card.is-dragging { opacity: .3; }
+.md-typeset .tool-sort__card.is-correct {
+  cursor: default; border-color: rgba(76, 175, 80, .6); background: rgba(76, 175, 80, .12); opacity: 1;
+}
+.md-typeset .tool-sort__card.is-correct::before { content: "✓ "; color: #4CAF50; }
+.tool-sort__ghost {
+  position: fixed; z-index: 1000; pointer-events: none; margin: 0;
+  padding: 8px 14px; border-radius: 10px; font-size: .75rem; color: #FFFFFF; background: #2C2C2E;
+  border: 1px solid var(--md-primary-fg-color); box-shadow: 0 8px 24px rgba(0, 0, 0, .6); transform: rotate(-2deg);
+}
+.tool-sort__zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.tool-sort__zone {
+  display: flex; flex-direction: column; gap: 2px; min-height: 120px; padding: 12px; border-radius: 12px;
+  background: #111113; border: 1px solid var(--md-default-fg-color--lightest);
+  transition: border-color .15s, background .15s;
+}
+.tool-sort__zone small { color: var(--md-default-fg-color--light); }
+.tool-sort__drop { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.tool-sort.is-picking .tool-sort__zone { cursor: pointer; border-style: dashed; border-color: var(--md-default-fg-color--lighter); }
+.tool-sort__zone.is-over, .tool-sort.is-picking .tool-sort__zone:hover {
+  border-color: var(--md-primary-fg-color); background: var(--md-accent-fg-color--transparent);
+}
+.tool-sort__zone.is-right { border-color: #4CAF50; background: rgba(76, 175, 80, .15); }
+.tool-sort__zone.is-wrong, .md-typeset .tool-sort__card.is-wrong { animation: tool-sort-shake .4s; border-color: #E53935; }
+@keyframes tool-sort-shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
 /* พิมพ์เป็นเล่ม: ซ่อน navigation, ไม่ตัดตารางและ code กลางหน้า */
 @media print {
   .md-header, .md-sidebar, .md-footer, .md-top { display: none !important; }

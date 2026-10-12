@@ -28,6 +28,9 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/tool-sort.js
+
 plugins:
   - search
   # ใช้ค่าใน extra ในหน้าเอกสารได้ เช่น {{ mac.apple }}

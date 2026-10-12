@@ -18,11 +18,15 @@
 | `userAcceleration` | ความเร่งที่ผู้ใช้ทำ (ตัดแรงโน้มถ่วงออกแล้ว) | ตรวจจับการเขย่า การกระแทก การเหวี่ยง |
 | `gravity` | ทิศของแรงโน้มถ่วงเทียบกับเครื่อง | รู้ว่าเครื่องตั้ง นอน หรือคว่ำอยู่ |
 | `rotationRate` | ความเร็วการหมุน (ปรับเทียบแล้ว) | ตรวจจับการบิด การหมุนข้อมือ |
-| `attitude` | มุมของเครื่อง: `pitch`, `roll`, `yaw` | ตรวจจับการเอียง ใช้เป็นจอยควบคุม |
+| `attitude` | มุมของเครื่อง: `pitch`, `roll`, `yaw` ([อธิบาย](#attitude)) | ตรวจจับการเอียง ใช้เป็นจอยควบคุม |
+
+![แกน x, y, z ของอุปกรณ์ และ sensor ที่ Core Motion ใช้: accelerometer, gyroscope, magnetometer, barometer](images/core-motion.jpg)
+*ภาพจาก [WWDC23 session 10179](https://developer.apple.com/videos/play/wwdc2023/10179/)*
 
 ## อ่านข้อมูลการเคลื่อนไหว
 
-สร้าง `CMMotionManager` **ตัวเดียว** ทั้ง app เช็กว่าเครื่องรองรับ ตั้ง sampling rate แล้วเริ่มรับข้อมูล Core Motion จะเรียก closure ทุกครั้งที่มีค่าใหม่
+* สร้าง `CMMotionManager` **ตัวเดียว** ทั้ง app เพื่อ Check ว่าเครื่องรองรับ
+* ตั้ง sampling rate แล้วเริ่มรับข้อมูล Core Motion จะเรียก closure ทุกครั้งที่มีค่าใหม่
 
 ```swift
 import CoreMotion
@@ -63,49 +67,139 @@ struct MotionView: View {
 !!! note "ต้องทดสอบบน iPad จริง"
     Simulator ไม่มี sensor การเคลื่อนไหว `isDeviceMotionAvailable` จะเป็น `false`
 
+## มุมของเครื่อง: roll, pitch, yaw { #attitude }
+
+`attitude` บอกว่า **ตอนนี้เครื่องเอียงอยู่แค่ไหน** แยกเป็น 3 มุม ขยับได้ 3 แบบ
+
+| มุม | ลองทำกับ iPad ที่วางราบบนโต๊ะ (แนวตั้ง จอหันขึ้น) | หมุนรอบแกน | ช่วงค่า |
+|---|---|---|---|
+| **pitch** | ยกขอบบนขึ้น หรือกดขอบบนลง | x | -90° ถึง 90° |
+| **roll** | ยกขอบขวาหรือขอบซ้ายขึ้น | y | -180° ถึง 180° |
+| **yaw** | หมุนเครื่องบนโต๊ะ โดยไม่ยกขึ้น | z | -180° ถึง 180° |
+
+### Radian กับองศา
+
+Core Motion ให้มุมเป็น **radian** ไม่ใช่องศา แปลงเป็นองศาด้วย `radian * 180 / .pi`
+
+| Radian | องศา | ความหมาย |
+|---|---|---|
+| `0` | 0° | วางราบ ไม่เอียง |
+| `.pi / 4` | 45° | เอียงครึ่งทาง (ค่านี้ใช้ใน [`detectGesture`](#gesture)) |
+| `.pi / 2` | 90° | ตั้งขึ้นตรง |
+
+### ดูค่าทั้ง 3 มุม
+
+ใช้ `startMotionUpdates` เหมือน `MotionView` แค่เปลี่ยนไปอ่าน `data.attitude` แล้วลองขยับเครื่องตามตารางด้านบนดูว่ามุมไหนเปลี่ยน
+
+```swift
+struct AttitudeView: View {
+    @State private var pitch = 0.0
+    @State private var roll = 0.0
+    @State private var yaw = 0.0
+
+    var body: some View {
+        VStack {
+            Text("pitch: \(pitch, specifier: "%.0f")°")
+            Text("roll: \(roll, specifier: "%.0f")°")
+            Text("yaw: \(yaw, specifier: "%.0f")°")
+        }
+        .onAppear {
+            startMotionUpdates { data in
+                pitch = data.attitude.pitch * 180 / .pi  // radian → องศา
+                roll = data.attitude.roll * 180 / .pi
+                yaw = data.attitude.yaw * 180 / .pi
+            }
+        }
+        .onDisappear { stopMotionUpdates() }
+    }
+}
+```
+
+### เอียงหรือไม่เอียง?
+
+วาง iPad ราบบนโต๊ะหรือชั้นวาง ถ้า roll ใกล้ 0° แปลว่าพื้นไม่เอียงซ้ายขวา เส้นบนจอหมุนตามมุมเอียง และเปลี่ยนเป็นสีเขียวเมื่อตรงแล้ว
+
+```swift
+struct LevelView: View {
+    @State private var roll = 0.0  // มุมเอียงซ้าย-ขวา (radian)
+
+    var body: some View {
+        let degrees = roll * 180 / .pi
+        let isLevel = abs(degrees) < 1  // เอียงไม่ถึง 1° ถือว่าตรง
+
+        VStack(spacing: 40) {
+            Text(String(format: "%.1f°", degrees))
+                .font(.system(size: 80, weight: .bold))
+
+            Capsule() // เส้นหมุนตามมุมเอียงของเครื่อง
+                .fill(isLevel ? .green : .orange)
+                .frame(width: 300, height: 12)
+                .rotationEffect(.radians(-roll))
+
+            Text(isLevel ? "ตรงแล้ว" : "ยังเอียงอยู่")
+        }
+        .onAppear {
+            startMotionUpdates { data in
+                roll = data.attitude.roll
+            }
+        }
+        .onDisappear { stopMotionUpdates() }
+    }
+}
+```
+
+ลองเพิ่มเอง: อ่าน `pitch` ด้วย แล้วเช็กว่าโต๊ะเอียงหน้าหลังไหม
+
+!!! warning "yaw ไม่ใช่ทิศเหนือ"
+    yaw = 0° คือทิศที่เครื่องหันอยู่ **ตอนเริ่ม** `startMotionUpdates` ไม่ใช่ทิศเหนือ ถ้าต้องการทิศจริงแบบเข็มทิศต้องใช้ magnetometer ซึ่งไม่อยู่ใน workshop นี้
+
 ## เลือก sampling rate
 
 Sampling rate คือจำนวนครั้งที่อ่านค่าต่อวินาที ยิ่งสูงยิ่งเห็นการเคลื่อนไหวละเอียด แต่กินแบตเตอรี่และ CPU มากขึ้น
 
 | Rate | `deviceMotionUpdateInterval` | เหมาะกับ |
 |---|---|---|
-| 10 Hz | `1.0 / 10.0` | ท่าช้าๆ เช่น เอียงเครื่อง, ท่าทางของร่างกาย |
+| 10 Hz | `1.0 / 10.0` | ท่าช้า ๆ เช่น เอียงเครื่อง, ท่าทางของร่างกาย |
 | 50 Hz | `1.0 / 50.0` | การจดจำท่าทางทั่วไป เช่น Motion Coach |
 | 100 Hz | `1.0 / 100.0` | การเคลื่อนไหวเร็วมาก เช่น เหวี่ยงไม้ ตีลูก |
 
 !!! warning "ใช้ rate เดียวกันตอนอัดและตอนใช้งาน"
     Model ที่ train จากข้อมูล 50 Hz ต้องได้ข้อมูล 50 Hz ตอนใช้งานด้วย ถ้า rate ต่างกัน ท่าเดียวกันจะดูเร็วหรือช้าไปในสายตา model และทายผิด
 
-## ตรวจจับท่าแบบง่ายโดยไม่ใช้ ML
+## ตรวจจับท่าแบบง่ายโดยไม่ใช้ ML { #gesture }
 
-ท่าง่ายๆ ไม่ต้อง train model ก็ได้ ใช้ค่าจาก device motion ตั้งเงื่อนไขเอง เริ่มจากแบบนี้ก่อนเพื่อเข้าใจข้อมูล แล้วค่อยใช้ Create ML เมื่อท่าซับซ้อนเกินจะเขียนเงื่อนไข
+ท่าง่าย ๆ ไม่ต้อง train model ก็ได้ ใช้ค่าจาก device motion ตั้งเงื่อนไขเอง เริ่มจากแบบนี้ก่อนเพื่อเข้าใจข้อมูล แล้วค่อยใช้ Create ML เมื่อท่าซับซ้อนเกินจะเขียนเงื่อนไข
 
 ```swift
 func detectGesture(_ data: CMDeviceMotion) -> String? {
     let a = data.userAcceleration
     let force = (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot()
 
-    if force > 2.0 { return "เขย่า" }                      // แรงเกิน 2 g
-    if abs(data.attitude.roll) > .pi / 4 { return "เอียง" }  // เอียงเกิน 45°
+    if force > 2.0 { return "เขย่า" } // แรงลัพธ์เกิน 2 g
+    if abs(data.attitude.roll) > .pi / 4 { return "เอียง" } // เอียงเกิน 45°
     return nil
 }
 ```
 
 ปรับตัวเลข `2.0` และ `.pi / 4` ด้วยการลองจริง: print ค่าออกมาขณะทำท่า แล้วดูว่าท่าที่ต้องการให้ค่าประมาณเท่าไหร่
 
-## เก็บข้อมูลเป็นช่วงให้ model { #window }
+## ส่งข้อมูลให้ model เป็นช่วง { #window }
 
-Model จดจำท่าทางไม่ได้ดูค่าทีละตัว แต่ดูเป็น **ช่วงเวลา (window)** เช่น 100 ค่าล่าสุด หรือ 2 วินาทีที่ 50 Hz เพราะท่าหนึ่งท่าใช้เวลาต่อเนื่อง เก็บค่าใส่ buffer ไว้ เมื่อครบจำนวนก็ส่งให้ model แล้วเลื่อน window ต่อไป
+ค่า sensor ค่าเดียวเป็นเพียงเสี้ยววินาทีเดียว ไม่พอให้รู้ว่าทำท่าอะไร ต้องดูค่าต่อเนื่องกันหลายค่า จึงเก็บค่าสะสมไว้ก่อน พอครบจำนวนที่กำหนดก็ส่งให้ model ทายทีเดียว ข้อมูลหนึ่งนี้เรียกว่า **window**
+
+ความถี่ 50 Hz ได้ข้อมูลวินาทีละ 50 ค่า ถ้าเก็บครบ 100 ค่าก็คือ **2 วินาที** ตัวเลข 100 นี้ต้องเท่ากับ Prediction Window Size ที่ตั้งตอน train ใน [Create ML](create-ml.md)
 
 ```swift
 struct MotionWindow {
-    let size = 100          // 2 วินาทีที่ 50 Hz ต้องตรงกับตอน train
+    let size = 100 // 100 ค่า = 2 วินาทีที่ 50 Hz ต้องเท่ากับตอน train
     var samples: [CMDeviceMotion] = []
 
-    // คืน window เมื่อครบ แล้วเก็บครึ่งหลังไว้ทำ window ถัดไป
     mutating func add(_ sample: CMDeviceMotion) -> [CMDeviceMotion]? {
+        // ใส่ค่าใหม่ทีละค่า ถ้ายังไม่ครบ 100 ได้ nil
         samples.append(sample)
         guard samples.count == size else { return nil }
+
+        // พอครบ 100 ค่า ส่งให้ model แล้วเก็บครึ่งหลังไว้เป็นครึ่งแรกของส่วนถัดไป
         let window = samples
         samples.removeFirst(size / 2)
         return window
@@ -113,7 +207,15 @@ struct MotionWindow {
 }
 ```
 
-การเก็บครึ่งหลังไว้ (overlap 50%) ทำให้ model ทายบ่อยขึ้น และไม่พลาดท่าที่เริ่มกลาง window ดูวิธีส่ง window ให้ model ที่ [Core ML](core-ml.md)
+**ทำไมต้องเก็บครึ่งหลังไว้?** ถ้าทิ้งหมดแล้วเริ่มนับใหม่ ท่าที่ทำคร่อมรอยต่อระหว่างสองส่วนจะถูกตัดครึ่ง model เห็นแค่ครึ่งท่าในแต่ละส่วนอาจทายไม่ออก การเก็บครึ่งหลังไว้ทำให้ทั้ง 2 ส่วน ซ้อนกันครึ่งหนึ่ง ท่าที่ถูกตัดในส่วนแรกจะเห็นครบในอีกส่วน และ model ได้ทายทุก 1 วินาทีแทนทุก 2 วินาที
+
+```text
+ส่วนที่ 1   [ วินาที 0–1 | วินาที 1–2 ]
+ส่วนที่ 2                [ วินาที 1–2 | วินาที 2–3 ]
+ส่วนที่ 3                             [ วินาที 2–3 | วินาที 3–4 ]
+```
+
+ดูวิธีส่งข้อมูลแต่ละก้อนให้ model ที่ [Core ML](core-ml.md)
 
 ## Barometer
 
