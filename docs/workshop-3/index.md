@@ -104,10 +104,10 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 
 สร้าง app ที่จดจำท่าทางจากการเคลื่อนไหวของ iPad แบบ real time แล้วแสดงชื่อท่าและความมั่นใจบนจอ
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ใช้เฉพาะโค้ดจากหน้า [Core Motion](core-motion.md) พร้อม use case ให้ลอง: ที่วัดระดับน้ำ, เขย่าสุ่มเมนู และนับชั้นที่เดินขึ้นบันได
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ใช้เฉพาะโค้ดจากหน้า [Core Motion](core-motion.md), [Sound recognition](sound.md), [LiDAR](lidar.md) และ [Core ML](core-ml.md) พร้อม use case ให้ลอง: เช็กโต๊ะเอียง, เขย่าสุ่มเมนู, นับชั้นที่เดินขึ้นบันได, แจ้งเตือนเสียงสำคัญ, เตือนสิ่งกีดขวาง และทายท่าด้วย model
 
 1. **เลือก 3 ท่า** เช่น เขย่า, เอียงซ้าย-ขวา และวาดวงกลมในอากาศ ท่าควรต่างกันชัดเจน model จะได้แยกออก
-2. **อัดข้อมูล** แต่ละคนใช้ recorder app ใน starter repo อัดท่าละไม่กี่วินาที หลาย ๆ รอบ ดู [Create ML](create-ml.md#activity-classifier)
+2. **อัดข้อมูล** แต่ละคนใช้ app [Motion Recorder](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3-recorder) อัดท่าละไม่กี่วินาที หลาย ๆ รอบ ดู [Create ML](create-ml.md#activity-classifier)
 3. **Train** รวมข้อมูลของทั้งทีมแล้ว train activity classifier ใน Create ML
 4. **Run ใน app** ส่งข้อมูล Core Motion สดให้ model แสดงชื่อท่าบนจอ ดู [Core ML](core-ml.md)
 5. **ทำให้นิ่ง** ใช้ผลหลายครั้งล่าสุดช่วยตัดสิน หน้าจอจะได้ไม่กระพริบไปมา ดู [ทำให้ผลลัพธ์นิ่ง](core-ml.md#smoothing)

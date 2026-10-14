@@ -16,7 +16,7 @@
 
 ### 1. อัดข้อมูลท่าทาง
 
-ใช้ recorder app ใน starter repo บน iPad เลือกชื่อท่า กดอัด ทำท่านั้นซ้ำๆ แล้วกดหยุด แต่ละครั้งจะได้ไฟล์ CSV หนึ่งไฟล์ ที่มีค่า Core Motion ทุก sample
+ใช้ app **Motion Recorder** ใน [`starter/workshop-3-recorder`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3-recorder) บน iPad เลือกชื่อท่า กดอัด (นับถอยหลัง 3 วินาที) ทำท่านั้นซ้ำๆ แล้วกดหยุด แต่ละครั้งจะได้ไฟล์ CSV หนึ่งไฟล์ ที่มีค่า Core Motion ทุก sample ที่ 50 Hz
 
 - **ทำท่าละ 5–10 รอบ** รอบละไม่กี่วินาที ให้ทุกคนในทีมช่วยอัด model จะได้รู้จักท่าของหลายคน
 - **จับเครื่องแบบเดียวกันทุกครั้ง** และแบบเดียวกับตอนใช้งานจริง ถ้าตอนอัดถือแนวตั้งแต่ตอนใช้ถือแนวนอน model จะทายผิด
@@ -25,7 +25,7 @@
 
 ### 2. ส่งไฟล์มาที่ Mac
 
-กด share ใน recorder app แล้วส่งด้วย **AirDrop** มาที่ Mac จัดไฟล์เป็น folder ตามชื่อท่า:
+ใน Motion Recorder กด **ส่ง MotionData.zip** แล้วส่งด้วย **AirDrop** มาที่ Mac ดับเบิลคลิก zip จะได้ folder ที่แยกตามชื่อท่าไว้แล้ว:
 
 ```text
 MotionData/
@@ -49,7 +49,7 @@ MotionData/
 
 1. Create ML › **New Document** › **Activity Classifier**
 2. **Training Data**: ลาก folder `MotionData` มาวาง
-3. **Features**: เลือก column ของค่า sensor ที่จะใช้ เช่น ความเร่งและการหมุนทั้ง 3 แกน
+3. **Features**: เลือก column ของค่า sensor ที่จะใช้ ไฟล์จาก Motion Recorder มี `accelX`, `accelY`, `accelZ` (ความเร่ง) และ `rotationX`, `rotationY`, `rotationZ` (การหมุน) ไม่ต้องเลือก `timestamp`
 4. **Prediction Window Size**: จำนวน sample ที่ model ดูในแต่ละครั้ง ใช้ **100** (2 วินาทีที่ 50 Hz) ต้องตรงกับขนาด window ในโค้ด [Core Motion](core-motion.md#window)
 5. กด **Train**
 

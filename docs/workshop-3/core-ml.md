@@ -73,7 +73,7 @@ startMotionUpdates { sample in
 ```
 
 !!! warning "ค่าที่ส่งต้องเหมือนตอน train"
-    ใช้ค่า sensor ชนิดเดียวกัน (เช่น `userAcceleration` ไม่ใช่ accelerometer ดิบ), หน่วยเดียวกัน, sampling rate เดียวกัน และลำดับแกนเดียวกับที่ recorder app บันทึก ถ้าไม่ตรง model จะทายผิดโดยไม่มี error
+    ใช้ค่า sensor ชนิดเดียวกัน (เช่น `userAcceleration` ไม่ใช่ accelerometer ดิบ), หน่วยเดียวกัน, sampling rate เดียวกัน และลำดับแกนเดียวกับที่ Motion Recorder บันทึก ถ้าไม่ตรง model จะทายผิดโดยไม่มี error
 
 ## ทำให้ผลลัพธ์นิ่ง { #smoothing }
 
@@ -105,3 +105,30 @@ struct Smoother {
 | **โหลด model ครั้งเดียว** | สร้าง model ไว้ตัวเดียวแล้วใช้ซ้ำ การโหลดใหม่ทุกครั้งช้ามาก |
 | **ขนาด model** | Model เล็กโหลดเร็วและใช้ memory น้อย Activity และ Sound Classifier จาก Create ML มักมีขนาดเล็กอยู่แล้ว |
 | **Quantization** | ลดความละเอียดของตัวเลขใน model (เช่น จาก 16 bit เหลือ 8 หรือ 4 bit) ทำให้ไฟล์เล็กและเร็วขึ้น แลกกับความแม่นที่ลดลงเล็กน้อย สำคัญกับ model ใหญ่อย่างใน [Core AI](core-ai.md) |
+
+## ใช้ model สำเร็จรูปจาก Apple { #pretrained }
+
+ไม่จำเป็นต้อง train เองเสมอไป Apple มี model ที่ train ไว้แล้วให้ดาวน์โหลดฟรีที่ [Core ML Models](https://developer.apple.com/machine-learning/models/) เช่น จำแนกรูปภาพ หาวัตถุในรูป และประมาณความลึก
+
+ตัวอย่างนี้ใช้ **MobileNetV2** (ไฟล์ `MobileNetV2FP16.mlmodel` ขนาด 12 MB) ที่บอกได้ว่าในรูปมีอะไร จากกว่า 1,000 ประเภท เช่น สัตว์ อาหาร ยานพาหนะ ดาวน์โหลดแล้วเปลี่ยนชื่อไฟล์เป็น `MobileNetV2.mlmodel` ก่อนลากเข้า project จะได้ class ชื่อสั้นๆ ว่า `MobileNetV2`
+
+```swift
+import CoreML
+import UIKit
+
+final class ImageClassifier {
+    private let model = try! MobileNetV2(configuration: MLModelConfiguration())
+
+    func classify(_ image: UIImage) throws -> (label: String, confidence: Double) {
+        guard let cgImage = image.cgImage else { return ("?", 0) }
+        let input = try MobileNetV2Input(imageWith: cgImage)   // ย่อรูปเป็น 224 × 224 ให้เอง
+        let output = try model.prediction(input: input)
+
+        // ชื่อมีหลายแบบคั่นด้วยจุลภาค เช่น "golden retriever, ..." เอาแค่ชื่อแรก
+        let name = output.classLabel.components(separatedBy: ",").first ?? output.classLabel
+        return (name, output.classLabelProbs[output.classLabel] ?? 0)
+    }
+}
+```
+
+ชื่อที่ได้เป็นภาษาอังกฤษ เช่น `zebra`, `king penguin`, `pizza` ถ้าจะแสดงให้ผู้ใช้เห็นเป็นภาษาไทย ให้แปลงเอง
