@@ -250,3 +250,6 @@ NSMotionUsageDescription
 
 !!! tip "Activity ในตัว ไม่ต้อง train"
     ถ้าแค่อยากรู้ว่าผู้ใช้ เดิน วิ่ง ปั่นจักรยาน หรืออยู่ในรถ ใช้ `CMMotionActivityManager` และนับก้าวด้วย `CMPedometer` ได้เลย ไม่ต้อง train model เอง
+
+!!! tip "ใช้ใน app ของทีม"
+    โค้ดในหน้านี้อยู่ใน `SensorParts/Motion.swift` ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)

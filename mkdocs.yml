@@ -89,6 +89,7 @@ nav:
       - Create ML: workshop-3/create-ml.md
       - Core ML: workshop-3/core-ml.md
       - Core AI: workshop-3/core-ai.md
+      - ใส่ใน app ของทีม: workshop-3/add-to-your-app.md
   - "Workshop 4: App Intents":
       - workshop-4/index.md
       - Intent แรก: workshop-4/first-intent.md

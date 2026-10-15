@@ -128,3 +128,6 @@ let request = try SNClassifySoundRequest(mlModel: CoughClassifier().model)
 - การวิเคราะห์เสียงทำบนเครื่องทั้งหมด ไม่ต้องใช้ internet
 - เมื่อไมโครโฟนเปิดอยู่ iPadOS จะแสดงจุดสีส้มที่มุมจอ ผู้ใช้รู้เสมอว่า app กำลังฟัง
 - หยุดฟัง (`stop()`) เมื่อออกจากหน้าจอ ไมโครโฟนและการวิเคราะห์ที่เปิดค้างกินแบตเตอรี่
+
+!!! tip "ใช้ใน app ของทีม"
+    โค้ดในหน้านี้อยู่ใน `SensorParts/Sound.swift` ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)

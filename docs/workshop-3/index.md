@@ -97,20 +97,21 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 | [Create ML](create-ml.md) | อัดข้อมูลแล้ว train model เองโดยไม่ต้องเขียนโค้ด |
 | [Core ML](core-ml.md) | Run model กับข้อมูลสด และประหยัดแบตเตอรี่ |
 | [Core AI](core-ai.md) | Run open-source language model บน {{ mac.apple }} |
+| [ใส่ใน app ของทีม](add-to-your-app.md) | Copy ไฟล์จาก starter, Info.plist, model และ prompt สำหรับ agent |
 
 ## ลงมือปฏิบัติ { #hands-on }
 
 ### Motion Coach
 
-สร้าง app ที่จดจำท่าทางจากการเคลื่อนไหวของ iPad แบบ real time แล้วแสดงชื่อท่าและความมั่นใจบนจอ
+สร้าง app ที่จดจำท่าทางจากการเคลื่อนไหวของ iPad: กดเริ่ม ทำท่า แล้วกดหยุด app จะบอกชื่อท่าและความมั่นใจ
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ใช้เฉพาะโค้ดจากหน้า [Core Motion](core-motion.md), [Sound recognition](sound.md), [LiDAR](lidar.md) และ [Core ML](core-ml.md) พร้อม use case ให้ลอง: เช็กโต๊ะเอียง, เขย่าสุ่มเมนู, นับชั้นที่เดินขึ้นบันได, แจ้งเตือนเสียงสำคัญ, เตือนสิ่งกีดขวาง และทายท่าด้วย model
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ดูวิธีเอามาใช้ใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
 
 1. **เลือก 3 ท่า** เช่น เขย่า, เอียงซ้าย-ขวา และวาดวงกลมในอากาศ ท่าควรต่างกันชัดเจน model จะได้แยกออก
 2. **อัดข้อมูล** แต่ละคนใช้ app [Motion Recorder](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3-recorder) อัดท่าละไม่กี่วินาที หลาย ๆ รอบ ดู [Create ML](create-ml.md#activity-classifier)
 3. **Train** รวมข้อมูลของทั้งทีมแล้ว train activity classifier ใน Create ML
-4. **Run ใน app** ส่งข้อมูล Core Motion สดให้ model แสดงชื่อท่าบนจอ ดู [Core ML](core-ml.md)
-5. **ทำให้นิ่ง** ใช้ผลหลายครั้งล่าสุดช่วยตัดสิน หน้าจอจะได้ไม่กระพริบไปมา ดู [ทำให้ผลลัพธ์นิ่ง](core-ml.md#smoothing)
+4. **Run ใน app** อัดท่าแล้วส่งข้อมูลให้ model ทาย แสดงชื่อท่าบนจอ ดู [ทายท่าด้วย model](core-ml.md#predict) และวิธีใส่ใน app ของทีมที่[ใส่ใน app ของทีม](add-to-your-app.md#models)
+5. **ไปต่อ** ให้ทายต่อเนื่องแบบ real time โดยไม่ต้องกดปุ่ม แล้วใช้ผลหลายครั้งล่าสุดช่วยตัดสิน หน้าจอจะได้ไม่กระพริบ ดู [ทายต่อเนื่องแบบ real time](core-ml.md#smoothing)
 
 !!! tip "ตามไม่ทัน"
     อัดข้อมูลไม่ทัน ขอ dataset สำรองจาก TA แล้วข้ามไปขั้น 3 ได้เลย
