@@ -29,3 +29,4 @@ build/
 
 # Secrets: HackathonAI team key (see workshop-2/hackathon-ai.md)
 Secrets.plist
+/speaker
