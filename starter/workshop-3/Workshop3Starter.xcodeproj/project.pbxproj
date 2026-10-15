@@ -16,6 +16,11 @@
 			path = Workshop3Starter;
 			sourceTree = "<group>";
 		};
+		3A0000000000000000000010 /* EmotionData */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EmotionData;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				3A0000000000000000000002 /* Workshop3Starter */,
+				3A0000000000000000000010 /* EmotionData */,
 				3A0000000000000000000005 /* Products */,
 			);
 			sourceTree = "<group>";

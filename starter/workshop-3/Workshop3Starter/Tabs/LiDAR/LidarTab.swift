@@ -25,10 +25,13 @@ struct LidarTab: View {
             }
             .navigationTitle("LiDAR")
             .navigationDestination(for: Page.self) { page in
-                switch page {
-                case .depth: DepthView()
-                case .obstacle: ObstacleView()
+                Group {
+                    switch page {
+                    case .depth: DepthView()
+                    case .obstacle: ObstacleView()
+                    }
                 }
+                .toolbar(.hidden, for: .tabBar)   // ซ่อน tab bar เมื่อเข้าไปในแต่ละหน้า
             }
         }
     }

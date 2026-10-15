@@ -35,13 +35,16 @@ struct MotionTab: View {
             .navigationTitle("Core Motion")
             // สร้างหน้าปลายทางตอนกดเท่านั้น (ถ้าเขียน NavigationLink { MotionView() } จะสร้างทุกหน้าตั้งแต่เปิด app)
             .navigationDestination(for: Page.self) { page in
-                switch page {
-                case .motion: MotionView()
-                case .attitude: AttitudeView()
-                case .level: LevelView()
-                case .shakeMenu: ShakeMenuView()
-                case .stairs: StairsView()
+                Group {
+                    switch page {
+                    case .motion: MotionView()
+                    case .attitude: AttitudeView()
+                    case .level: LevelView()
+                    case .shakeMenu: ShakeMenuView()
+                    case .stairs: StairsView()
+                    }
                 }
+                .toolbar(.hidden, for: .tabBar)   // ซ่อน tab bar เมื่อเข้าไปในแต่ละหน้า
             }
         }
     }

@@ -28,11 +28,14 @@ struct SoundTab: View {
             }
             .navigationTitle("Sound")
             .navigationDestination(for: Page.self) { page in
-                switch page {
-                case .sound: SoundView()
-                case .knownSounds: KnownSoundsView()
-                case .soundAlert: SoundAlertView()
+                Group {
+                    switch page {
+                    case .sound: SoundView()
+                    case .knownSounds: KnownSoundsView()
+                    case .soundAlert: SoundAlertView()
+                    }
                 }
+                .toolbar(.hidden, for: .tabBar)   // ซ่อน tab bar เมื่อเข้าไปในแต่ละหน้า
             }
         }
     }

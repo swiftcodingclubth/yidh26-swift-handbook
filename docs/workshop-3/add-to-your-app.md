@@ -26,7 +26,8 @@ Starter project อยู่ในโฟลเดอร์ `starter/` ของ 
 | ผู้ใช้เดินขึ้นลงชั้น | Core Motion (barometer) | app ออกกำลังกาย, นำทางในอาคาร |
 | ได้ยินเสียงอะไรรอบตัว | Sound Analysis | แจ้งเตือนเสียงกริ่งหรือเด็กร้องสำหรับคนที่ได้ยินไม่ชัด |
 | สิ่งของอยู่ห่างกี่เมตร | LiDAR (iPad Pro เท่านั้น) | เตือนสิ่งกีดขวาง, วัดขนาดเฟอร์นิเจอร์ |
-| ในรูปมีอะไร | Core ML + model สำเร็จรูปจาก Apple | แยกประเภทอาหาร สัตว์ หรือสิ่งของ |
+| ในรูปมีอะไร | Core ML + model สำเร็จรูปจาก Apple (MobileNetV2) | แยกประเภทอาหาร สัตว์ หรือสิ่งของ |
+| ในรูปมีอะไรบ้าง กี่ชิ้น อยู่ตรงไหน | Core ML + YOLOv3 | นับคนในห้อง, หาของบนโต๊ะ, ตีกรอบสัตว์เลี้ยง |
 
 ## 2. Copy ไฟล์ { #files }
 
@@ -39,6 +40,7 @@ Starter project อยู่ในโฟลเดอร์ `starter/` ของ 
 | วัดระยะด้วย LiDAR | `Lidar.swift` |
 | ทายท่าด้วย model ที่ train เอง | `Motion.swift`, `Gesture.swift` และไฟล์ model ของทีม |
 | บอกว่าในรูปมีอะไร | `ImageClassifier.swift`, `MobileNetV2.mlmodel` |
+| หาวัตถุในรูปพร้อมตำแหน่ง | `ObjectDetector.swift`, `YOLOv3Tiny.mlmodel` |
 
 ไฟล์แต่ละชุดไม่ขึ้นต่อกัน จึง copy เฉพาะชุดที่ต้องใช้ได้ ทุกไฟล์ build ผ่านใน project ที่ตั้ง **Swift Language Version เป็น Swift 5** ซึ่งเป็นค่าเริ่มต้นของ project ใหม่ใน Xcode 26
 
@@ -79,7 +81,7 @@ Starter project อยู่ในโฟลเดอร์ `starter/` ของ 
 | Core Motion, ทายท่าด้วย model | ไม่ได้ (ไม่มี sensor) | ได้ |
 | Sound | ได้ (ใช้ไมโครโฟนของ Mac) | ได้ |
 | LiDAR | ไม่ได้ | เฉพาะ iPad Pro |
-| บอกว่าในรูปมีอะไร | ได้ (ลากรูปไปวางบน Simulator) | ได้ |
+| บอกว่าในรูปมีอะไร, หาวัตถุในรูป | ได้ (ลากรูปไปวางบน Simulator) | ได้ |
 
 ## 6. ให้ agent ช่วย { #agent-prompts }
 

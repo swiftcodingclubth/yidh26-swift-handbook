@@ -183,5 +183,60 @@ final class ImageClassifier {
 
 ชื่อที่ได้เป็นภาษาอังกฤษ เช่น `zebra`, `king penguin`, `pizza` ถ้าจะแสดงให้ผู้ใช้เห็นเป็นภาษาไทย ให้แปลงเอง
 
+## หาวัตถุในรูปด้วย YOLOv3 { #yolo }
+
+MobileNetV2 บอกได้แค่ว่ารูปทั้งรูปเป็นอะไร **YOLOv3** หาวัตถุ **ทุกชิ้น** ในรูป พร้อมตำแหน่งของแต่ละชิ้น จึงนับได้ว่ามีกี่ชิ้น และวาดกรอบรอบวัตถุได้ รู้จักวัตถุ 80 ประเภท เช่น คน สุนัข แมว จักรยาน รถ แก้ว ขวด เก้าอี้ โทรศัพท์
+
+| | MobileNetV2 | YOLOv3 |
+|---|---|---|
+| ตอบว่า | รูปนี้คืออะไร (1 คำตอบ) | มีอะไรบ้าง อยู่ตรงไหน (หลายชิ้น) |
+| ตัวอย่าง | "golden retriever" | "dog" 2 ตัว, "person" 1 คน พร้อมกรอบ |
+| เหมาะกับ | รูปถ่ายใกล้ของชิ้นเดียว | รูปที่มีหลายอย่างในฉาก |
+
+Apple มี YOLOv3 หลายขนาด ตัวอย่างนี้ใช้ **YOLOv3 Tiny** (`YOLOv3TinyFP16.mlmodel` 16 MB) ซึ่งเล็กและเร็ว แต่แม่นน้อยกว่าตัวเต็ม (`YOLOv3FP16.mlmodel` 118 MB) ดาวน์โหลดแล้วเปลี่ยนชื่อไฟล์เป็น `YOLOv3Tiny.mlmodel`
+
+Model นี้ให้ผลเป็นตัวเลข 2 ชุดที่แปลงเองยาก จึงส่งผ่าน **Vision** ซึ่งย่อรูปให้ และแปลงผลเป็นชื่อวัตถุกับกรอบให้เลย
+
+```swift
+import CoreML
+import UIKit
+import Vision
+
+struct DetectedObject: Identifiable {
+    let id = UUID()
+    let label: String        // ชื่อวัตถุภาษาอังกฤษ เช่น "dog", "person"
+    let confidence: Double   // 0–1
+    let box: CGRect          // ตำแหน่ง 0–1 มุมบนซ้ายเป็น (0, 0) แบบ SwiftUI
+}
+
+final class ObjectDetector {
+    private let model = try! YOLOv3Tiny(configuration: MLModelConfiguration()).model
+
+    func detect(in image: UIImage) async throws -> [DetectedObject] {
+        // วาดรูปใหม่ให้ตั้งตรงก่อน รูปจากกล้อง iPad มักเก็บแบบหมุนไว้
+        let upright = UIGraphicsImageRenderer(size: image.size).image { _ in image.draw(at: .zero) }
+        guard let cgImage = upright.cgImage else { return [] }
+
+        // ให้ Vision ช่วยย่อรูปเป็น 416 × 416 และแปลงผลจาก model เป็นชื่อวัตถุกับกรอบ
+        var request = try CoreMLRequest(model: CoreMLModelContainer(model: model))
+        request.cropAndScaleAction = .scaleToFill   // ใช้ทั้งรูป ไม่ตัดขอบ
+        let results = try await request.perform(on: cgImage)
+
+        return results.compactMap { $0 as? RecognizedObjectObservation }.map { object in
+            let rect = object.boundingBox.cgRect   // Vision: (0, 0) อยู่มุมล่างซ้าย
+            return DetectedObject(
+                label: object.labels.first?.identifier ?? "?",
+                confidence: Double(object.labels.first?.confidence ?? 0),
+                box: CGRect(x: rect.minX, y: 1 - rect.maxY, width: rect.width, height: rect.height))
+        }
+    }
+}
+```
+
+`box` เป็นสัดส่วน 0–1 ของรูป ถ้าจะวาดกรอบบนจอ ให้คูณกับความกว้างและความสูงของรูปที่แสดงอยู่
+
+!!! tip "ใช้รูปที่มีหลายอย่างในฉาก"
+    YOLOv3 Tiny หาวัตถุในรูปถ่ายทั่วไปได้ดี เช่น คนกับสุนัข โต๊ะอาหาร ถนน แต่รูปถ่ายใกล้ที่ของชิ้นเดียวเต็มเฟรมมักหาไม่เจอ หรือทายผิด รูปแบบนั้นใช้ MobileNetV2 ดีกว่า
+
 !!! tip "ใช้ใน app ของทีม"
-    โค้ดในหน้านี้อยู่ใน `SensorParts/Gesture.swift` และ `SensorParts/ImageClassifier.swift` (พร้อมไฟล์ model) ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)
+    โค้ดในหน้านี้อยู่ใน `SensorParts/Gesture.swift`, `SensorParts/ImageClassifier.swift` และ `SensorParts/ObjectDetector.swift` (พร้อมไฟล์ model) ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)
