@@ -39,7 +39,7 @@
 
     Action เดียว ใช้ได้ทั้ง Shortcuts, Spotlight, Siri, widget และ Control Center
 
-    *เร็วๆ นี้*
+    [:octicons-arrow-right-24: เริ่ม Workshop 4](workshop-4/index.md)
 
 -   **5. Give your app sight with Vision and VisionKit**
 

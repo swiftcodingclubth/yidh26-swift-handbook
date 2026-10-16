@@ -28,6 +28,9 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/tool-sort.js
+
 plugins:
   - search
   # ใช้ค่าใน extra ในหน้าเอกสารได้ เช่น {{ mac.apple }}
@@ -86,6 +89,13 @@ nav:
       - Create ML: workshop-3/create-ml.md
       - Core ML: workshop-3/core-ml.md
       - Core AI: workshop-3/core-ai.md
+  - "Workshop 4: App Intents":
+      - workshop-4/index.md
+      - Intent แรก: workshop-4/first-intent.md
+      - Widget และ Control Center: workshop-4/widgets-controls.md
+      - App entities: workshop-4/app-entities.md
+      - Siri AI: workshop-4/siri-ai.md
+      - ใส่ใน app ของทีม: workshop-4/add-to-your-app.md
   - "Workshop 5: Vision & VisionKit":
       - workshop-5/index.md
       - VisionKit: workshop-5/visionkit.md
