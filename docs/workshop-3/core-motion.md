@@ -339,7 +339,7 @@ func detectSwing(_ data: CMDeviceMotion) -> Bool {
 
 ถือ iPad แนวนอนแปะหน้าผาก จอหันออกให้เพื่อนเห็นคำ เพื่อนใบ้ แล้ว **ก้มหน้า = ตอบถูก** และ **เงยหน้า = ข้าม** เป็นเกมที่ไม่มีใน use case ต้องเอาสิ่งที่เรียนมาประกอบเอง
 
-เปิดหน้า **เกมใบ้คำ** ในแท็บ Motion ของ starter หน้าจอ คำ และคะแนนทำไว้ให้แล้ว เขียนเฉพาะส่วนที่มี `TODO` ใน `Tabs/Motion/HeadsUpView.swift`
+เปิดหน้า **เกมใบ้คำ** ในแท็บ Motion ของ starter หน้าจอ คำ คะแนน และการนับคำทำไว้ให้แล้ว เหลือเขียนแค่ `detectTilt` ใน `Tabs/Motion/HeadsUpView.swift` ซึ่งตอนนี้คืน `nil` ไว้ก่อน เกมจึงยังไม่ขยับ
 
 | ท่า | จอหันไปทาง | `gravity.z` ประมาณ |
 |---|---|---|
@@ -348,12 +348,43 @@ func detectSwing(_ data: CMDeviceMotion) -> Bool {
 | เงยหน้า | เพดาน | -1 |
 
 1. **ดูค่าจริง** เปิด GravityView ถือเครื่องแปะหน้าผาก แล้วจดค่า `gravity.z` ตอนตั้งตรง ก้ม และเงย
-2. **TODO 1: เขียน `detectTilt`** คืน `.down` / `.up` / `.upright` ตามค่า `gravity.z` และคืน `nil` เมื่ออยู่ระหว่างกลาง
-3. **TODO 2: ต่อกับเกม** ใน `startMotionUpdates` ก้มหน้าเรียก `correct()` เงยหน้าเรียก `skip()`
-4. **TODO 3: กันนับซ้ำ** ลองเล่นดู ก้มครั้งเดียวจะข้ามไปหลายคำ เพราะค่าเกินเกณฑ์ติดกันหลาย sample ให้รอจนกลับมาตั้งตรงก่อนนับคำถัดไป
+2. **TODO: เขียน `detectTilt`** คืน `.down` / `.up` / `.upright` ตามค่า `gravity.z` และคืน `nil` เมื่ออยู่ระหว่างกลาง
+
+    ```swift
+    func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
+        return nil   // TODO
+    }
+    ```
+
+3. **ลองเล่น** ก้มหน้าแล้วจอกะพริบเขียวและได้คะแนน เงยหน้าแล้วจอกะพริบส้มและข้ามคำ
+
+ส่วนที่ทำไว้ให้แล้วใน `startMotionUpdates` คือเรียก `detectTilt` แล้วนับคำ พร้อมกันนับซ้ำด้วยการรอให้กลับมาตั้งตรงก่อน
+
+```swift
+startMotionUpdates { data in
+    guard let tilt = detectTilt(data) else { return }
+
+    // นับไปแล้ว ไม่สนท่าอื่นจนกว่าจะกลับมาตั้งตรง
+    if waitingUpright {
+        if tilt == .upright { waitingUpright = false }
+        return
+    }
+
+    switch tilt {
+    case .down:
+        correct()
+        waitingUpright = true
+    case .up:
+        skip()
+        waitingUpright = true
+    case .upright:
+        break
+    }
+}
+```
 
 !!! tip "ต่างจาก use case ตรงไหน"
-    Use case ส่วนใหญ่กันนับซ้ำด้วยการ **รอเวลา** เช่น 0.6 วินาที แต่เกมนี้ต้อง **รอท่า** คือกลับมาตั้งตรงก่อน เพราะแต่ละคนก้มค้างนานไม่เท่ากัน
+    Use case ส่วนใหญ่กันนับซ้ำด้วยการ **รอเวลา** เช่น 0.6 วินาที แต่เกมนี้ต้อง **รอท่า** คือกลับมาตั้งตรงก่อน เพราะแต่ละคนก้มค้างนานไม่เท่ากัน ถ้า `detectTilt` ไม่เคยคืน `.upright` เกมจะนับได้แค่คำแรกแล้วค้าง
 
 **ต่อยอด** สำหรับคนที่ทำเสร็จก่อน
 
@@ -361,44 +392,20 @@ func detectSwing(_ data: CMDeviceMotion) -> Bool {
 - เพิ่มหมวดคำของตัวเอง เช่น สัตว์ อาหาร ดารา ให้เลือกก่อนเริ่ม
 - ใช้ `attitude.pitch` แทน `gravity.z` แล้วเทียบว่าแบบไหนเขียนง่ายกว่า
 
-??? success "เฉลย"
-    ไฟล์เฉลยทั้งไฟล์อยู่ที่ `starter/workshop-3/Solutions/HeadsUpView.swift` ซึ่งอยู่นอก target จึงไม่ถูก compile
+??? warning "เฉลย! ถ้าแอบเปิดดู คะแนนของคุณอาจถูกลด"
+    ??? question "แน่ใจว่าอยากดู"
+        ??? success "โดนหลอกแล้ว"
+            ไฟล์เฉลยทั้งไฟล์อยู่ที่ `starter/workshop-3/Solutions/HeadsUpView.swift` ซึ่งอยู่นอก target จึงไม่ถูก compile
 
-    ```swift
-    func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
-        let z = data.gravity.z
-        if z > 0.7 { return .down }
-        if z < -0.7 { return .up }
-        if abs(z) < 0.3 { return .upright }
-        return nil   // ช่วงกลาง 0.3 ถึง 0.7 กันค่าแกว่งไปมาตรงเส้นเกณฑ์
-    }
-    ```
-
-    ```swift
-    @State private var waitingUpright = false
-
-    startMotionUpdates { data in
-        guard let tilt = detectTilt(data) else { return }
-
-        // นับไปแล้ว ไม่สนท่าอื่นจนกว่าจะกลับมาตั้งตรง
-        if waitingUpright {
-            if tilt == .upright { waitingUpright = false }
-            return
-        }
-
-        switch tilt {
-        case .down:
-            correct()
-            waitingUpright = true
-        case .up:
-            skip()
-            waitingUpright = true
-        case .upright:
-            break
-        }
-    }
-    ```
-
+            ```swift
+            func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
+                let z = data.gravity.z
+                if z > 0.7 { return .down }
+                if z < -0.7 { return .up }
+                if abs(z) < 0.3 { return .upright }
+                return nil   // ช่วงกลาง 0.3 ถึง 0.7 กันค่าแกว่งไปมาตรงเส้นเกณฑ์
+            }
+            ```
 
 ## Barometer
 

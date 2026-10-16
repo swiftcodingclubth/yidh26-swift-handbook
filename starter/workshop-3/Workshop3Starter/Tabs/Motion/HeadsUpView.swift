@@ -3,16 +3,16 @@ import SwiftUI
 
 /// Workshop: เกมใบ้คำ (Heads Up)
 /// ถือ iPad แนวนอนแปะหน้าผาก จอหันออกให้เพื่อนเห็นคำ เพื่อนใบ้ แล้ว ก้มหน้า = ถูก เงยหน้า = ข้าม
-/// หน้าจอทำไว้ให้แล้ว เขียนเฉพาะส่วนที่มี TODO เฉลยอยู่ใน starter/workshop-3/Solutions/HeadsUpView.swift
+/// เกมทำไว้ให้หมดแล้ว เขียนเฉพาะ detectTilt (TODO) เฉลยอยู่ใน starter/workshop-3/Solutions/HeadsUpView.swift
 
 /// ท่าของศีรษะตอนถือเครื่องแปะหน้าผาก
 enum HeadTilt { case down, up, upright }
 
-/// TODO 1: จับท่าจาก gravity.z
+/// TODO: จับท่าจาก gravity.z
 /// เปิด GravityView ถือเครื่องแปะหน้าผาก แล้วดูค่า z ตอนตั้งตรง ก้มหน้า และเงยหน้า
 /// ก้มหน้า (จอหันลงพื้น) → .down · เงยหน้า (จอหันขึ้นเพดาน) → .up · ตั้งตรง → .upright · อยู่ระหว่างกลาง → nil
 func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
-    return nil
+    return nil   // ตอนนี้ยังไม่รู้จักท่าไหนเลย เกมจึงยังไม่ขยับ
 }
 
 struct HeadsUpView: View {
@@ -21,6 +21,7 @@ struct HeadsUpView: View {
     @State private var score = 0
     @State private var skipped = 0
     @State private var flash = Color.clear
+    @State private var waitingUpright = false   // นับแล้ว รอกลับมาตั้งตรงก่อน
 
     var body: some View {
         VStack(spacing: 24) {
@@ -44,10 +45,25 @@ struct HeadsUpView: View {
         .navigationTitle("เกมใบ้คำ")
         .onAppear {
             startMotionUpdates { data in
-                // TODO 2: เรียก detectTilt(data) แล้ว ก้มหน้า → correct() · เงยหน้า → skip()
+                guard let tilt = detectTilt(data) else { return }
 
-                // TODO 3: ก้มครั้งเดียวมีค่าเกินเกณฑ์หลาย sample จึงถูกนับหลายคำติดกัน
-                // ให้รอจนกลับมาตั้งตรง (.upright) ก่อน ถึงจะนับคำถัดไปได้
+                // นับไปแล้ว ไม่สนท่าอื่นจนกว่าจะกลับมาตั้งตรง ไม่อย่างนั้นก้มครั้งเดียวจะข้ามหลายคำ
+                if waitingUpright {
+                    if tilt == .upright { waitingUpright = false }
+                    return
+                }
+
+                // ก้มหน้า = ถูก · เงยหน้า = ข้าม
+                switch tilt {
+                case .down:
+                    correct()
+                    waitingUpright = true
+                case .up:
+                    skip()
+                    waitingUpright = true
+                case .upright:
+                    break
+                }
             }
         }
         .onDisappear { stopMotionUpdates() }

@@ -8,7 +8,7 @@ import SwiftUI
 /// ท่าของศีรษะตอนถือเครื่องแปะหน้าผาก
 enum HeadTilt { case down, up, upright }
 
-/// TODO 1: จับท่าจาก gravity.z
+/// TODO: จับท่าจาก gravity.z
 /// แกน z ชี้ออกจากจอ ถือแปะหน้าผากตั้งตรง z ≈ 0 · ก้มหน้า จอหันลงพื้น z → +1 · เงยหน้า จอหันขึ้นเพดาน z → -1
 /// เว้นช่วงกลาง (0.3 ถึง 0.7) ไว้ไม่ให้เป็นท่าไหน กันค่าแกว่งไปมาตรงเส้นเกณฑ์
 func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
@@ -25,7 +25,7 @@ struct HeadsUpView: View {
     @State private var score = 0
     @State private var skipped = 0
     @State private var flash = Color.clear
-    @State private var waitingUpright = false   // TODO 3: นับแล้ว รอกลับมาตั้งตรงก่อน
+    @State private var waitingUpright = false   // นับแล้ว รอกลับมาตั้งตรงก่อน
 
     var body: some View {
         VStack(spacing: 24) {
@@ -51,13 +51,13 @@ struct HeadsUpView: View {
             startMotionUpdates { data in
                 guard let tilt = detectTilt(data) else { return }
 
-                // TODO 3: นับไปแล้ว ไม่สนท่าอื่นจนกว่าจะกลับมาตั้งตรง
+                // นับไปแล้ว ไม่สนท่าอื่นจนกว่าจะกลับมาตั้งตรง ไม่อย่างนั้นก้มครั้งเดียวจะข้ามหลายคำ
                 if waitingUpright {
                     if tilt == .upright { waitingUpright = false }
                     return
                 }
 
-                // TODO 2: ก้มหน้า = ถูก · เงยหน้า = ข้าม
+                // ก้มหน้า = ถูก · เงยหน้า = ข้าม
                 switch tilt {
                 case .down:
                     correct()
