@@ -135,7 +135,7 @@ i am feeling grouchy,anger
 ## 5. Export และใช้ใน app
 
 1. แท็บ **Output** › **Get** ตั้งชื่อไฟล์ว่า `EmotionClassifier.mlmodel`
-2. ลากไปแทนไฟล์เดิมใน `Workshop3Starter/SensorParts/Models/` ของ starter project
+2. ลากไปแทนไฟล์เดิมใน `Workshop3Starter/MLParts/Models/` ของ starter project
 3. Run แล้วเปิดแท็บ **Core ML** › **วันนี้รู้สึกอย่างไร** ลองพิมพ์ประโยค
 
 ถ้าใช้ 6 อารมณ์เดิม ไม่ต้องแก้โค้ด ถ้า train อารมณ์อื่นเอง ให้เพิ่ม emoji และสีของอารมณ์นั้นใน `Mood` ของ `MoodView.swift` ดูวิธีเรียกใช้ model ในโค้ดที่ [Core ML](core-ml.md#text-classifier)

@@ -1,6 +1,6 @@
 // ⚠️ ปิดไว้ ไม่ได้ใช้ใน app: Gesture Classifier ถูกตัดออกจาก Workshop 3 แล้ว
 // เก็บโค้ดไว้อ้างอิงเท่านั้น โค้ดทั้งหมดอยู่ใน comment จึงไม่ถูก compile
-// เปิดใช้: เอา /* บรรทัดล่าง และ */ ท้ายไฟล์ออก ทั้งไฟล์นี้และ SensorParts/Gesture.swift
+// เปิดใช้: เอา /* บรรทัดล่าง และ */ ท้ายไฟล์ออก ทั้งไฟล์นี้และ MLParts/Gesture.swift
 // แล้วเพิ่ม GestureClassifier.mlmodel กลับเข้า target (File inspector → Target Membership)
 // และเพิ่ม NavigationLink ไปที่ PredictView ใน CoreMLTab.swift
 

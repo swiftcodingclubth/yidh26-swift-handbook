@@ -25,11 +25,11 @@
 
     [:octicons-arrow-right-24: เริ่ม Workshop 2](workshop-2/index.md)
 
--   **3. Build sensor-aware intelligence with Core AI and Create ML**
+-   **3. Teach your app to sense and understand with Core ML and Create ML**
 
     ---
 
-    Train model จาก motion, LiDAR และเสียง แล้ว run บน device
+    อ่าน sensor ในตัว, train model เองใน Create ML และ run model บน device ด้วย Core ML
 
     [:octicons-arrow-right-24: เริ่ม Workshop 3](workshop-3/index.md)
 

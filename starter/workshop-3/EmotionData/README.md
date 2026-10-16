@@ -29,7 +29,7 @@
 2. **Training Data:** `emotion6_train.csv` · **Validation Data:** Automatic · **Testing Data:** `emotion6_test.csv`
 3. **Algorithm:** Maximum Entropy (train ไม่กี่วินาที)
 4. กด **Train** ควรได้ Testing ประมาณ 88%
-5. **Output → Get** ตั้งชื่อ `EmotionClassifier.mlmodel` แล้วลากไปแทนไฟล์ใน `Workshop3Starter/SensorParts/Models/`
+5. **Output → Get** ตั้งชื่อ `EmotionClassifier.mlmodel` แล้วลากไปแทนไฟล์ใน `Workshop3Starter/MLParts/Models/`
 
 ## ที่มา
 

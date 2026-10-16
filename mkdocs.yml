@@ -81,7 +81,7 @@ nav:
       - Tool calling: workshop-2/tool-calling.md
       - Dynamic Profile: workshop-2/dynamic-profiles.md
       - HackathonAI: workshop-2/hackathon-ai.md
-  - "Workshop 3: Sensors, Create ML & Core AI":
+  - "Workshop 3: Sensors, Core ML & Create ML":
       - workshop-3/index.md
       - Core Motion: workshop-3/core-motion.md
       - Sound recognition: workshop-3/sound.md

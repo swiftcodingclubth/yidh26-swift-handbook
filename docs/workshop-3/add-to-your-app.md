@@ -8,7 +8,7 @@ Starter project อยู่ในโฟลเดอร์ `starter/` ของ 
 
 | โฟลเดอร์ | ใช้ทำอะไร |
 |---|---|
-| [`workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) | app ตัวอย่าง แท็บละหัวข้อ: Motion, Sound, LiDAR, Core ML และโฟลเดอร์ `SensorParts/` ที่ copy ไปใช้ได้ |
+| [`workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) | app ตัวอย่าง แท็บละหัวข้อ: Motion, Sound, LiDAR, Core ML และโฟลเดอร์ `SensorParts/` กับ `MLParts/` ที่ copy ไปใช้ได้ |
 | [`workshop-3/EmotionData`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3/EmotionData) | ข้อมูลสำหรับ train text classifier ใน [Create ML](create-ml.md) |
 
 1. เปิด [repo handbook](https://github.com/tawapnas/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
@@ -28,19 +28,21 @@ Starter project อยู่ในโฟลเดอร์ `starter/` ของ 
 | ผู้ใช้รู้สึกอย่างไรจากข้อความที่พิมพ์ (ภาษาอังกฤษ) | Create ML + Core ML (text classifier) | บันทึกความรู้สึกประจำวัน, ตอบกลับให้เข้ากับอารมณ์ |
 | ในรูปมีอะไร | Core ML + model สำเร็จรูปจาก Apple (MobileNetV2) | แยกประเภทอาหาร สัตว์ หรือสิ่งของ |
 | ในรูปมีอะไรบ้าง กี่ชิ้น อยู่ตรงไหน | Core ML + YOLOv3 | นับคนในห้อง, หาของบนโต๊ะ, ตีกรอบสัตว์เลี้ยง |
+| หันกล้องไปแล้วเห็นว่ามีอะไรอยู่ข้างหน้าทันที | Core ML + YOLOv3 + กล้อง | ช่วยผู้พิการทางสายตาบอกสิ่งของรอบตัว, นับคนที่เดินผ่าน |
 
 ## 2. Copy ไฟล์ { #files }
 
-ไฟล์ทั้งหมดอยู่ในโฟลเดอร์ `SensorParts/` ของ starter project (ไฟล์ model อยู่ใน `SensorParts/Models/`) ลากเข้า Xcode project แล้วติ๊ก **Copy items if needed** และเลือก target ของ app
+ไฟล์อยู่ใน 2 โฟลเดอร์ของ starter project: `SensorParts/` สำหรับ sensor และ `MLParts/` สำหรับ machine learning (ไฟล์ model อยู่ใน `MLParts/Models/`) ลากเข้า Xcode project แล้วติ๊ก **Copy items if needed** และเลือก target ของ app
 
-| Feature | ไฟล์ที่ต้อง copy |
-|---|---|
-| การเคลื่อนไหว, มุมเอียง, ท่าแบบง่าย, barometer | `Motion.swift` |
-| จดจำเสียง | `Sound.swift` |
-| วัดระยะด้วย LiDAR | `Lidar.swift` |
-| อารมณ์จากข้อความ | `TextEmotion.swift`, `EmotionClassifier.mlmodel` (หรือ model ของทีม) |
-| บอกว่าในรูปมีอะไร | `ImageClassifier.swift`, `MobileNetV2.mlmodel` |
-| หาวัตถุในรูปพร้อมตำแหน่ง | `ObjectDetector.swift`, `YOLOv3Tiny.mlmodel` |
+| โฟลเดอร์ | Feature | ไฟล์ที่ต้อง copy |
+|---|---|---|
+| `SensorParts/` | การเคลื่อนไหว, มุมเอียง, ท่าแบบง่าย, barometer | `Motion.swift` |
+| `SensorParts/` | จดจำเสียง | `Sound.swift` |
+| `SensorParts/` | วัดระยะด้วย LiDAR | `Lidar.swift` |
+| `MLParts/` | อารมณ์จากข้อความ | `TextEmotion.swift`, `Models/EmotionClassifier.mlmodel` (หรือ model ของทีม) |
+| `MLParts/` | บอกว่าในรูปมีอะไร | `ImageClassifier.swift`, `Models/MobileNetV2.mlmodel` |
+| `MLParts/` | หาวัตถุในรูปพร้อมตำแหน่ง | `ObjectDetector.swift`, `Models/YOLOv3Tiny.mlmodel` |
+| `MLParts/` | หาวัตถุจากกล้องแบบ live | `ObjectDetector.swift`, `CameraView.swift`, `Models/YOLOv3Tiny.mlmodel` |
 
 ไฟล์แต่ละชุดไม่ขึ้นต่อกัน จึง copy เฉพาะชุดที่ต้องใช้ได้ ทุกไฟล์ build ผ่านใน project ที่ตั้ง **Swift Language Version เป็น Swift 5** ซึ่งเป็นค่าเริ่มต้นของ project ใหม่ใน Xcode 26
 
@@ -64,7 +66,7 @@ Model ที่ train ตาม[หน้า Create ML](create-ml.md) ด้ว�
 |---|---|---|
 | `Privacy - Motion Usage Description` (`NSMotionUsageDescription`) | ใช้ barometer (`startAltitudeUpdates`) | "ใช้ข้อมูลการเคลื่อนไหวเพื่อนับการขึ้นลงชั้น" |
 | `Privacy - Microphone Usage Description` (`NSMicrophoneUsageDescription`) | ใช้ `SoundListener` | "ฟังเสียงรอบตัวเพื่อแจ้งเตือนเมื่อได้ยินเสียงสำคัญ" |
-| `Privacy - Camera Usage Description` (`NSCameraUsageDescription`) | ใช้ `DepthReader` (LiDAR ทำงานผ่านกล้อง) | "ใช้กล้องและ LiDAR เพื่อวัดระยะห่างของสิ่งของ" |
+| `Privacy - Camera Usage Description` (`NSCameraUsageDescription`) | ใช้ `DepthReader` (LiDAR ทำงานผ่านกล้อง) หรือ `CameraView` (หาวัตถุแบบ live) | "ใช้กล้องเพื่อวัดระยะและหาวัตถุรอบตัว" |
 
 `startMotionUpdates` (accelerometer, gyroscope) และ Core ML ไม่ต้องเพิ่ม key ใดๆ ผู้ใช้จะเห็นข้อความนี้ตอนที่ app ขอสิทธิ์ จึงควรเขียนให้ชัดว่าใช้ทำอะไร
 
@@ -83,6 +85,7 @@ Model ที่ train ตาม[หน้า Create ML](create-ml.md) ด้ว�
 | LiDAR | ไม่ได้ | เฉพาะ iPad Pro |
 | อารมณ์จากข้อความ | ได้ | ได้ |
 | บอกว่าในรูปมีอะไร, หาวัตถุในรูป | ได้ (ลากรูปไปวางบน Simulator) | ได้ |
+| หาวัตถุแบบ live | ไม่ได้ (ไม่มีกล้อง) | ได้ |
 
 ## 6. ให้ agent ช่วย { #agent-prompts }
 

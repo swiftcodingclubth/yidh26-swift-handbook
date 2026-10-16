@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// แท็บละหัวข้อ เรียงตามลำดับในหน้า Workshop 3 ของ handbook
-/// โค้ดจาก handbook อยู่ใน SensorParts/ ส่วน Tabs/ เป็นหน้าจอตัวอย่าง
+/// โค้ดจาก handbook อยู่ใน SensorParts/ (sensor) และ MLParts/ (machine learning) ส่วน Tabs/ เป็นหน้าจอตัวอย่าง
 struct ContentView: View {
     var body: some View {
         TabView {

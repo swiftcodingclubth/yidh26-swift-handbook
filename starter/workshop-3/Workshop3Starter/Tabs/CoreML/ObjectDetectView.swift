@@ -18,7 +18,7 @@ struct ObjectDetectView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .overlay { boxes }
+                    .overlay { ObjectBoxes(objects: objects) }
                     .frame(maxHeight: 500)
             }
             Text(message)
@@ -34,39 +34,8 @@ struct ObjectDetectView: View {
                       let picked = UIImage(data: data) else { return }
                 image = picked
                 objects = (try? await detector.detect(in: picked)) ?? []
-                message = summary
+                message = objects.isEmpty ? "ไม่เจอวัตถุที่ model รู้จัก ลองรูปอื่น" : objectSummary(objects)
             }
         }
-    }
-
-    /// กรอบรอบวัตถุแต่ละชิ้น วางทับบนรูป
-    private var boxes: some View {
-        GeometryReader { geo in
-            ForEach(objects) { object in
-                let rect = CGRect(x: object.box.minX * geo.size.width,
-                                  y: object.box.minY * geo.size.height,
-                                  width: object.box.width * geo.size.width,
-                                  height: object.box.height * geo.size.height)
-                Rectangle()
-                    .stroke(.yellow, lineWidth: 3)
-                    .frame(width: rect.width, height: rect.height)
-                    .overlay(alignment: .topLeading) {
-                        Text("\(object.label) \(Int(object.confidence * 100))%")
-                            .font(.caption.bold())
-                            .padding(4)
-                            .background(.yellow)
-                            .foregroundStyle(.black)
-                    }
-                    .position(x: rect.midX, y: rect.midY)
-            }
-        }
-    }
-
-    /// สรุปจำนวนแต่ละชนิด เช่น "เจอ 3 ชิ้น: person × 1, dog × 2"
-    private var summary: String {
-        guard !objects.isEmpty else { return "ไม่เจอวัตถุที่ model รู้จัก ลองรูปอื่น" }
-        let counts = Dictionary(objects.map { ($0.label, 1) }, uniquingKeysWith: +)
-        let text = counts.sorted { $0.key < $1.key }.map { "\($0.key) × \($0.value)" }.joined(separator: ", ")
-        return "เจอ \(objects.count) ชิ้น: \(text)"
     }
 }

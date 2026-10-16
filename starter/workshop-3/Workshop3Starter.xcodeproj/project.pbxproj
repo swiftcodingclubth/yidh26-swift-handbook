@@ -14,7 +14,7 @@
 		3A0000000000000000000011 /* Exceptions for "Workshop3Starter" folder in "Workshop3Starter" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				SensorParts/Models/GestureClassifier.mlmodel,
+				MLParts/Models/GestureClassifier.mlmodel,
 			);
 			target = 3A0000000000000000000006 /* Workshop3Starter */;
 		};

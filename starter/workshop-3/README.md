@@ -1,4 +1,4 @@
-# Workshop 3 starter: Sensors & Core ML
+# Workshop 3 starter: Sensors, Core ML & Create ML
 
 Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภายนอก · เปิดได้ทั้ง Xcode 26 และ 27
 
@@ -10,7 +10,7 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 2. เลือก target **Workshop3Starter** → **Signing & Capabilities** → เลือก **Team** ของตัวเอง
 3. เลือก iPad เป็น run destination แล้วกด Run
 
-แท็บ Sound และแท็บ Core ML ลองบน Simulator ได้ ส่วนแท็บ Motion และ LiDAR ใช้ sensor จริง จึงต้อง run บน iPad
+แท็บ Sound และแท็บ Core ML ลองบน Simulator ได้ (ยกเว้นหาวัตถุแบบ live ที่ใช้กล้อง) ส่วนแท็บ Motion และ LiDAR ใช้ sensor จริง จึงต้อง run บน iPad
 
 ## แท็บ
 
@@ -19,7 +19,7 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 | Motion | 1 | Core Motion: การเคลื่อนไหว มุมเอียง ท่าแบบง่าย barometer | ไม่ได้ |
 | Sound | 2 | Sound Analysis: จดจำเสียงด้วย classifier ในตัว | ได้ (ใช้ไมโครโฟนของ Mac) |
 | LiDAR | 3 | ARKit: วัดระยะด้วยข้อมูลความลึก | ไม่ได้ (iPad Pro เท่านั้น) |
-| Core ML | 4 | Run model ที่ train เองใน Create ML (EmotionClassifier) และ model สำเร็จรูปจาก Apple (MobileNetV2, YOLOv3) | ได้ |
+| Core ML | 4 | Run model ที่ train เองใน Create ML (EmotionClassifier) และ model สำเร็จรูปจาก Apple (MobileNetV2, YOLOv3) | ได้ ยกเว้นหาวัตถุแบบ live |
 
 ขั้น Create ML (train text classifier บอกอารมณ์จากข้อความ) ใช้ข้อมูลใน [`EmotionData/`](EmotionData)
 
@@ -55,25 +55,27 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 | **วันนี้รู้สึกอย่างไร** | พิมพ์ความรู้สึกเป็นภาษาอังกฤษ emoji และสีพื้นหลังเปลี่ยนตามอารมณ์ ยิ่งมั่นใจสียิ่งเข้ม ถ้ามั่นใจไม่ถึง 40% จะขึ้น 🤔 | Model ที่ train เอง: Text Classifier |
 | **ในรูปมีอะไร?** | เลือกรูปสัตว์ อาหาร หรือสิ่งของ แล้วดูว่า model บอกว่าอะไร | ใช้ model สำเร็จรูปจาก Apple |
 | **หาวัตถุในรูป** | เลือกรูปที่มีหลายอย่างในฉาก เช่น คนกับสุนัข ถนน จะเห็นกรอบรอบวัตถุทุกชิ้นพร้อมจำนวน | หาวัตถุในรูปด้วย YOLOv3 |
+| **หาวัตถุแบบ live** | หันกล้องหลังไปที่คน สัตว์ หรือสิ่งของ กรอบจะตามวัตถุแบบ real time (ต้องใช้ iPad จริง) | หาวัตถุจากกล้องแบบ real time |
 
-## `SensorParts/`: ไฟล์ที่ copy ไปใส่ app ของทีมได้
+## `SensorParts/` และ `MLParts/`: ไฟล์ที่ copy ไปใส่ app ของทีมได้
 
-ไฟล์ในโฟลเดอร์นี้คือโค้ดในหน้า handbook แต่ละชุดไม่ขึ้นต่อชุดอื่น จึง copy เฉพาะชุดที่ต้องใช้ได้
+ไฟล์ใน 2 โฟลเดอร์นี้คือโค้ดในหน้า handbook แบ่งตาม 2 ส่วนของ workshop: `SensorParts/` สำหรับ sensor และ `MLParts/` สำหรับ machine learning แต่ละชุดไม่ขึ้นต่อชุดอื่น จึง copy เฉพาะชุดที่ต้องใช้ได้
 
-| Feature | ไฟล์ |
-|---|---|
-| การเคลื่อนไหว, มุมเอียง, ท่าแบบง่าย, barometer | `Motion.swift` |
-| จดจำเสียง | `Sound.swift` |
-| วัดระยะด้วย LiDAR | `Lidar.swift` |
-| บอกว่าในรูปมีอะไร | `ImageClassifier.swift`, `MobileNetV2.mlmodel` |
-| หาวัตถุในรูปพร้อมตำแหน่ง | `ObjectDetector.swift`, `YOLOv3Tiny.mlmodel` |
-| อารมณ์จากข้อความ (ภาษาอังกฤษ) | `TextEmotion.swift`, `EmotionClassifier.mlmodel` (หรือ model ของทีม) |
+| โฟลเดอร์ | Feature | ไฟล์ |
+|---|---|---|
+| `SensorParts/` | การเคลื่อนไหว, มุมเอียง, ท่าแบบง่าย, barometer | `Motion.swift` |
+| `SensorParts/` | จดจำเสียง | `Sound.swift` |
+| `SensorParts/` | วัดระยะด้วย LiDAR | `Lidar.swift` |
+| `MLParts/` | อารมณ์จากข้อความ (ภาษาอังกฤษ) | `TextEmotion.swift`, `Models/EmotionClassifier.mlmodel` (หรือ model ของทีม) |
+| `MLParts/` | บอกว่าในรูปมีอะไร | `ImageClassifier.swift`, `Models/MobileNetV2.mlmodel` |
+| `MLParts/` | หาวัตถุในรูปพร้อมตำแหน่ง | `ObjectDetector.swift`, `Models/YOLOv3Tiny.mlmodel` |
+| `MLParts/` | หาวัตถุจากกล้องแบบ live | `ObjectDetector.swift`, `CameraView.swift` (copy มาจาก Workshop 5), `Models/YOLOv3Tiny.mlmodel` |
 
 Build ผ่านใน project ที่ตั้ง **Swift Language Version เป็น Swift 5** (ค่าเริ่มต้นของ project ใหม่ใน Xcode 26) ไม่ว่าจะตั้ง Default Actor Isolation เป็น MainActor หรือ nonisolated
 
 ### Model
 
-ไฟล์ model ทั้งหมดอยู่ใน `SensorParts/Models/`
+ไฟล์ model ทั้งหมดอยู่ใน `MLParts/Models/`
 
 | ไฟล์ | มาจากไหน |
 |---|---|
@@ -101,7 +103,7 @@ Build ผ่านใน project ที่ตั้ง **Swift Language Version 
 |---|---|---|
 | `NSMotionUsageDescription` | `CMAltimeter` (หน้านับชั้น) | `INFOPLIST_KEY_NSMotionUsageDescription` |
 | `NSMicrophoneUsageDescription` | `SoundListener` | `INFOPLIST_KEY_NSMicrophoneUsageDescription` |
-| `NSCameraUsageDescription` | `DepthReader` (LiDAR ทำงานผ่านกล้อง) | `INFOPLIST_KEY_NSCameraUsageDescription` |
+| `NSCameraUsageDescription` | `DepthReader` (LiDAR ทำงานผ่านกล้อง) และ `CameraView` (หาวัตถุแบบ live) | `INFOPLIST_KEY_NSCameraUsageDescription` |
 
 `CMMotionManager` และ Core ML ไม่ต้องขอสิทธิ์ ถ้า copy ไฟล์ไปใช้ใน project อื่นแต่ไม่ใส่ key ที่ต้องใช้ app จะ crash
 
@@ -117,4 +119,4 @@ Build ผ่านใน project ที่ตั้ง **Swift Language Version 
 
 ## ตามไม่ทัน
 
-ไฟล์ใน `SensorParts/` ทำงานครบทุกหัวข้อแล้ว copy ไปใส่ project ของทีมได้เลย ดูขั้นตอนใน handbook หน้า "ใส่ใน app ของทีม" ของ Workshop 3 ถ้า train ไม่ทัน ใช้ `EmotionClassifier.mlmodel` ใน `SensorParts/Models/` ไปก่อน
+ไฟล์ใน `SensorParts/` และ `MLParts/` ทำงานครบทุกหัวข้อแล้ว copy ไปใส่ project ของทีมได้เลย ดูขั้นตอนใน handbook หน้า "ใส่ใน app ของทีม" ของ Workshop 3 ถ้า train ไม่ทัน ใช้ `EmotionClassifier.mlmodel` ใน `MLParts/Models/` ไปก่อน
