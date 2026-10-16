@@ -19,7 +19,7 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 | Motion | 1 | Core Motion: การเคลื่อนไหว มุมเอียง ท่าแบบง่าย barometer | ไม่ได้ |
 | Sound | 2 | Sound Analysis: จดจำเสียงด้วย classifier ในตัว | ได้ (ใช้ไมโครโฟนของ Mac) |
 | LiDAR | 3 | ARKit: วัดระยะด้วยข้อมูลความลึก | ไม่ได้ (iPad Pro เท่านั้น) |
-| Core ML | 4 | Run model ที่ train เองใน Create ML (EmotionClassifier) และ model สำเร็จรูปจาก Apple (MobileNetV2, YOLOv3) | ได้ ยกเว้นหาวัตถุแบบ live |
+| Core ML | 4 | Run model ที่ train เอง (EmotionClassifier), ของ Apple (MobileNetV2, YOLOv3, sentiment ในระบบ) และของคนอื่น (CommunityClassifier) | ได้ ยกเว้นหน้าที่ใช้กล้องสด |
 
 ขั้น Create ML (train text classifier บอกอารมณ์จากข้อความ) ใช้ข้อมูลใน [`EmotionData/`](EmotionData)
 
@@ -60,10 +60,14 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 
 | หน้า | ลองทำ | หัวข้อใน handbook |
 |---|---|---|
+| **ข้างใน model** | ดู input, output และป้ายของทุก model ใน project | อ่าน input และ output ก่อนเขียนโค้ด |
 | **วันนี้รู้สึกอย่างไร** | พิมพ์ความรู้สึกเป็นภาษาอังกฤษ emoji และสีพื้นหลังเปลี่ยนตามอารมณ์ ยิ่งมั่นใจสียิ่งเข้ม ถ้ามั่นใจไม่ถึง 40% จะขึ้น 🤔 | Model ที่ train เอง: Text Classifier |
 | **ในรูปมีอะไร?** | เลือกรูปสัตว์ อาหาร หรือสิ่งของ แล้วดูว่า model บอกว่าอะไร | ใช้ model สำเร็จรูปจาก Apple |
 | **หาวัตถุในรูป** | เลือกรูปที่มีหลายอย่างในฉาก เช่น คนกับสุนัข ถนน จะเห็นกรอบรอบวัตถุทุกชิ้นพร้อมจำนวน | หาวัตถุในรูปด้วย YOLOv3 |
 | **หาวัตถุแบบ live** | หันกล้องหลังไปที่คน สัตว์ หรือสิ่งของ กรอบจะตามวัตถุแบบ real time (ต้องใช้ iPad จริง) | หาวัตถุจากกล้องแบบ real time |
+| **ข้อความบวกหรือลบ** | พิมพ์ภาษาอังกฤษ ดูคะแนน -1 ถึง 1 จาก model ที่อยู่ใน iOS แล้ว | Model ในระบบ: ข้อความบวกหรือลบ |
+| **ใช้ model ของคนอื่น** | ใส่ไฟล์ `CommunityClassifier.mlmodel` หรือ `.mlpackage` แล้วทายจากรูปหรือกล้องสด ถ้ายังไม่มีไฟล์จะขึ้นวิธีใส่ | ใช้ model ของคนอื่น |
+| **ของบนโต๊ะคืออะไร** | Workshop: ใช้ MobileNetV2 กับกล้องสด แล้วเขียน TODO ใน `DeskClassifierView.swift` เฉลยอยู่ใน [`Solutions/`](Solutions) | Workshop: ของบนโต๊ะคืออะไร |
 
 ## `SensorParts/` และ `MLParts/`: ไฟล์ที่ copy ไปใส่ app ของทีมได้
 
