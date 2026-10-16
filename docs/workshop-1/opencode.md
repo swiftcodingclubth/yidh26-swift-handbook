@@ -18,16 +18,6 @@ opencode                 # เริ่ม OpenCode
 
 ครั้งแรกใน project ใหม่ ให้พิมพ์ `/init` OpenCode จะอ่าน project แล้วสร้าง [`AGENTS.md`](prompting.md#agentsmd) ซึ่งเป็นไฟล์อธิบาย project และกติกาให้ agent อ่านทุกครั้ง ถ้า starter repo มีไฟล์นี้อยู่แล้วไม่ต้องทำ
 
-??? note "ติดตั้งเองบนเครื่องอื่น"
-    ต้องมี OpenCode account และ API key (ฟรี ไม่ต้องผูกบัตร)
-
-    ```bash
-    curl -fsSL https://opencode.ai/install | bash
-    opencode
-    /connect     # เลือก OpenCode Zen แล้ววาง API key
-    /models      # เลือก free model
-    ```
-
 ## Plan mode และ Build mode
 
 OpenCode มี 2 mode กด ++tab++ เพื่อสลับ

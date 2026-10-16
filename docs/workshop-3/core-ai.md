@@ -108,7 +108,7 @@ print(result.tip, result.score)
 
 ## ใช้ร่วมกับ
 
-- [Dynamic Profile](../workshop-2/dynamic-profiles.md#4-model): ส่ง Core AI model เข้า `.model()` ได้ เช่น ใช้ AFM ตอนคุยทั่วไป แล้วสลับไป Core AI model ที่เลือกเองตอนให้คำแนะนำ
+- [Dynamic Profile](../workshop-2/dynamic-profiles.md#profiles): ส่ง Core AI model เข้า `.model()` ได้ เช่น ใช้ AFM ตอนคุยทั่วไป แล้วสลับไป Core AI model ที่เลือกเองตอนให้คำแนะนำ
 
 ## ไปต่อ
 

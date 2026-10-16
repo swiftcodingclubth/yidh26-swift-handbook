@@ -25,7 +25,7 @@
 
     [:octicons-arrow-right-24: เริ่ม Workshop 2](workshop-2/index.md)
 
--   **3. Build sensor-aware intelligence with Core AI and Create ML**
+-   **3. Build intelligent app with Core AI and Create ML**
 
     ---
 

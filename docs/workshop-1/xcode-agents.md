@@ -15,16 +15,6 @@ Xcode 27 มี coding agent อยู่ใน panel ของ Xcode เลย 
 - **ดู SwiftUI Preview** เพื่อตรวจว่า UI ที่สร้างหน้าตาถูกต้อง
 - **ใช้ agent skills ของ Apple** ที่สอนให้เขียน Swift และ SwiftUI แบบสมัยใหม่
 
-## Workflow: Plan → Build → Review → Commit
-
-1. **Commit ก่อน** ให้ working tree สะอาด ถ้าผลไม่ดีจะได้ย้อนกลับได้ทั้งหมดในครั้งเดียว
-2. **เปิด panel ของ agent** แล้วเลือก agent ที่ต้องการ
-3. **เขียน prompt** ตาม [template](prompting.md#prompt-template) และสร้าง **plan ก่อน**
-4. **อ่าน plan** ซึ่งเป็น Markdown ที่แก้ไขได้ ถ้ามีขั้นตอนที่ไม่ต้องการหรือ agent เข้าใจผิด สามารถแก้ไขใน plan ได้เลย จากนั้นค่อย approve plan
-5. **ให้ agent implement** agent จะ build และเช็กผลลัพธ์ใน Preview เอง
-6. **Review diff ทุกไฟล์** ตรวจสอบโค้ดที่ถูกแก้โดย agent แล้วทดสอบ run บน iPad
-7. **commit และ push** ถ้าโค้ดถูกแก้ไขตามที่ต้องการ
-
 ## Permissions
 
 ก่อนแก้ไฟล์หรือรันคำสั่ง agent จะขออนุญาตก่อน อ่านทุกครั้งว่ามันจะทำอะไรก่อนกด allow โดยเฉพาะคำสั่งที่ลบไฟล์ เปลี่ยน project settings หรือเพิ่ม package ถ้าไม่เข้าใจว่าคำสั่งทำอะไร ให้ถาม agent ก่อน

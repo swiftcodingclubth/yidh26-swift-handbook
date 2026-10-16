@@ -42,15 +42,14 @@
 
 ทำแบบนี้ทุกครั้งที่เริ่ม feature ใหม่
 
-1. **เริ่มจาก `main` ล่าสุด** สลับไป `main` แล้ว pull ถ้าลืม pull จะทำงานบนโค้ดเก่า แล้ว conflict ตอน merge
-2. **สร้าง branch** ตั้งชื่อตาม feature เช่น `feature/search` งานของเราจะแยกจากของเพื่อนจนกว่าจะ merge
-3. **ให้ agent ทำงาน แล้ว review diff** อ่านทุกไฟล์ที่ถูกแก้ build ให้ผ่าน แล้วลองบน iPad
-4. **Commit** เขียนข้อความบอกว่าทำอะไร เช่น "Add search bar" ไม่ใช่ "update"
-5. **Push และเปิด pull request** บน GitHub ให้เพื่อน review แล้ว merge เข้า `main`
+1. **เริ่มจาก `main` ล่าสุด** สลับไป `main` แล้ว pull เพื่ออัปเดตเป็นโค้ดล่าสุด
+2. **สร้าง branch** ตั้งชื่อตาม feature ที่จะพัฒนาเช่น `feature/search` เพื่อแยกการทำงานของเรากับเพื่อนในทีม
+3. **Commit** เมื่อพัฒนาเสร็จแล้ว บันทึกการเปลี่ยนแปลงของโค้ดโดยเขียนข้อความอธิบาย เช่น "Add search bar"
+4. **Push และเปิด pull request** บน GitHub ให้เพื่อน review แล้ว merge เข้า `main`
 
 ## แก้ conflict { #conflict }
 
-Conflict เกิดเมื่อสอง branch แก้ **บรรทัดเดียวกัน** ในไฟล์เดียวกัน Git ตัดสินใจเองไม่ได้ว่าจะเอาของใคร จึงให้เราเลือก ไม่ใช่ error ร้ายแรง แค่ต้องตัดสินใจ
+Conflict เกิดเมื่อสอง branch แก้โค้ด **บรรทัดเดียวกัน** ในไฟล์เดียวกัน Git ตัดสินใจเองไม่ได้ว่าโค้ดของใครถูกต้อง จึงต้องเป็นหน้าที่ของเราในการแก้ไข
 
 1. Pull หรือ merge แล้ว Xcode จะแสดงไฟล์ที่ conflict
 2. เปิดไฟล์ จะเห็นทั้งสองฝั่งคั่นด้วยเครื่องหมายแบบนี้
@@ -64,28 +63,16 @@ Conflict เกิดเมื่อสอง branch แก้ **บรรทั
     ```
 
 3. เลือกว่าจะเก็บฝั่งไหน หรือรวมทั้งสองฝั่ง แล้วลบเครื่องหมาย `<<<<<<<`, `=======`, `>>>>>>>` ออกให้หมด
-4. Build ให้ผ่านก่อน แล้ว commit
+4. Build เพื่อตรวจสอบว่าแก้ conflict เรียบร้อยแล้ว จากนั้นให้ commit เพื่อบันทึกการแก้ไข
 
 !!! tip "ให้ agent ช่วยแก้ conflict ได้"
     เช่น prompt ว่า "Resolve the merge conflicts in TeamListView.swift, keep both features, then build." แล้ว review ผลก่อน commit
-
-## `.gitignore` สำหรับ Xcode
-
-ไฟล์ `.gitignore` บอก Git ว่าไฟล์ไหน **ไม่ต้อง** เก็บ เช่น ไฟล์ตั้งค่าส่วนตัวของ Xcode ที่ทำให้ conflict โดยไม่จำเป็น และไฟล์ที่มี API key
-
-```gitignore
-xcuserdata/
-DerivedData/
-*.xcuserstate
-.DS_Store
-Secrets.plist
-```
 
 ## ปัญหาที่เจอบ่อย
 
 | อาการ | สาเหตุ | วิธีแก้ |
 |---|---|---|
 | Push ไม่ได้ (rejected) | เพื่อน push ขึ้นไปก่อน GitHub มี commit ที่เรายังไม่มี | Pull ก่อน แล้วค่อย push |
-| Commit ผิด branch | ลืมสร้างหรือสลับ branch ก่อนเริ่มงาน | ถาม TA อย่าเพิ่ง push |
+| Commit ผิด branch | ลืมสร้างหรือสลับ branch ก่อนเริ่มงาน | เรียก TA เพื่อช่วยแก้ไข  |
 | Detached HEAD | Checkout ไปที่ commit เก่าแทน branch | สลับกลับไป `main` (ถ้ามีงานค้าง ให้ถาม TA ก่อน) |
-| Conflict ใน `.pbxproj` | หลายคนเพิ่มหรือลบไฟล์ใน project พร้อมกัน | ให้คนเดียวเพิ่ม/ลบไฟล์ในแต่ละช่วง และ pull ก่อนเพิ่มไฟล์ |
+| Conflict ใน `.pbxproj` | หลายคนเพิ่มหรือลบไฟล์ใน project พร้อมกัน | เรียก TA เพื่อช่วยแก้ไข |

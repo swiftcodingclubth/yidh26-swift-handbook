@@ -56,21 +56,6 @@ Coding agent สามารถแก้ไขโค้ดได้ทีละ�
 
 1. **Commit และสร้าง branch** ใหม่ ดู [Workflow ของทีม](git.md#workflow)
 2. **เขียน prompt** ตาม [template](prompting.md#prompt-template) แล้วขอ plan
-3. **อ่าน plan** แก้ส่วนที่ไม่ใช่ แล้วให้ agent ลงมือ ดู [Xcode agents](xcode-agents.md#workflow-plan-build-review-commit) หรือ [OpenCode](opencode.md#plan-mode-build-mode)
+3. **อ่าน plan** แก้ส่วนที่ไม่ใช่ แล้วให้ agent ลงมือ ดู [Xcode agents](xcode-agents.md) หรือ [OpenCode](opencode.md#plan-mode-build-mode)
 4. **Build แล้ว run** บน iPad
 5. **Review diff** ทุกไฟล์ แล้ว commit และ push
-
-!!! tip "ตามไม่ทัน"
-    ถ้า agent แก้โค้ดแล้วพัง ให้ Discard All Changes แล้วเขียน prompt ใหม่ที่ละเอียดมากขึ้น
-
-### 2. Team challenge
-
-ฝึก workflow การทำงานในโปรเจคเดียวกันร่วมกันกับสมาชิกในทีม
-
-1. **เลือก feature** ที่แต่ละคนจะพัฒนา
-2. **สร้าง branch** เพื่อพัฒนา feature นั้นของตัวเอง เช่น `feature/search-item`
-3. **Build feature** ด้วย agent ของตัวเอง
-4. **Merge feature**: merge ทุก branch เข้า `main` แล้ว run app บน iPad เพื่อตรวจสอบว่าทุก feature ถูก merge เรียบร้อย
-
-!!! tip "ตามไม่ทัน"
-    Merge เฉพาะ branch ที่เสร็จแล้วก่อน ถ้าติดปัญหา merge conflict ที่แก้ไม่ได้ ให้ agent ช่วยแก้ตาม[วิธีนี้](git.md#conflict) หรือเรียก TA

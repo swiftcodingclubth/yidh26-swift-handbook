@@ -48,36 +48,66 @@ Prompt เขียนเป็นภาษาไทยหรืออังก�
     - **Review diff ทุกไฟล์ก่อน commit** ดูว่าไม่มีการแก้ไฟล์ที่ไม่เกี่ยว
     - **Run บน iPad จริงก่อน push** build ผ่านไม่ได้แปลว่าทำงานถูก
 
-## Best practices
-
-- **Task เล็ก**: 1 prompt = 1 feature หรือ 1 bug งานเล็กได้ผลแม่นกว่า และ review เสร็จเร็ว
-- **Plan ก่อนเสมอ**: ถ้า agent เข้าใจผิด เห็นได้จาก plan ก่อนที่มันจะแก้โค้ดไปหลายไฟล์
-- **1 feature = 1 branch**: ถ้า feature ไหนพังก็ทิ้งเฉพาะ branch นั้น และ merge ง่าย review ง่าย
-- **ให้ agent build เอง**: ใส่ "It builds" ใน DONE WHEN agent จะแก้ error เองจนผ่านก่อนส่งงาน
-- **หยุดเมื่อวนลูป**: ถ้าแก้ไม่ผ่านเกิน 2–3 รอบ agent มักจะยิ่งแก้ยิ่งแย่ ให้ revert แล้วเขียน prompt ใหม่ที่ชัดขึ้น ดีกว่าแก้ต่อ
-- **ให้อธิบายโค้ด**: ถ้าไม่เข้าใจ diff ให้ถามว่า "Explain what this change does" อย่า commit โค้ดที่ไม่เข้าใจ
-- **Merge บ่อย**: ยิ่งแยก branch ไว้นาน conflict ยิ่งเยอะ merge เมื่อ feature เสร็จแต่ละชิ้น
-- **แยกไฟล์กันทำ**: เมื่อหลาย agent ทำงานพร้อมกัน ให้แต่ละคนแก้คนละไฟล์ให้มากที่สุด จะได้ไม่ conflict
-
 ## `AGENTS.md`
 
 `AGENTS.md` คือไฟล์ที่อธิบาย project และกติกาให้ agent วางไว้ที่ root ของ repo agent จะอ่านไฟล์นี้ก่อนเริ่มงานทุกครั้ง จึงไม่ต้องพิมพ์กติกาเดิมซ้ำในทุก prompt และทุก agent ในทีมจะทำตามกติกาเดียวกัน
 
-Starter repo มีไฟล์นี้ให้แล้ว แก้เพิ่มได้เมื่อเจอสิ่งที่ agent ทำผิดซ้ำๆ
+ทีมใช้ Xcode สองเวอร์ชัน {{ mac.apple }} ใช้ Xcode 27 ส่วน {{ mac.intel }} ใช้ Xcode 26 ซึ่ง build โค้ดที่ใช้ API ของ iOS 27 ไม่ได้ Agent ไม่รู้เรื่องนี้เอง ถ้าไม่บอก มันมักเลือกใช้ API ใหม่ล่าสุด แล้วโค้ดจะ build ไม่ผ่านบนเครื่องของเพื่อนอีก 2 คน `AGENTS.md` ที่เตรียมไว้ให้จะบอกเรื่องนี้กับ agent ทุกครั้ง
 
-```markdown
-# Team Card app
+### เริ่มใช้งาน
 
-## Rules
-- SwiftUI only. Deployment target: iOS 26.
-- Wrap iOS 27-only APIs in #if compiler(>=6.4) and if #available(iOS 27, *).
-- Do not add Swift packages without asking.
-- Never read or print Secrets.plist.
+ทำครั้งเดียวต่อทีม บนเครื่องใดก็ได้
 
-## Build check
-xcodebuild -scheme TeamCard -destination 'generic/platform=iOS Simulator' build
+1. **Copy `AGENTS.md` จาก Desktop** ไปวางใน folder ของ project ระดับเดียวกับไฟล์ `.xcodeproj`
+2. **แก้บรรทัดใต้ `## About this app`** เป็นประโยคเดียวที่อธิบาย app ของทีม
+3. **Commit และ push** เพื่อให้ agent ทุกเครื่องในทีมอ่านไฟล์เดียวกัน
 
-## Style
-- One view per file. Keep views small.
-- Use system colors so dark mode works.
-```
+### เนื้อหาในไฟล์
+
+````markdown title="AGENTS.md"
+# AGENTS.md
+
+Rules for any coding agent (Xcode agents, OpenCode, or others) working in this project.
+
+## About this app
+<!-- Team: replace this line with one sentence about your app. -->
+A SwiftUI app for iPad, built by a team of 3 at the Young iOS Developer Hackathon 2026.
+
+## Our team uses TWO Xcode versions. Code must build in BOTH.
+- 1 M-chip Mac with **Xcode 27** (iOS 27 SDK).
+- 2 Intel Macs with **Xcode 26** (iOS 26 SDK). These Macs cannot build iOS 27-only code.
+- If code builds in Xcode 27 but not in Xcode 26, it is broken for 2 of our 3 teammates.
+
+## Hard rules
+1. **Deployment target stays iOS 26.0.** Do not change it.
+2. **Do not use iOS 27-only APIs** unless the user asks for one. When they do, wrap it like this so Xcode 26 still compiles:
+   ```swift
+   #if compiler(>=6.4)   // Swift 6.4 ships with Xcode 27
+   if #available(iOS 27, *) {
+       // iOS 27-only code
+   }
+   #endif
+   ```
+   For a framework that only exists in the iOS 27 SDK, also guard the import with `#if canImport(FrameworkName)`.
+3. **Do not change project settings.** This includes the project format, the signing team, the bundle identifier and the deployment target. Do not accept "Update to recommended settings."
+4. **Do not edit `project.pbxproj` by hand.** Put new Swift files inside the app's source folder. Xcode picks them up automatically.
+5. **No new Swift packages or dependencies** unless the user approves them first.
+6. **Never put secrets in code or commits.** That means API keys, passwords, tokens or personal data.
+
+## How to work
+- **Plan first.** Show a short plan and the files you will change. Wait for approval before editing.
+- Keep each task small: one feature or one fix at a time.
+- Work on the current feature branch. Never commit to `main`, never force-push and never rewrite history.
+- After changing code, build it. On the command line, use:
+  `xcodebuild -scheme <SchemeName> -destination 'generic/platform=iOS Simulator' build`
+- Finish by listing what you changed and how the user can test it (Preview, Simulator or iPad).
+
+## Code style
+- SwiftUI only (no UIKit unless needed). One main view per file.
+- Add a `#Preview` for every new view.
+- Use clear names and short functions. Add comments only where the code isn't obvious.
+
+## Talking to the user
+- The user is a high-school student. Explain changes simply.
+- Reply in the language the user writes in (Thai or English).
+````
