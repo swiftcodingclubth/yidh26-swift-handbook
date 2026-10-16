@@ -10,7 +10,7 @@
 | | Foundation Models | Core ML | Core AI |
 |---|---|---|---|
 | Model | AFM 3 ของ Apple ที่มีในเครื่องอยู่แล้ว | Model เล็กที่ train เอง เช่น จาก Create ML | Open-source model ที่เลือกเอง เช่น Qwen, Gemma, Whisper |
-| ต้องใส่ model ใน app | ไม่ต้อง | ใส่ไฟล์เล็กๆ | ใส่ไฟล์ใหญ่ หลายร้อย MB ขึ้นไป |
+| ต้องใส่ model ใน app | ไม่ต้อง | ใส่ไฟล์เล็ก ๆ | ใส่ไฟล์ใหญ่ หลายร้อย MB ขึ้นไป |
 | ใช้เมื่อ | งานภาษาทั่วไป | จดจำท่าทาง เสียง ภาพแบบที่กำหนดเอง | ต้องการ model เฉพาะที่ AFM ไม่มี หรืออยากเลือก model เอง |
 
 จุดสำคัญคือ language model ของ Core AI **ใช้กับ `LanguageModelSession` ได้เหมือน AFM** ทุกอย่างที่เรียนใน Workshop 2 ทั้ง [Foundation Models](../workshop-2/foundation-models.md), [Tool calling](../workshop-2/tool-calling.md) และ [Dynamic Profile](../workshop-2/dynamic-profiles.md) จึงใช้กับ Core AI ได้ทันที
@@ -69,7 +69,7 @@ let folder = Bundle.main.url(
 let model = try await CoreAILanguageModel(resourcesAt: folder)
 let session = LanguageModelSession(model: model)
 
-let response = try await session.respond(to: "อธิบาย LiDAR สั้นๆ")
+let response = try await session.respond(to: "อธิบาย LiDAR สั้น ๆ")
 print(response.content)
 ```
 
@@ -80,12 +80,12 @@ print(response.content)
 
 ## Mood Coach { #mood-coach }
 
-ต่อยอดจาก[ลงมือปฏิบัติ](index.md#mood): ส่งข้อความที่ผู้ใช้พิมพ์ อารมณ์ที่ text classifier ทายได้ และความมั่นใจ ให้ Core AI เขียนข้อความให้กำลังใจสั้นๆ ใช้ `@Generable` เพื่อให้ได้ผลเป็น struct นำไปแสดงใน UI ได้ทันที
+ต่อยอดจาก[ลงมือปฏิบัติ](index.md#mood): ส่งข้อความที่ผู้ใช้พิมพ์ อารมณ์ที่ text classifier ทายได้ และความมั่นใจ ให้ Core AI เขียนข้อความให้กำลังใจสั้น ๆ ใช้ `@Generable` เพื่อให้ได้ผลเป็น struct นำไปแสดงใน UI ได้ทันที
 
 ```swift
 @Generable
 struct MoodTip {
-    @Guide(description: "ข้อความให้กำลังใจหรือคำแนะนำสั้นๆ 1 ประโยค")
+    @Guide(description: "ข้อความให้กำลังใจหรือคำแนะนำสั้น ๆ 1 ประโยค")
     var message: String
     @Guide(description: "emoji 1 ตัวที่เข้ากับข้อความ")
     var emoji: String

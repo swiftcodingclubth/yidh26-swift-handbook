@@ -68,7 +68,7 @@ Model ที่ train ตาม[หน้า Create ML](create-ml.md) ด้ว�
 | `Privacy - Microphone Usage Description` (`NSMicrophoneUsageDescription`) | ใช้ `SoundListener` | "ฟังเสียงรอบตัวเพื่อแจ้งเตือนเมื่อได้ยินเสียงสำคัญ" |
 | `Privacy - Camera Usage Description` (`NSCameraUsageDescription`) | ใช้ `DepthReader` (LiDAR ทำงานผ่านกล้อง) หรือ `CameraView` (หาวัตถุแบบ live) | "ใช้กล้องเพื่อวัดระยะและหาวัตถุรอบตัว" |
 
-`startMotionUpdates` (accelerometer, gyroscope) และ Core ML ไม่ต้องเพิ่ม key ใดๆ ผู้ใช้จะเห็นข้อความนี้ตอนที่ app ขอสิทธิ์ จึงควรเขียนให้ชัดว่าใช้ทำอะไร
+`startMotionUpdates` (accelerometer, gyroscope) และ Core ML ไม่ต้องเพิ่ม key ใด ๆ ผู้ใช้จะเห็นข้อความนี้ตอนที่ app ขอสิทธิ์ จึงควรเขียนให้ชัดว่าใช้ทำอะไร
 
 ## 5. เช็กเครื่องและสิทธิ์ก่อนใช้ { #checks }
 

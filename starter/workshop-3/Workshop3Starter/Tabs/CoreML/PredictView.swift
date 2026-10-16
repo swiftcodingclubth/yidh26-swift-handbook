@@ -10,7 +10,7 @@ import SwiftUI
 
 /// ตัวอย่างจากหน้า Core ML หัวข้อ "ทายท่าด้วย model"
 /// กดเริ่ม ทำท่า แล้วกดหยุด model จึงบอกว่าเป็นท่าอะไร
-/// ลองทำท่า shake, tilt, circle หรือถือนิ่งๆ (idle) อย่างน้อย 2 วินาที
+/// ลองทำท่า shake, tilt, circle หรือถือนิ่ง ๆ (idle) อย่างน้อย 2 วินาที
 struct PredictView: View {
     @State private var isRecording = false
     @State private var recorded: [CMDeviceMotion] = []

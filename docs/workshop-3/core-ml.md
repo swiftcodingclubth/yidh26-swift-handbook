@@ -123,7 +123,7 @@ if let top = scores.first, top.confidence >= 0.4 {
 
 ไม่จำเป็นต้อง train เองเสมอไป Apple มี model ที่ train ไว้แล้วให้ดาวน์โหลดฟรีที่ [Core ML Models](https://developer.apple.com/machine-learning/models/) เช่น จำแนกรูปภาพ หาวัตถุในรูป และประมาณความลึก
 
-ตัวอย่างนี้ใช้ **MobileNetV2** (ไฟล์ `MobileNetV2FP16.mlmodel` ขนาด 12 MB) ที่บอกได้ว่าในรูปมีอะไร จากกว่า 1,000 ประเภท เช่น สัตว์ อาหาร ยานพาหนะ ดาวน์โหลดแล้วเปลี่ยนชื่อไฟล์เป็น `MobileNetV2.mlmodel` ก่อนลากเข้า project จะได้ class ชื่อสั้นๆ ว่า `MobileNetV2`
+ตัวอย่างนี้ใช้ **MobileNetV2** (ไฟล์ `MobileNetV2FP16.mlmodel` ขนาด 12 MB) ที่บอกได้ว่าในรูปมีอะไร จากกว่า 1,000 ประเภท เช่น สัตว์ อาหาร ยานพาหนะ ดาวน์โหลดแล้วเปลี่ยนชื่อไฟล์เป็น `MobileNetV2.mlmodel` ก่อนลากเข้า project จะได้ class ชื่อสั้น ๆ ว่า `MobileNetV2`
 
 ```swift
 import CoreML
@@ -133,7 +133,7 @@ final class ImageClassifier {
     private let model = try! MobileNetV2(configuration: MLModelConfiguration())
 
     func classify(_ image: UIImage) throws -> (label: String, confidence: Double) {
-        // วาดรูปใหม่ให้ตั้งตรงก่อน รูปจากกล้อง iPad มักเก็บแบบหมุนไว้ ถ้าใช้ image.cgImage ตรงๆ model จะเห็นรูปตะแคง
+        // วาดรูปใหม่ให้ตั้งตรงก่อน รูปจากกล้อง iPad มักเก็บแบบหมุนไว้ ถ้าใช้ image.cgImage ตรง ๆ model จะเห็นรูปตะแคง
         let upright = UIGraphicsImageRenderer(size: image.size).image { _ in image.draw(at: .zero) }
         guard let cgImage = upright.cgImage else { return ("?", 0) }
         let input = try MobileNetV2Input(imageWith: cgImage)   // ย่อรูปเป็น 224 × 224 ให้เอง

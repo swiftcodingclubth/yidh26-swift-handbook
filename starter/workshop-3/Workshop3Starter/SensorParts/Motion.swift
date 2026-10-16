@@ -36,7 +36,7 @@ func isFaceDown(_ data: CMDeviceMotion) -> Bool {
     data.gravity.z > 0.9
 }
 
-/// rotationRate: บิดข้อมือเร็วๆ รอบแกน y (แกนตั้งของจอ) ได้ +1 หรือ -1 ถ้าไม่ได้บิดได้ 0
+/// rotationRate: บิดข้อมือเร็ว ๆ รอบแกน y (แกนตั้งของจอ) ได้ +1 หรือ -1 ถ้าไม่ได้บิดได้ 0
 /// ถ้าทิศกลับด้านกับที่ต้องการ สลับ +1 กับ -1
 func detectFlick(_ data: CMDeviceMotion) -> Int {
     let speed = data.rotationRate.y          // radian ต่อวินาที
@@ -48,7 +48,7 @@ func detectFlick(_ data: CMDeviceMotion) -> Int {
 // MARK: - Use case: หลาย API รวมกัน
 
 /// userAcceleration + gravity: เครื่องที่วางราบถูกยกขึ้นไหม
-/// โต๊ะสั่นเบาๆ ทำให้มีแรงนิดหน่อยแต่เครื่องยังราบ จึงต้องแรงเกิน 0.3 g หรือเครื่องไม่ราบแล้ว
+/// โต๊ะสั่นเบา ๆ ทำให้มีแรงนิดหน่อยแต่เครื่องยังราบ จึงต้องแรงเกิน 0.3 g หรือเครื่องไม่ราบแล้ว
 func detectPickup(_ data: CMDeviceMotion) -> Bool {
     let a = data.userAcceleration
     let force = (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot()
@@ -57,7 +57,7 @@ func detectPickup(_ data: CMDeviceMotion) -> Bool {
 }
 
 /// userAcceleration + rotationRate: เหวี่ยงแบบไม้กายสิทธิ์ ต้องมีทั้งแรงพุ่งและการหมุนข้อมือพร้อมกัน
-/// เขย่าตรงๆ มีแรงแต่หมุนน้อย หมุนช้าๆ มีการหมุนแต่แรงน้อย จึงไม่นับทั้งสองแบบ
+/// เขย่าตรง ๆ มีแรงแต่หมุนน้อย หมุนช้า ๆ มีการหมุนแต่แรงน้อย จึงไม่นับทั้งสองแบบ
 func detectSwing(_ data: CMDeviceMotion) -> Bool {
     let a = data.userAcceleration
     let r = data.rotationRate

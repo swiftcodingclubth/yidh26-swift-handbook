@@ -2,7 +2,7 @@ import CoreMotion
 import SwiftUI
 
 /// Use case: ไม้กายสิทธิ์ ตวัดเครื่องเพื่อร่ายเวท
-/// ใช้ detectSwing (userAcceleration + rotationRate) จาก handbook ลองเขย่าตรงๆ ดูว่าไม่นับ แล้วลองตวัดข้อมือ
+/// ใช้ detectSwing (userAcceleration + rotationRate) จาก handbook ลองเขย่าตรง ๆ ดูว่าไม่นับ แล้วลองตวัดข้อมือ
 struct MagicWandView: View {
     @State private var spell = "ตวัดเครื่องเพื่อร่ายเวท"
     @State private var count = 0

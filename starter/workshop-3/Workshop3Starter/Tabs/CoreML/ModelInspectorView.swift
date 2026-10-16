@@ -41,7 +41,7 @@ struct ModelInspectorView: View {
         .task { entries = Self.load() }
     }
 
-    /// แปลง input หรือ output แต่ละตัวเป็นข้อความสั้นๆ เช่น "image: รูป 224 × 224"
+    /// แปลง input หรือ output แต่ละตัวเป็นข้อความสั้น ๆ เช่น "image: รูป 224 × 224"
     private func features(_ byName: [String: MLFeatureDescription]) -> [String] {
         byName.keys.sorted().map { name in
             let f = byName[name]!

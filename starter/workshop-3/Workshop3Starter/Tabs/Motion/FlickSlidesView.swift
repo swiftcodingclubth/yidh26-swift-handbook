@@ -1,7 +1,7 @@
 import CoreMotion
 import SwiftUI
 
-/// Use case: บิดข้อมือเร็วๆ เพื่อเปลี่ยนสไลด์ ไม่ต้องแตะจอ
+/// Use case: บิดข้อมือเร็ว ๆ เพื่อเปลี่ยนสไลด์ ไม่ต้องแตะจอ
 /// ใช้ detectFlick (rotationRate.y) จาก handbook ถือเครื่องตั้งขึ้น จอหันเข้าหาตัว แล้วบิดข้อมือซ้ายหรือขวา
 struct FlickSlidesView: View {
     @State private var index = 0

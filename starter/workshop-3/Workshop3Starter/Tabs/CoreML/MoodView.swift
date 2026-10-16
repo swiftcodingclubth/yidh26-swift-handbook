@@ -197,7 +197,7 @@ struct MoodView: View {
 
 // MARK: - พื้นหลัง
 
-/// พื้นหลังสีตามอารมณ์ มีก้อนสีเบลอลอยช้าๆ และ emoji เล็กๆ ลอยขึ้น
+/// พื้นหลังสีตามอารมณ์ มีก้อนสีเบลอลอยช้า ๆ และ emoji เล็ก ๆ ลอยขึ้น
 private struct MoodBackground: View {
     let mood: Mood
     let strength: Double
@@ -212,7 +212,7 @@ private struct MoodBackground: View {
                     Color(.systemBackground)
                     LinearGradient(colors: mood.colors.map { $0.opacity(0.2 + 0.5 * strength) },
                                    startPoint: .topLeading, endPoint: .bottomTrailing)
-                    // ก้อนสีเบลอ 3 ก้อน เคลื่อนที่ช้าๆ
+                    // ก้อนสีเบลอ 3 ก้อน เคลื่อนที่ช้า ๆ
                     blob(mood.colors[0], size: w * 0.9)
                         .offset(x: cos(t * 0.21) * w * 0.25, y: sin(t * 0.17) * h * 0.15 - h * 0.2)
                     blob(mood.colors[1], size: w * 0.8)

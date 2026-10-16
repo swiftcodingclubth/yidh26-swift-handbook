@@ -17,7 +17,7 @@ struct RotationView: View {
             AxisBar(name: "z", detail: "หมุนบนโต๊ะ", value: z, unit: "rad/s", fullScale: 5)
             VStack(alignment: .leading, spacing: 8) {
                 Text("ลองแบบนี้").font(.headline)
-                Text("หมุนช้าๆ แล้วหมุนเร็วๆ ดูว่าแถบยาวต่างกันแค่ไหน")
+                Text("หมุนช้า ๆ แล้วหมุนเร็ว ๆ ดูว่าแถบยาวต่างกันแค่ไหน")
                 Text("เอียงเครื่องค้างไว้ ค่ากลับเป็น 0 ต่างจาก attitude ที่ค้างมุมไว้")
                 Text("1 รอบ = 2π ≈ 6.3 radian หมุนครบรอบใน 1 วินาทีได้ราว 6.3 rad/s")
             }

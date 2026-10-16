@@ -20,7 +20,7 @@ struct GravityView: View {
                 Text("วางราบบนโต๊ะ จอหงายขึ้น → z ≈ -1")
                 Text("ตั้งเครื่องแนวตั้งตรงหน้า → y ≈ -1")
                 Text("คว่ำจอลงโต๊ะ → z ≈ +1")
-                Text("ขยับเร็วๆ แล้วค่าแทบไม่เปลี่ยน เพราะการขยับไปอยู่ใน userAcceleration")
+                Text("ขยับเร็ว ๆ แล้วค่าแทบไม่เปลี่ยน เพราะการขยับไปอยู่ใน userAcceleration")
             }
             .foregroundStyle(.secondary)
         }

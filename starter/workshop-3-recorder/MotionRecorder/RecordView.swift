@@ -2,7 +2,7 @@ import CoreMotion
 import SwiftUI
 
 /// อัดท่าทางเป็นไฟล์ CSV สำหรับ train Activity Classifier ใน Create ML
-/// เลือกท่า กดอัด ทำท่าซ้ำๆ แล้วกดหยุด จากนั้นกด "ส่ง MotionData.zip" แล้ว AirDrop มาที่ Mac
+/// เลือกท่า กดอัด ทำท่าซ้ำ ๆ แล้วกดหยุด จากนั้นกด "ส่ง MotionData.zip" แล้ว AirDrop มาที่ Mac
 struct RecordView: View {
     @State private var recorder = Recorder()
     @State private var label = "shake"
@@ -39,7 +39,7 @@ struct RecordView: View {
                     Text(errorMessage).foregroundStyle(.red)
                 }
             } footer: {
-                Text("ทำท่าละ 5–10 รอบ รอบละไม่กี่วินาที จับเครื่องแบบเดียวกันทุกครั้ง และอัดท่า idle (ถือนิ่งๆ) ด้วย")
+                Text("ทำท่าละ 5–10 รอบ รอบละไม่กี่วินาที จับเครื่องแบบเดียวกันทุกครั้ง และอัดท่า idle (ถือนิ่ง ๆ) ด้วย")
             }
 
             if let exportURL = recorder.exportURL {
