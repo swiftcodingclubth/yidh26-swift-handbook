@@ -10,7 +10,7 @@
 | | Foundation Models | Core ML | Core AI |
 |---|---|---|---|
 | Model | AFM 3 ของ Apple ที่มีในเครื่องอยู่แล้ว | Model เล็กที่ train เอง เช่น จาก Create ML | Open-source model ที่เลือกเอง เช่น Qwen, Gemma, Whisper |
-| ต้องใส่ model ใน app | ไม่ต้อง | ใส่ไฟล์เล็กๆ | ใส่ไฟล์ใหญ่ หลายร้อย MB ขึ้นไป |
+| ต้องใส่ model ใน app | ไม่ต้อง | ใส่ไฟล์เล็ก ๆ | ใส่ไฟล์ใหญ่ หลายร้อย MB ขึ้นไป |
 | ใช้เมื่อ | งานภาษาทั่วไป | จดจำท่าทาง เสียง ภาพแบบที่กำหนดเอง | ต้องการ model เฉพาะที่ AFM ไม่มี หรืออยากเลือก model เอง |
 
 จุดสำคัญคือ language model ของ Core AI **ใช้กับ `LanguageModelSession` ได้เหมือน AFM** ทุกอย่างที่เรียนใน Workshop 2 ทั้ง [Foundation Models](../workshop-2/foundation-models.md) และ [Tool calling](../workshop-2/tool-calling.md) จึงใช้กับ Core AI ได้ทันที
@@ -69,7 +69,7 @@ let folder = Bundle.main.url(
 let model = try await CoreAILanguageModel(resourcesAt: folder)
 let session = LanguageModelSession(model: model)
 
-let response = try await session.respond(to: "อธิบาย LiDAR สั้นๆ")
+let response = try await session.respond(to: "อธิบาย LiDAR สั้น ๆ")
 print(response.content)
 ```
 
@@ -78,33 +78,33 @@ print(response.content)
 - **โหลด model ครั้งเดียว** แล้วใช้ซ้ำทั้ง app ไม่ต้องสร้างใหม่ทุกครั้งที่ถาม
 - Streaming ด้วย `streamResponse(to:)` และ `@Generable` ใช้ได้เหมือน AFM
 
-## Motion Coach
+## Mood Coach { #mood-coach }
 
-ต่อยอดจาก[ลงมือปฏิบัติ](index.md#motion-coach): ส่งท่าที่ classifier ทายได้ ความมั่นใจ และระยะจาก LiDAR (ถ้ามี) ให้ Core AI เขียนคำแนะนำสั้นๆ ใช้ `@Generable` เพื่อให้ได้ผลเป็น struct นำไปแสดงใน UI ได้ทันที
+ต่อยอดจาก[ลงมือปฏิบัติ](index.md#mood): ส่งข้อความที่ผู้ใช้พิมพ์ อารมณ์ที่ text classifier ทายได้ และความมั่นใจ ให้ Core AI เขียนข้อความให้กำลังใจสั้น ๆ ใช้ `@Generable` เพื่อให้ได้ผลเป็น struct นำไปแสดงใน UI ได้ทันที
 
 ```swift
 @Generable
-struct CoachTip {
-    @Guide(description: "คำแนะนำสั้นๆ 1 ประโยค")
-    var tip: String
-    @Guide(description: "คะแนนความถูกต้องของท่า", .range(1...5))
-    var score: Int
+struct MoodTip {
+    @Guide(description: "ข้อความให้กำลังใจหรือคำแนะนำสั้น ๆ 1 ประโยค")
+    var message: String
+    @Guide(description: "emoji 1 ตัวที่เข้ากับข้อความ")
+    var emoji: String
 }
 
 let coach = LanguageModelSession(
     model: model,
-    instructions: "You are a friendly fitness coach. Answer in Thai, very briefly.")
+    instructions: "You are a kind friend. Answer in Thai, very briefly.")
 
 let result = try await coach.respond(
-    to: "Detected gesture: \(label), confidence \(Int(confidence * 100))%",
-    generating: CoachTip.self
+    to: "User wrote: \(text). Detected emotion: \(label), confidence \(Int(confidence * 100))%",
+    generating: MoodTip.self
 ).content
 
-print(result.tip, result.score)
+print(result.emoji, result.message)
 ```
 
 !!! tip "Model เล็ก ต้องช่วยมันหน่อย"
-    Qwen3 0.6B เล็กกว่า AFM มาก ภาษาไทยอาจไม่ดีเท่า ให้เขียน instructions สั้นและชัด, ใช้ `@Generable` บังคับรูปแบบคำตอบ และเรียกเฉพาะเมื่อจำเป็น เช่น ตอนจบเซ็ต ไม่ใช่ทุกครั้งที่ทายท่า ลองเทียบผลกับ [AFM 3 หรือ model บน cluster](../workshop-2/models.md) แล้วเลือกตัวที่เหมาะกับ app
+    Qwen3 0.6B เล็กกว่า AFM มาก ภาษาไทยอาจไม่ดีเท่า ให้เขียน instructions สั้นและชัด, ใช้ `@Generable` บังคับรูปแบบคำตอบ และเรียกเฉพาะเมื่อจำเป็น เช่น ตอนผู้ใช้กดบันทึก ไม่ใช่ทุกครั้งที่พิมพ์ ลองเทียบผลกับ [AFM 3 หรือ model บน cluster](../workshop-2/models.md) แล้วเลือกตัวที่เหมาะกับ app
 
 ## ไปต่อ
 

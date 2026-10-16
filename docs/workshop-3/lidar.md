@@ -88,3 +88,6 @@ final class DepthReader: NSObject, ARSessionDelegate {
 
 - ส่งระยะที่วัดได้ให้ [Core AI](core-ai.md) หรือ [Foundation Models](../workshop-2/foundation-models.md) ช่วยอธิบาย เช่น "โต๊ะกว้าง 1.2 เมตร ช่องว่างกว้าง 1.0 เมตร วางได้ไหม"
 - ใช้คู่กับ [Core Motion](core-motion.md): รู้ทั้งระยะและมุมเอียงของเครื่อง
+
+!!! tip "ใช้ใน app ของทีม"
+    โค้ดในหน้านี้อยู่ใน `SensorParts/Lidar.swift` ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)

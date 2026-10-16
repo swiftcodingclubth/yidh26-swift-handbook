@@ -1,12 +1,12 @@
 # Sound recognition
 
-**Sound Analysis** คือ framework ที่ฟังเสียงจากไมโครโฟนแล้วบอกว่าเป็นเสียงอะไร มี **classifier ิีbuilt-in ในตัวที่รู้จักเสียงกว่า 300 แบบ** เช่น เสียงกริ่ง สุนัขเห่า เด็กร้อง ปรบมือ สัญญาณเตือนไฟไหม้ และเครื่องดนตรี ใช้ได้ทันทีโดยไม่ต้อง train และ run บนเครื่องทั้งหมด ใช้ได้ทั้ง Xcode 26 และ 27
+**Sound Analysis** คือ framework ที่ฟังเสียงจากไมโครโฟนแล้วบอกว่าเป็นเสียงอะไร มี **classifier ในตัวที่รู้จักเสียงกว่า 300 แบบ** เช่น เสียงกริ่ง สุนัขเห่า เด็กร้อง ปรบมือ สัญญาณเตือนไฟไหม้ และเครื่องดนตรี ใช้ได้ทันทีโดยไม่ต้อง train และ run บนเครื่องทั้งหมด เสียงไม่ถูกส่งออกไปไหน ใช้ได้ทั้ง Xcode 26 และ 27
 
-ถ้าต้องการจดจำเสียงเฉพาะที่ classifier ในตัวไม่รู้จัก เช่น เสียงไอแบบต่างๆ ให้ train model เองใน [Create ML](create-ml.md#sound-classifier) แล้วใช้กับโค้ดชุดเดียวกันในหน้านี้
+ถ้าต้องการจดจำเสียงเฉพาะที่ classifier ในตัวไม่รู้จัก เช่น เสียงไอแบบต่าง ๆ ให้ train model เองด้วย template **Sound Classification** ใน Create ML (ไม่อยู่ใน workshop นี้) แล้วใช้กับโค้ดชุดเดียวกันในหน้านี้
 
 ## ทำงานอย่างไร
 
-1. **`AVAudioEngine`** รับเสียงจากไมโครโฟนเป็นชิ้นเล็กๆ ต่อเนื่อง
+1. **`AVAudioEngine`** รับเสียงจากไมโครโฟนเป็นชิ้นเล็ก ๆ ต่อเนื่อง
 2. **`SNAudioStreamAnalyzer`** รับเสียงแต่ละชิ้นไปวิเคราะห์
 3. **`SNClassifySoundRequest`** บอกว่าจะใช้ classifier ตัวไหน (ในตัวหรือที่ train เอง)
 4. **Observer** ของเราได้ผลลัพธ์เป็นรายการเสียงพร้อมความมั่นใจ (0–1) ทุกช่วงเวลา
@@ -84,9 +84,9 @@ final class SoundListener: NSObject, SNResultsObserving {
 !!! note "ชื่อเสียงเป็นภาษาอังกฤษแบบ identifier"
     ผลลัพธ์เป็นชื่ออย่าง `"dog_bark"`, `"door_bell"`, `"baby_crying"` ไว้ใช้ในโค้ด ถ้าจะแสดงให้ผู้ใช้เห็น ให้แปลงเป็นข้อความภาษาไทยเอง
 
-## ดูรายการเสียงทั้งหมด
+## ดูรายชื่อเสียงที่รู้จัก
 
-อยากรู้ว่า classifier รู้จักเสียงอะไรบ้าง ให้ print รายชื่อออกมา
+อยากรู้ว่า classifier ในตัวรู้จักเสียงอะไรบ้าง ให้ print รายชื่อออกมา แล้วเลือกเฉพาะเสียงที่ app ต้องใช้
 
 ```swift
 let request = try SNClassifySoundRequest(classifierIdentifier: .version1)
@@ -95,7 +95,7 @@ print(request.knownClassifications)   // ["acoustic_guitar", "airplane", ...]
 
 ## ปรับให้แม่นขึ้น
 
-**ตรวจสอบ Confidence Level** classifier จะตอบเสมอแม้ในห้องเงียบ ถ้าไม่กรอง app อาจจะแจ้งเตือนผิดบ่อย ให้รับเฉพาะผลที่มั่นใจพอ และเฉพาะเสียงที่สนใจ
+**ตั้งเกณฑ์ความมั่นใจ** classifier จะตอบเสมอแม้ในห้องเงียบ ถ้าไม่กรอง app จะแจ้งเตือนผิดบ่อย ให้รับเฉพาะผลที่มั่นใจพอ และเฉพาะเสียงที่สนใจ
 
 ```swift
 let important: Set = ["smoke_detector", "door_bell", "baby_crying"]
@@ -106,7 +106,7 @@ listener.onResult = { sound, confidence in
 }
 ```
 
-**ปรับความยาวช่วงเสียง** classifier ฟังเสียงเป็นช่วงๆ ช่วงยาวแม่นกว่าแต่ตอบช้ากว่า และ `overlapFactor` คือสัดส่วนที่ช่วงติดกันซ้อนทับกัน ซ้อนมากได้ผลถี่ขึ้นแต่ใช้ CPU มากขึ้น
+**ปรับความยาวช่วงเสียง** classifier ฟังเสียงเป็นช่วง ๆ ช่วงยาวแม่นกว่าแต่ตอบช้ากว่า และ `overlapFactor` คือสัดส่วนที่ช่วงติดกันซ้อนทับกัน ซ้อนมากได้ผลถี่ขึ้นแต่ใช้ CPU มากขึ้น
 
 ```swift
 request.windowDuration = CMTime(seconds: 1.5, preferredTimescale: 48_000)  // ฟังทีละ 1.5 วินาที
@@ -115,10 +115,19 @@ request.overlapFactor = 0.5                                                // �
 
 ## ใช้ model เสียงที่ train เอง
 
-เมื่อ train sound classifier ใน [Create ML](create-ml.md#sound-classifier) แล้วลากไฟล์ model เข้า Xcode ให้เปลี่ยนแค่บรรทัดที่สร้าง request ส่วนอื่นเหมือนเดิมทั้งหมด
+เมื่อ train sound classifier ด้วย template Sound Classification ใน Create ML แล้วลากไฟล์ model เข้า Xcode ให้เปลี่ยนแค่บรรทัดที่สร้าง request ส่วนอื่นเหมือนเดิมทั้งหมด
 
 ```swift
 let request = try SNClassifySoundRequest(mlModel: CoughClassifier().model)
 ```
 
 `CoughClassifier` คือ class ที่ Xcode สร้างจากชื่อไฟล์ model ของเรา
+
+## Privacy และแบตเตอรี่
+
+- การวิเคราะห์เสียงทำบนเครื่องทั้งหมด ไม่ต้องใช้ internet
+- เมื่อไมโครโฟนเปิดอยู่ iPadOS จะแสดงจุดสีส้มที่มุมจอ ผู้ใช้รู้เสมอว่า app กำลังฟัง
+- หยุดฟัง (`stop()`) เมื่อออกจากหน้าจอ ไมโครโฟนและการวิเคราะห์ที่เปิดค้างกินแบตเตอรี่
+
+!!! tip "ใช้ใน app ของทีม"
+    โค้ดในหน้านี้อยู่ใน `SensorParts/Sound.swift` ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)
