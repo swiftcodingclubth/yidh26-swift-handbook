@@ -16,8 +16,8 @@
 | ค่าใน `CMDeviceMotion` | ความหมาย | ใช้ทำอะไร |
 |---|---|---|
 | `userAcceleration` | ความเร่งที่ผู้ใช้ทำ (ตัดแรงโน้มถ่วงออกแล้ว) | ตรวจจับการเขย่า การกระแทก การเหวี่ยง |
-| `gravity` | ทิศของแรงโน้มถ่วงเทียบกับเครื่อง | รู้ว่าเครื่องตั้ง นอน หรือคว่ำอยู่ |
-| `rotationRate` | ความเร็วการหมุน (ปรับเทียบแล้ว) | ตรวจจับการบิด การหมุนข้อมือ |
+| `gravity` | ทิศของแรงโน้มถ่วงเทียบกับเครื่อง ([อธิบาย](#gravity)) | รู้ว่าเครื่องตั้ง นอน หรือคว่ำอยู่ |
+| `rotationRate` | ความเร็วการหมุน (ปรับเทียบแล้ว) ([อธิบาย](#rotation-rate)) | ตรวจจับการบิด การหมุนข้อมือ |
 | `attitude` | มุมของเครื่อง: `pitch`, `roll`, `yaw` ([อธิบาย](#attitude)) | ตรวจจับการเอียง ใช้เป็นจอยควบคุม |
 
 ![แกน x, y, z ของอุปกรณ์ และ sensor ที่ Core Motion ใช้: accelerometer, gyroscope, magnetometer, barometer](images/core-motion.jpg)
@@ -64,7 +64,7 @@ struct MotionView: View {
 }
 ```
 
-!!! note "ต้องทดสอบบน iPad จริง"
+!!! note "ต้องทดสอบบนเครื่องจริง (iPad หรือ iPhone)"
     Simulator ไม่มี sensor การเคลื่อนไหว `isDeviceMotionAvailable` จะเป็น `false`
 
 ## มุมของเครื่อง: roll, pitch, yaw { #attitude }
@@ -153,6 +153,51 @@ struct LevelView: View {
 !!! warning "yaw ไม่ใช่ทิศเหนือ"
     yaw = 0° คือทิศที่เครื่องหันอยู่ **ตอนเริ่ม** `startMotionUpdates` ไม่ใช่ทิศเหนือ ถ้าต้องการทิศจริงแบบเข็มทิศต้องใช้ magnetometer ซึ่งไม่อยู่ใน workshop นี้
 
+## gravity: เครื่องอยู่ในท่าไหน { #gravity }
+
+แรงโน้มถ่วงชี้ลงพื้นเสมอ `gravity` บอกว่าทิศนั้นอยู่ตรงไหนเทียบกับแกนของเครื่อง หน่วยเป็น g แกนที่ชี้ลงพื้นจะมีค่าใกล้ ±1 แกนอื่นใกล้ 0
+
+| ท่าของเครื่อง | x | y | z |
+|---|---|---|---|
+| วางราบบนโต๊ะ จอหงายขึ้น | 0 | 0 | **-1** |
+| คว่ำจอลงโต๊ะ | 0 | 0 | **+1** |
+| ตั้งแนวตั้งตรงหน้า | 0 | **-1** | 0 |
+| ตั้งแนวนอน | **±1** | 0 | 0 |
+
+ค่าดิบจาก accelerometer คือ `gravity` + `userAcceleration` รวมกัน Core Motion แยกให้แล้ว จึงใช้ `gravity` บอก **ท่าของเครื่อง** และใช้ `userAcceleration` บอก **การขยับ** ขยับเครื่องเร็วๆ `gravity` แทบไม่เปลี่ยน
+
+```swift
+startMotionUpdates { data in
+    x = data.gravity.x
+    y = data.gravity.y
+    z = data.gravity.z
+}
+```
+
+`gravity` กับ `attitude` บอกท่าของเครื่องเหมือนกัน `gravity` เช็กง่ายกว่าเมื่อต้องการรู้แค่ว่าวางท่าไหน เช่น คว่ำหรือหงาย ส่วน `attitude` เหมาะเมื่อต้องการมุมเป็นองศา
+
+## rotationRate: หมุนเร็วแค่ไหน { #rotation-rate }
+
+`rotationRate` บอก **ความเร็ว** การหมุนรอบแต่ละแกน หน่วยเป็น radian ต่อวินาที ไม่ใช่มุม หยุดหมุนเมื่อไหร่ค่ากลับเป็น 0 ทันที แม้เครื่องจะเอียงค้างอยู่
+
+| แกน | ลองทำกับเครื่องที่วางราบบนโต๊ะ | มุมที่เปลี่ยนใน `attitude` |
+|---|---|---|
+| x | ยกขอบบนขึ้นหรือกดลง | pitch |
+| y | ยกขอบซ้ายหรือขวาขึ้น | roll |
+| z | หมุนเครื่องบนโต๊ะ | yaw |
+
+หมุนครบ 1 รอบคือ 2π ≈ 6.3 radian ถ้าหมุนครบรอบใน 1 วินาที ค่าจะได้ราว 6.3 rad/s
+
+```swift
+startMotionUpdates { data in
+    x = data.rotationRate.x
+    y = data.rotationRate.y
+    z = data.rotationRate.z
+}
+```
+
+ใช้ `attitude` เมื่อสนใจว่า **ตอนนี้เอียงอยู่เท่าไหร่** และใช้ `rotationRate` เมื่อสนใจว่า **เพิ่งหมุนเร็วแค่ไหน** เช่น ตวัดหรือบิดข้อมือ
+
 ## เลือก sampling rate
 
 Sampling rate คือจำนวนครั้งที่อ่านค่าต่อวินาที ยิ่งสูงยิ่งเห็นการเคลื่อนไหวละเอียด แต่กินแบตเตอรี่และ CPU มากขึ้น
@@ -179,6 +224,180 @@ func detectGesture(_ data: CMDeviceMotion) -> String? {
 ```
 
 ปรับตัวเลข `2.0` และ `.pi / 4` ด้วยการลองจริง: print ค่าออกมาขณะทำท่า แล้วดูว่าท่าที่ต้องการให้ค่าประมาณเท่าไหร่
+
+### ตั้งเกณฑ์จากค่าที่เห็น { #thresholds }
+
+Use case ทุกข้อในหน้านี้ใช้รูปแบบเดียวกัน
+
+1. **ดูค่าจริง** เปิดหน้า MotionView, AttitudeView, GravityView หรือ RotationView แล้วทำท่าที่ต้องการ จดว่าค่าขึ้นไปถึงประมาณเท่าไหร่
+2. **ตั้งเกณฑ์** เลือกตัวเลขที่ท่านั้นผ่าน แต่การขยับปกติไม่ผ่าน เช่น เขย่าได้ 3 g ขยับปกติได้ 0.5 g เกณฑ์ 2 g จึงแยกได้
+3. **รอก่อนนับครั้งใหม่** ท่าเดียวมีค่าเกินเกณฑ์ติดกันหลาย sample ถ้าไม่รอ ท่าเดียวจะถูกนับหลายครั้ง
+
+```swift
+@State private var lastTime = Date.distantPast
+
+startMotionUpdates { data in
+    guard detectFlick(data) != 0,
+          Date.now.timeIntervalSince(lastTime) > 0.6 else { return }   // รอ 0.6 วินาที
+    lastTime = .now
+    // ทำสิ่งที่ต้องการ
+}
+```
+
+เกณฑ์ต่ำเกินไปจะนับท่าที่ไม่ได้ตั้งใจ เกณฑ์สูงเกินไปต้องทำท่าแรงมากถึงจะนับ
+
+## Use case ที่ลองที่โต๊ะได้ { #use-cases }
+
+ทุกข้อลองได้โดยไม่ต้องลุกจากโต๊ะ แค่ถือหรือวางเครื่อง มีหน้าตัวอย่างในแท็บ Motion ของ starter ครบทุกข้อ ตัวเลขเกณฑ์ทั้งหมดเป็นค่าเริ่มต้น ให้ปรับด้วยการลองบนเครื่องจริง
+
+| Use case | API | หน้าใน starter |
+|---|---|---|
+| เขย่าสุ่มเมนูมื้อเที่ยง | `userAcceleration` | `ShakeMenuView` |
+| ที่วัดระดับน้ำ | `attitude` | `LevelView` |
+| คว่ำเครื่องจับเวลาอ่านหนังสือ | `gravity` | `FaceDownTimerView` |
+| บิดข้อมือเปลี่ยนสไลด์ | `rotationRate` | `FlickSlidesView` |
+| เตือนเมื่อมีคนหยิบเครื่อง | `userAcceleration` + `gravity` | `PickupAlarmView` |
+| พวงมาลัยเกมแข่งรถ | `attitude` + `rotationRate` | `SteeringView` |
+| ไม้กายสิทธิ์ | `userAcceleration` + `rotationRate` | `MagicWandView` |
+
+### คว่ำเครื่องจับเวลา { #face-down }
+
+`gravity` บอกทิศของแรงโน้มถ่วงเทียบกับเครื่อง แกน z ชี้ออกจากจอ จอหงายขึ้น `gravity.z` จะใกล้ -1 จอคว่ำลงจะใกล้ +1
+
+```swift
+func isFaceDown(_ data: CMDeviceMotion) -> Bool {
+    data.gravity.z > 0.9
+}
+```
+
+จำเวลาตอนที่เริ่มคว่ำ แล้วบวกเวลาที่คว่ำไว้ตอนหงายกลับ ใช้ทำ app อ่านหนังสือหรือโหมดโฟกัสที่ห้ามจับเครื่อง
+
+### บิดข้อมือเปลี่ยนสไลด์ { #flick }
+
+`rotationRate` บอกว่าเครื่องหมุนเร็วแค่ไหน หน่วยเป็น radian ต่อวินาที ถือเครื่องตั้งขึ้น จอหันเข้าหาตัว แล้วบิดข้อมือ เครื่องจะหมุนรอบแกน y
+
+```swift
+func detectFlick(_ data: CMDeviceMotion) -> Int {
+    let speed = data.rotationRate.y          // radian ต่อวินาที
+    if speed > 4 { return 1 }
+    if speed < -4 { return -1 }
+    return 0
+}
+```
+
+บิดหนึ่งครั้งมีค่าเกินเกณฑ์ติดกันหลาย sample จึงต้องรอสักครู่ก่อนนับครั้งใหม่ ใน starter รอ 0.6 วินาที ถ้าทิศกลับด้านกับที่ต้องการ ให้สลับ `1` กับ `-1`
+
+### เตือนเมื่อมีคนหยิบเครื่อง { #pickup }
+
+ใช้ 2 ค่ารวมกัน: `userAcceleration` จับจังหวะที่ถูกยก `gravity` บอกว่าเครื่องยังวางราบอยู่ไหม โต๊ะสั่นเบาๆ มีแรงนิดหน่อยแต่เครื่องยังราบ จึงไม่นับ
+
+```swift
+func detectPickup(_ data: CMDeviceMotion) -> Bool {
+    let a = data.userAcceleration
+    let force = (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot()
+    let stillFlat = data.gravity.z < -0.95   // จอหงาย เอียงไม่ถึงราว 18°
+    return force > 0.3 || !stillFlat
+}
+```
+
+ใน starter รอ 1 วินาทีหลังกดเริ่มเฝ้า เพราะการแตะปุ่มก็ทำให้เครื่องสั่น
+
+### พวงมาลัยเกมแข่งรถ { #steering }
+
+ถือเครื่องราบตรงหน้าแล้วเอียงซ้ายขวาเหมือนพวงมาลัย `attitude.roll` บอกว่าเลี้ยวไปทางไหนและมากแค่ไหน `rotationRate.y` คือความเร็วการหมุนรอบแกนเดียวกัน ใช้บอกว่าหักพวงมาลัยแรงแค่ไหน
+
+```swift
+startMotionUpdates { data in
+    roll = data.attitude.roll
+    // เอียง 30° ถือว่าเลี้ยวเต็มที่ ยิ่งเอียงมาก รถยิ่งเลื่อนเร็ว
+    let steer = min(max(roll / (.pi / 6), -1), 1)
+    carX = min(max(carX + steer * 0.03, -1), 1)
+
+    // หักพวงมาลัยเร็วกว่า 3 rad/s ให้ดริฟต์ค้างไว้ครึ่งวินาที
+    if abs(data.rotationRate.y) > 3 { driftUntil = .now.addingTimeInterval(0.5) }
+    isDrifting = Date.now < driftUntil
+}
+```
+
+### ไม้กายสิทธิ์ { #wand }
+
+การตวัดเครื่องจริงมีทั้งแรงพุ่งและการหมุนข้อมือพร้อมกัน เขย่าตรงๆ มีแรงแต่หมุนน้อย หมุนช้าๆ มีการหมุนแต่แรงน้อย การเช็กทั้ง 2 ค่าจึงแยกการตวัดออกจากท่าอื่นได้
+
+```swift
+func detectSwing(_ data: CMDeviceMotion) -> Bool {
+    let a = data.userAcceleration
+    let r = data.rotationRate
+    let force = (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot()
+    let spin = (r.x * r.x + r.y * r.y + r.z * r.z).squareRoot()
+    return force > 1.5 && spin > 5
+}
+```
+
+หน้าใน starter แสดงแถบแรงพุ่งและการหมุน ให้เห็นว่าท่าไหนผ่านเกณฑ์ข้อไหน
+
+## Workshop: เกมใบ้คำ { #workshop }
+
+ถือ iPad แนวนอนแปะหน้าผาก จอหันออกให้เพื่อนเห็นคำ เพื่อนใบ้ แล้ว **ก้มหน้า = ตอบถูก** และ **เงยหน้า = ข้าม** เป็นเกมที่ไม่มีใน use case ต้องเอาสิ่งที่เรียนมาประกอบเอง
+
+เปิดหน้า **เกมใบ้คำ** ในแท็บ Motion ของ starter หน้าจอ คำ และคะแนนทำไว้ให้แล้ว เขียนเฉพาะส่วนที่มี `TODO` ใน `Tabs/Motion/HeadsUpView.swift`
+
+| ท่า | จอหันไปทาง | `gravity.z` ประมาณ |
+|---|---|---|
+| ตั้งตรง | ข้างหน้า | 0 |
+| ก้มหน้า | พื้น | +1 |
+| เงยหน้า | เพดาน | -1 |
+
+1. **ดูค่าจริง** เปิด GravityView ถือเครื่องแปะหน้าผาก แล้วจดค่า `gravity.z` ตอนตั้งตรง ก้ม และเงย
+2. **TODO 1: เขียน `detectTilt`** คืน `.down` / `.up` / `.upright` ตามค่า `gravity.z` และคืน `nil` เมื่ออยู่ระหว่างกลาง
+3. **TODO 2: ต่อกับเกม** ใน `startMotionUpdates` ก้มหน้าเรียก `correct()` เงยหน้าเรียก `skip()`
+4. **TODO 3: กันนับซ้ำ** ลองเล่นดู ก้มครั้งเดียวจะข้ามไปหลายคำ เพราะค่าเกินเกณฑ์ติดกันหลาย sample ให้รอจนกลับมาตั้งตรงก่อนนับคำถัดไป
+
+!!! tip "ต่างจาก use case ตรงไหน"
+    Use case ส่วนใหญ่กันนับซ้ำด้วยการ **รอเวลา** เช่น 0.6 วินาที แต่เกมนี้ต้อง **รอท่า** คือกลับมาตั้งตรงก่อน เพราะแต่ละคนก้มค้างนานไม่เท่ากัน
+
+**ต่อยอด** สำหรับคนที่ทำเสร็จก่อน
+
+- จับเวลา 60 วินาทีต่อรอบ หมดเวลาแล้วสรุปคะแนน
+- เพิ่มหมวดคำของตัวเอง เช่น สัตว์ อาหาร ดารา ให้เลือกก่อนเริ่ม
+- ใช้ `attitude.pitch` แทน `gravity.z` แล้วเทียบว่าแบบไหนเขียนง่ายกว่า
+
+??? success "เฉลย"
+    ไฟล์เฉลยทั้งไฟล์อยู่ที่ `starter/workshop-3/Solutions/HeadsUpView.swift` ซึ่งอยู่นอก target จึงไม่ถูก compile
+
+    ```swift
+    func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
+        let z = data.gravity.z
+        if z > 0.7 { return .down }
+        if z < -0.7 { return .up }
+        if abs(z) < 0.3 { return .upright }
+        return nil   // ช่วงกลาง 0.3 ถึง 0.7 กันค่าแกว่งไปมาตรงเส้นเกณฑ์
+    }
+    ```
+
+    ```swift
+    @State private var waitingUpright = false
+
+    startMotionUpdates { data in
+        guard let tilt = detectTilt(data) else { return }
+
+        // นับไปแล้ว ไม่สนท่าอื่นจนกว่าจะกลับมาตั้งตรง
+        if waitingUpright {
+            if tilt == .upright { waitingUpright = false }
+            return
+        }
+
+        switch tilt {
+        case .down:
+            correct()
+            waitingUpright = true
+        case .up:
+            skip()
+            waitingUpright = true
+        case .upright:
+            break
+        }
+    }
+    ```
 
 
 ## Barometer

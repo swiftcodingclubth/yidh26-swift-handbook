@@ -9,13 +9,14 @@ struct AttitudeView: View {
     @State private var yaw = 0.0
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            Text("pitch: \(pitch, specifier: "%.0f")°")
-            Text("roll: \(roll, specifier: "%.0f")°")
-            Text("yaw: \(yaw, specifier: "%.0f")°")
+        VStack(alignment: .leading, spacing: 32) {
+            angle("pitch", pitch, hint: "ยกขอบบนขึ้น หรือกดขอบบนลง (หมุนรอบแกน x)")
+            angle("roll", roll, hint: "ยกขอบซ้ายหรือขอบขวาขึ้น (หมุนรอบแกน y)")
+            angle("yaw", yaw, hint: "หมุนเครื่องบนโต๊ะโดยไม่ยกขึ้น (หมุนรอบแกน z)")
+            Text("วางเครื่องราบบนโต๊ะ จอหันขึ้น แล้วลองทีละท่า yaw = 0° คือทิศที่เครื่องหันอยู่ตอนเปิดหน้านี้ ไม่ใช่ทิศเหนือ")
+                .foregroundStyle(.secondary)
         }
-        .font(.largeTitle)
-        .monospacedDigit()
+        .padding(32)
         .navigationTitle("Attitude")
         .onAppear {
             startMotionUpdates { data in
@@ -25,5 +26,15 @@ struct AttitudeView: View {
             }
         }
         .onDisappear { stopMotionUpdates() }
+    }
+
+    private func angle(_ name: String, _ degrees: Double, hint: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("\(name): \(degrees, specifier: "%.0f")°")
+                .font(.largeTitle)
+                .monospacedDigit()
+            Text(hint)
+                .foregroundStyle(.secondary)
+        }
     }
 }

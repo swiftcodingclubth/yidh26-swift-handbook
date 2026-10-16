@@ -29,11 +29,13 @@ struct MotionView: View {
 }
 
 /// ค่าหนึ่งแกน: แถบยืดจากตรงกลาง ไปทางขวาเมื่อค่าเป็นบวก ไปทางซ้ายเมื่อค่าเป็นลบ
-/// แถบเต็มครึ่งหนึ่งเมื่อแรงถึง 2 g
-private struct AxisBar: View {
+/// แถบเต็มครึ่งหนึ่งเมื่อค่าถึง fullScale ใช้ร่วมกับ GravityView และ RotationView
+struct AxisBar: View {
     let name: String
     let detail: String
     let value: Double
+    var unit = "g"
+    var fullScale = 2.0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -41,20 +43,20 @@ private struct AxisBar: View {
                 Text("แกน \(name)").font(.title2.bold())
                 Text(detail).foregroundStyle(.secondary)
                 Spacer()
-                Text(String(format: "%+.2f g", value))
+                Text(String(format: "%+.2f \(unit)", value))
                     .font(.title2)
                     .monospacedDigit()
             }
             GeometryReader { geo in
                 let half = geo.size.width / 2
-                let fraction = min(max(value / 2, -1), 1)
+                let fraction = min(max(value / fullScale, -1), 1)
                 ZStack(alignment: .leading) {
                     Capsule().fill(.quaternary)
                     Rectangle()
                         .fill(fraction >= 0 ? Color.blue : Color.orange)
                         .frame(width: abs(fraction) * half)
                         .offset(x: fraction >= 0 ? half : half + fraction * half)
-                    Rectangle()   // เส้นกลาง = 0 g
+                    Rectangle()   // เส้นกลาง = 0
                         .fill(.secondary)
                         .frame(width: 2)
                         .offset(x: half - 1)
