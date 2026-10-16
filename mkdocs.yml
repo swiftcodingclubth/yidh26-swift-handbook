@@ -79,7 +79,6 @@ nav:
       - เลือก model: workshop-2/models.md
       - Foundation Models: workshop-2/foundation-models.md
       - Tool calling: workshop-2/tool-calling.md
-      - Dynamic Profile: workshop-2/dynamic-profiles.md
       - HackathonAI: workshop-2/hackathon-ai.md
   - "Workshop 3: Sensors, Create ML & Core AI":
       - workshop-3/index.md

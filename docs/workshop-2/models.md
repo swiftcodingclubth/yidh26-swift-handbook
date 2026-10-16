@@ -54,7 +54,7 @@
 | Rate limit ต่อทีม | [requests ต่อนาที · concurrent requests สูงสุด] |
 | Status page | [URL] ดูว่า model ไหนว่างหรือมีคิวยาว |
 
-## เช็กว่าเครื่องรองรับไหม
+## เช็กว่าเครื่องรองรับไหม { #availability }
 
 ไม่ใช่ทุกเครื่องจะใช้ on-device model ได้ เช่น iPad รุ่นเก่า หรือเครื่องที่ผู้ใช้ปิด Apple Intelligence ไว้ ถ้าเรียกใช้โดยไม่เช็กก่อน app จะ error ให้เช็ก `availability` ก่อนแสดง feature และเตรียมทางเลือกไว้ทุกกรณี
 
