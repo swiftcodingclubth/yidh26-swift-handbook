@@ -1,159 +1,83 @@
 # Core ML
 
-**Core ML** คือ framework ที่ run machine learning model ใน app บนเครื่องทั้งหมด ไม่ต้องใช้ internet model ที่ได้จาก [Create ML](create-ml.md) ใช้กับ Core ML ได้ทันที ใช้ได้ทั้ง Xcode 26 และ 27
+**Core ML** คือ framework ที่ run machine learning model ใน app บนเครื่องทั้งหมด ไม่ต้องใช้ internet ใช้ได้ทั้ง model ที่ train เองใน [Create ML](create-ml.md) และ model สำเร็จรูปจาก Apple ใช้ได้ทั้ง Xcode 26 และ 27
+
+| Model | มาจาก | ใช้ทำอะไร | หน้าใน starter |
+|---|---|---|---|
+| `EmotionClassifier` | Train เองใน [Create ML](create-ml.md) | อ่านข้อความแล้วบอกอารมณ์ | วันนี้รู้สึกอย่างไร |
+| `MobileNetV2` | [Apple](#pretrained) | บอกว่าในรูปมีอะไร | ในรูปมีอะไร? |
+| `YOLOv3Tiny` | [Apple](#yolo) | หาวัตถุทุกชิ้นในรูปพร้อมตำแหน่ง | หาวัตถุในรูป |
 
 ## เพิ่ม model เข้า project
 
-ลากไฟล์ `.mlmodel` เข้า Xcode project แล้วติ๊ก target ของ app Xcode จะสร้าง **Swift class ชื่อเดียวกับไฟล์** ให้อัตโนมัติ เช่น `GestureClassifier.mlmodel` จะได้ class `GestureClassifier`
+ลากไฟล์ `.mlmodel` เข้า Xcode project แล้วติ๊ก target ของ app Xcode จะสร้าง **Swift class ชื่อเดียวกับไฟล์** ให้อัตโนมัติ เช่น `EmotionClassifier.mlmodel` จะได้ class `EmotionClassifier`
 
 คลิกไฟล์ model ใน Xcode เพื่อดู:
 
-- **General**: ป้ายที่ model ตอบได้ (ชื่อท่า)
+- **General**: ป้ายที่ model ตอบได้ เช่น ชื่ออารมณ์
 - **Predictions**: ชื่อและขนาดของ input และ output ซึ่งต้องใช้ตอนเขียนโค้ด
 
-## Input และ output ของ Activity Classifier
+## Model ที่ train เอง: Text Classifier { #text-classifier }
 
-| | ชื่อ | คืออะไร |
-|---|---|---|
-| Input | ชื่อตาม column ที่เลือกตอน train เช่น `accelX`, `rotationY` | ค่า sensor ของแต่ละแกน เป็น array ยาวเท่า prediction window (100 ค่า) |
-| Input | `stateIn` | "ความจำ" จากการทายครั้งก่อน ครั้งแรกให้เป็นค่าว่าง |
-| Output | `label` | ชื่อท่าที่มั่นใจที่สุด |
-| Output | `labelProbability` | ความมั่นใจของทุกท่า เป็น dictionary ค่า 0–1 |
-| Output | `stateOut` | ส่งกลับไปเป็น `stateIn` ในการทายครั้งถัดไป |
-
-`stateIn`/`stateOut` ทำให้ model จำสิ่งที่เห็นใน window ก่อนหน้าได้ ท่าที่คร่อมสอง window จึงทายได้ดีขึ้น
-
-## ส่งข้อมูลให้ model
-
-ใช้ window จาก [Core Motion](core-motion.md#window) เมื่อครบ 100 sample ก็แปลงเป็น `MLMultiArray` แล้วทาย ชื่อ parameter ของ `GestureClassifierInput` ต้องตรงกับชื่อในแท็บ Predictions ของ model ตัวเอง ตัวอย่างนี้สมมติว่า train ด้วย 6 column
+Text classifier จาก Create ML ใช้ผ่าน **`NLModel`** ของ framework Natural Language ส่งข้อความเข้าไป แล้วได้ความมั่นใจของทุกอารมณ์กลับมา ทายเร็วมาก (ไม่ถึง 1 ms ต่อประโยค) จึงทายใหม่ทุกครั้งที่ผู้ใช้พิมพ์ได้เลย
 
 ```swift
 import CoreML
-import CoreMotion
+import NaturalLanguage
 
-final class GesturePredictor {
-    private let model = try! GestureClassifier(configuration: MLModelConfiguration())
-    private var state = try! MLMultiArray(shape: [400], dataType: .double)  // ขนาดดูในแท็บ Predictions
+final class EmotionDetector {
+    // Text classifier ใช้ผ่าน NLModel ของ Natural Language
+    private let model = try! NLModel(mlModel: EmotionClassifier(configuration: MLModelConfiguration()).model)
 
-    func predict(_ window: [CMDeviceMotion]) throws -> (label: String, confidence: Double) {
-        func column(_ value: (CMDeviceMotion) -> Double) throws -> MLMultiArray {
-            let array = try MLMultiArray(shape: [NSNumber(value: window.count)], dataType: .double)
-            for (i, sample) in window.enumerated() { array[i] = NSNumber(value: value(sample)) }
-            return array
-        }
-
-        let input = GestureClassifierInput(
-            accelX: try column { $0.userAcceleration.x },
-            accelY: try column { $0.userAcceleration.y },
-            accelZ: try column { $0.userAcceleration.z },
-            rotationX: try column { $0.rotationRate.x },
-            rotationY: try column { $0.rotationRate.y },
-            rotationZ: try column { $0.rotationRate.z },
-            stateIn: state)
-
-        let output = try model.prediction(input: input)
-        state = output.stateOut   // เก็บไว้ใช้ครั้งถัดไป
-        return (output.label, output.labelProbability[output.label] ?? 0)
+    /// ความมั่นใจของทุกอารมณ์ เรียงจากมากไปน้อย เช่น [("joy", 0.82), ("love", 0.10), …]
+    func scores(for text: String) -> [(label: String, confidence: Double)] {
+        model.predictedLabelHypotheses(for: text, maximumCount: 6)
+            .map { (label: $0.key, confidence: $0.value) }
+            .sorted { $0.confidence > $1.confidence }
     }
 }
 ```
 
-### ทายท่าด้วย model { #predict }
+ความมั่นใจของทุกอารมณ์รวมกันได้ 1 (100%) ตัวแรกคืออารมณ์ที่ model มั่นใจที่สุด
 
-ให้ผู้ใช้กด **เริ่ม** ทำท่า แล้วกด **หยุด** app จึงค่อยทายว่าเป็นท่าอะไร ระหว่างอัดยังไม่ต้องทาย แค่เก็บค่าไว้
+### ใช้ความมั่นใจตัดสิน { #confidence }
 
-Model ต้องการข้อมูลก้อนละ 100 ค่า (2 วินาที) แต่แต่ละครั้งผู้ใช้อาจอัดยาวไม่เท่ากัน ตอนกดหยุดจึงหั่นข้อมูลเป็นก้อนด้วย `MotionWindow` ทายทีละก้อน แล้วเลือกท่าที่ความมั่นใจรวมสูงสุด
+Model นี้ไม่มี `neutral` จะตอบอารมณ์ใดอารมณ์หนึ่งเสมอ แม้ข้อความจะไม่มีอารมณ์อะไร ถ้าอารมณ์ที่มั่นใจที่สุดยังมั่นใจไม่ถึงเกณฑ์ ให้แสดงว่า "ยังไม่แน่ใจ" แทนการเดา
 
 ```swift
-struct PredictView: View {
-    @State private var isRecording = false
-    @State private var recorded: [CMDeviceMotion] = []
-    @State private var label = "–"
+let detector = EmotionDetector()
+let scores = detector.scores(for: "today was a really good day")
 
-    var body: some View {
-        VStack {
-            Text(isRecording ? "กำลังอัด…" : label)
-            Button(isRecording ? "หยุดและทาย" : "เริ่มทำท่า") {
-                isRecording ? stop() : start()
-            }
-        }
-        .onDisappear { stopMotionUpdates() }
-    }
-
-    // 1. กดเริ่ม: เก็บค่าไว้ก่อน ยังไม่ทาย
-    private func start() {
-        recorded = []
-        isRecording = true
-        startMotionUpdates { sample in
-            recorded.append(sample)
-        }
-    }
-
-    // 2. กดหยุด: หยุด sensor แล้วค่อยทายจากข้อมูลทั้งหมดที่อัดไว้
-    private func stop() {
-        stopMotionUpdates()
-        isRecording = false
-        guard recorded.count >= 100 else { label = "สั้นไป"; return }  // อย่างน้อย 2 วินาที
-
-        var window = MotionWindow()
-        let predictor = GesturePredictor()   // สร้างใหม่ทุกครั้ง ความจำ (stateIn) จะได้เริ่มจากว่าง
-        var scores: [String: Double] = [:]   // ชื่อท่า → ความมั่นใจรวมทุกก้อน
-        for sample in recorded {
-            if let samples = window.add(sample),           // หั่นเป็นก้อนละ 100 ค่า
-               let result = try? predictor.predict(samples) {
-                scores[result.label, default: 0] += result.confidence
-            }
-        }
-        label = scores.max { $0.value < $1.value }?.key ?? "–"   // ท่าที่มั่นใจรวมสูงสุด
-    }
+if let top = scores.first, top.confidence >= 0.4 {
+    print(top.label)       // มั่นใจพอ เช่น "joy"
+} else {
+    print("ยังไม่แน่ใจ")    // เช่น "i bought some milk" ซึ่งไม่มีอารมณ์
 }
 ```
 
-ไฟล์ที่ใช้โค้ดนี้ต้อง `import CoreMotion` ด้วย เพราะใช้ type `CMDeviceMotion`
+ปรับเกณฑ์ `0.4` ด้วยการลองพิมพ์จริง ยิ่งสูง ยิ่งขึ้น "ยังไม่แน่ใจ" บ่อย แต่ทายผิดน้อยลง
 
-!!! warning "ค่าที่ส่งต้องเหมือนตอน train"
-    ใช้ค่า sensor ชนิดเดียวกัน (เช่น `userAcceleration` ไม่ใช่ accelerometer ดิบ), หน่วยเดียวกัน, sampling rate เดียวกัน และลำดับแกนเดียวกับที่ Motion Recorder บันทึก ถ้าไม่ตรง model จะทายผิดโดยไม่มี error
+### Use case: วันนี้รู้สึกอย่างไร
 
-## ไปต่อ: ทายต่อเนื่องแบบ real time { #smoothing }
+หน้านี้ในแท็บ Core ML ของ starter project ใช้ `EmotionDetector` กับความมั่นใจเปลี่ยนหน้าจอทันทีที่พิมพ์
 
-ถ้าอยากให้ app ทายเองตลอดโดยไม่ต้องกดปุ่ม ให้ทายทันทีที่ `window.add` คืนก้อนข้อมูลมา จะได้ผลใหม่ทุก 1 วินาที
+| ส่วน | ทำงานอย่างไร |
+|---|---|
+| Emoji และชื่ออารมณ์ | อารมณ์ที่มั่นใจที่สุด ถ้ามั่นใจไม่ถึง 40% ขึ้น 🤔 ยังไม่แน่ใจ |
+| สีพื้นหลัง | สีของอารมณ์ ยิ่งมั่นใจยิ่งเข้ม |
+| วงแหวน | เต็มตามความมั่นใจ |
+| 3 อารมณ์อันดับแรก | ให้เห็นว่า model ลังเลระหว่างอารมณ์อะไร |
 
-```swift
-startMotionUpdates { sample in
-    if let samples = window.add(sample),
-       let result = try? predictor.predict(samples) {
-        label = result.label
-    }
-}
-```
-
-แบบนี้บางครั้ง model ทายผิดไปหนึ่งครั้งแล้วกลับมาถูก ถ้าแสดงผลทุกครั้งตรงๆ หน้าจอจะกระพริบสลับไปมา ให้ดูผลหลายครั้งล่าสุด แล้วแสดงท่าที่ทายได้บ่อยที่สุด และเฉพาะเมื่อมั่นใจพอ
-
-```swift
-struct Smoother {
-    private var recent: [String] = []
-
-    mutating func add(_ label: String, confidence: Double) -> String? {
-        guard confidence > 0.6 else { return nil }   // ไม่มั่นใจ ไม่นับ
-        recent.append(label)
-        if recent.count > 5 { recent.removeFirst() } // เก็บ 5 ครั้งล่าสุด
-
-        let counts = Dictionary(recent.map { ($0, 1) }, uniquingKeysWith: +)
-        guard let (best, count) = counts.max(by: { $0.value < $1.value }),
-              count >= 3 else { return nil }         // ต้องชนะอย่างน้อย 3 ใน 5
-        return best
-    }
-}
-```
+!!! tip "พิมพ์เป็นภาษาอังกฤษ"
+    Model train จากข้อความภาษาอังกฤษ ช่องพิมพ์จึงตั้ง `.keyboardType(.asciiCapable)` ให้แป้นพิมพ์เป็นภาษาอังกฤษตั้งแต่แรก
 
 ## Performance และแบตเตอรี่
 
 | เรื่อง | ทำอย่างไร |
 |---|---|
-| **Sampling rate** | ใช้ rate ต่ำที่สุดที่ยังจดจำท่าได้ 50 Hz พอสำหรับท่าทางส่วนใหญ่ |
-| **เรียก model เท่าที่จำเป็น** | ทายเมื่อ window ครบ ไม่ใช่ทุก sample และหยุด sensor เมื่อออกจากหน้าจอ |
 | **โหลด model ครั้งเดียว** | สร้าง model ไว้ตัวเดียวแล้วใช้ซ้ำ การโหลดใหม่ทุกครั้งช้ามาก |
-| **ขนาด model** | Model เล็กโหลดเร็วและใช้ memory น้อย Activity และ Sound Classifier จาก Create ML มักมีขนาดเล็กอยู่แล้ว |
+| **โหลดเมื่อจำเป็น** | สร้าง model ตอนเปิดหน้าที่ใช้ ไม่ใช่ตอนเปิด app หน้าแรกจะได้ขึ้นเร็ว |
+| **ขนาด model** | Model เล็กโหลดเร็วและใช้ memory น้อย Text classifier จาก Create ML มีขนาดไม่ถึง 1 MB |
 | **Quantization** | ลดความละเอียดของตัวเลขใน model (เช่น จาก 16 bit เหลือ 8 หรือ 4 bit) ทำให้ไฟล์เล็กและเร็วขึ้น แลกกับความแม่นที่ลดลงเล็กน้อย สำคัญกับ model ใหญ่อย่างใน [Core AI](core-ai.md) |
 
 ## ใช้ model สำเร็จรูปจาก Apple { #pretrained }
@@ -239,4 +163,4 @@ final class ObjectDetector {
     YOLOv3 Tiny หาวัตถุในรูปถ่ายทั่วไปได้ดี เช่น คนกับสุนัข โต๊ะอาหาร ถนน แต่รูปถ่ายใกล้ที่ของชิ้นเดียวเต็มเฟรมมักหาไม่เจอ หรือทายผิด รูปแบบนั้นใช้ MobileNetV2 ดีกว่า
 
 !!! tip "ใช้ใน app ของทีม"
-    โค้ดในหน้านี้อยู่ใน `SensorParts/Gesture.swift`, `SensorParts/ImageClassifier.swift` และ `SensorParts/ObjectDetector.swift` (พร้อมไฟล์ model) ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)
+    โค้ดในหน้านี้อยู่ใน `SensorParts/TextEmotion.swift`, `SensorParts/ImageClassifier.swift` และ `SensorParts/ObjectDetector.swift` (พร้อมไฟล์ model) ของ [starter project](add-to-your-app.md#get-starter) copy ไปใช้ได้เลย ดูขั้นตอนที่[ใส่ใน app ของทีม](add-to-your-app.md)

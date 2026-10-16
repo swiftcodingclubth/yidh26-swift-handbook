@@ -10,7 +10,7 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 2. เลือก target **Workshop3Starter** → **Signing & Capabilities** → เลือก **Team** ของตัวเอง
 3. เลือก iPad เป็น run destination แล้วกด Run
 
-แท็บ Sound และหน้าที่ใช้รูปในแท็บ Core ML ลองบน Simulator ได้ ส่วนอื่นใช้ sensor จริง จึงต้อง run บน iPad
+แท็บ Sound และแท็บ Core ML ลองบน Simulator ได้ ส่วนแท็บ Motion และ LiDAR ใช้ sensor จริง จึงต้อง run บน iPad
 
 ## แท็บ
 
@@ -19,9 +19,9 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 | Motion | 1 | Core Motion: การเคลื่อนไหว มุมเอียง ท่าแบบง่าย barometer | ไม่ได้ |
 | Sound | 2 | Sound Analysis: จดจำเสียงด้วย classifier ในตัว | ได้ (ใช้ไมโครโฟนของ Mac) |
 | LiDAR | 3 | ARKit: วัดระยะด้วยข้อมูลความลึก | ไม่ได้ (iPad Pro เท่านั้น) |
-| Core ML | 4 | Run model ที่ train เอง และ model สำเร็จรูปจาก Apple (MobileNetV2, YOLOv3) | ได้เฉพาะหน้าที่ใช้รูป |
+| Core ML | 4 | Run model ที่ train เองใน Create ML (EmotionClassifier) และ model สำเร็จรูปจาก Apple (MobileNetV2, YOLOv3) | ได้ |
 
-ขั้น Create ML (อัดท่าทางเพื่อ train) ใช้ app แยกใน [`starter/workshop-3-recorder`](../workshop-3-recorder) อัดแล้วส่งเป็น `MotionData.zip` ที่แยก folder ตามชื่อท่าไว้แล้ว
+ขั้น Create ML (train text classifier บอกอารมณ์จากข้อความ) ใช้ข้อมูลใน [`EmotionData/`](EmotionData)
 
 ### 1. Motion
 
@@ -52,8 +52,7 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 
 | หน้า | ลองทำ | หัวข้อใน handbook |
 |---|---|---|
-| **GesturePredictor** | กด **เริ่มทำท่า** ทำท่า shake, tilt, circle หรือถือนิ่งอย่างน้อย 2 วินาที แล้วกด **หยุดและทาย** | ทายท่าด้วย model |
-| **วันนี้รู้สึกอย่างไร** | พิมพ์ความรู้สึกเป็นภาษาอังกฤษ emoji และสีพื้นหลังเปลี่ยนตามอารมณ์ ยิ่งมั่นใจสียิ่งเข้ม ถ้ามั่นใจไม่ถึง 40% จะขึ้น 🤔 | (ยังไม่มีใน handbook) |
+| **วันนี้รู้สึกอย่างไร** | พิมพ์ความรู้สึกเป็นภาษาอังกฤษ emoji และสีพื้นหลังเปลี่ยนตามอารมณ์ ยิ่งมั่นใจสียิ่งเข้ม ถ้ามั่นใจไม่ถึง 40% จะขึ้น 🤔 | Model ที่ train เอง: Text Classifier |
 | **ในรูปมีอะไร?** | เลือกรูปสัตว์ อาหาร หรือสิ่งของ แล้วดูว่า model บอกว่าอะไร | ใช้ model สำเร็จรูปจาก Apple |
 | **หาวัตถุในรูป** | เลือกรูปที่มีหลายอย่างในฉาก เช่น คนกับสุนัข ถนน จะเห็นกรอบรอบวัตถุทุกชิ้นพร้อมจำนวน | หาวัตถุในรูปด้วย YOLOv3 |
 
@@ -66,27 +65,27 @@ Starter project ของ Workshop 3 · iOS 26 · ไม่มี dependency ภ
 | การเคลื่อนไหว, มุมเอียง, ท่าแบบง่าย, barometer | `Motion.swift` |
 | จดจำเสียง | `Sound.swift` |
 | วัดระยะด้วย LiDAR | `Lidar.swift` |
-| ทายท่าด้วย model ที่ train เอง | `Motion.swift`, `Gesture.swift`, `GestureClassifier.mlmodel` (หรือ model ของทีม) |
 | บอกว่าในรูปมีอะไร | `ImageClassifier.swift`, `MobileNetV2.mlmodel` |
 | หาวัตถุในรูปพร้อมตำแหน่ง | `ObjectDetector.swift`, `YOLOv3Tiny.mlmodel` |
-| อารมณ์จากข้อความ (ภาษาอังกฤษ) | `TextEmotion.swift`, `EmotionClassifier.mlmodel` |
+| อารมณ์จากข้อความ (ภาษาอังกฤษ) | `TextEmotion.swift`, `EmotionClassifier.mlmodel` (หรือ model ของทีม) |
 
 Build ผ่านใน project ที่ตั้ง **Swift Language Version เป็น Swift 5** (ค่าเริ่มต้นของ project ใหม่ใน Xcode 26) ไม่ว่าจะตั้ง Default Actor Isolation เป็น MainActor หรือ nonisolated
 
 ### Model
 
+ไฟล์ model ทั้งหมดอยู่ใน `SensorParts/Models/`
+
 | ไฟล์ | มาจากไหน |
 |---|---|
-| `GestureClassifier.mlmodel` | Activity Classifier ท่า `shake`, `tilt`, `circle`, `idle` train จากข้อมูลของ Motion Recorder (window 100 ที่ 50 Hz, 6 column `accelX` … `rotationZ`) |
 | `MobileNetV2.mlmodel` | จำแนกรูปภาพกว่า 1,000 ประเภท ดาวน์โหลด `MobileNetV2FP16` จาก [Core ML Models](https://developer.apple.com/machine-learning/models/) แล้วเปลี่ยนชื่อไฟล์ |
 | `EmotionClassifier.mlmodel` | Text classifier 6 อารมณ์ (joy, sadness, anger, fear, love, surprise) train ใน Create ML จาก Emotions dataset for NLP (Kaggle `praveengovi/emotions-dataset-for-nlp`) ด้วย Maximum Entropy |
 | `YOLOv3Tiny.mlmodel` | หาวัตถุ 80 ประเภทพร้อมตำแหน่ง ดาวน์โหลด `YOLOv3TinyFP16` (16 MB) จากหน้าเดียวกัน แล้วเปลี่ยนชื่อไฟล์ ตัวเต็ม `YOLOv3FP16` ใหญ่ 118 MB เกินกว่าจะเก็บใน git |
 
-ใช้ model ของทีมแทน: export จาก Create ML เป็นชื่อ `GestureClassifier.mlmodel` แล้วลากไปแทนไฟล์เดิม ถ้า train ด้วย 6 column เดิม ไม่ต้องแก้โค้ด ถ้าเปลี่ยน column ต้องแก้ `GestureClassifierInput(...)` ใน `Gesture.swift` ให้ตรงกับแท็บ Predictions ของ model
+ใช้ model ของทีมแทน: train ใน Create ML ตามหน้า Create ML ของ handbook แล้ว export เป็นชื่อ `EmotionClassifier.mlmodel` ลากไปแทนไฟล์เดิม ถ้า train อารมณ์อื่นเอง ให้เพิ่ม emoji และสีของอารมณ์นั้นใน `Mood` ของ `MoodView.swift`
 
-## `EmotionData/`: ข้อมูลสำรองสำหรับ train
+## `EmotionData/`: ข้อมูลสำหรับ train
 
-ข้อมูลอารมณ์จากข้อความ (ภาษาอังกฤษ 6 อารมณ์) พร้อมใช้ใน Create ML Text Classifier ใช้เมื่อหาข้อมูลเองไม่ทัน ดูวิธีใช้ใน `EmotionData/README.md`
+ข้อมูลอารมณ์จากข้อความ (ภาษาอังกฤษ 6 อารมณ์) พร้อมใช้ใน Create ML Text Classifier ดูวิธีใช้ใน `EmotionData/README.md` และหน้า Create ML ของ handbook
 
 | ไฟล์ | จำนวน | ใช้ใน Create ML ช่อง |
 |---|---|---|
@@ -118,4 +117,4 @@ Build ผ่านใน project ที่ตั้ง **Swift Language Version 
 
 ## ตามไม่ทัน
 
-ไฟล์ใน `SensorParts/` ทำงานครบทุกหัวข้อแล้ว copy ไปใส่ project ของทีมได้เลย ดูขั้นตอนใน handbook หน้า "ใส่ใน app ของทีม" ของ Workshop 3 ถ้าอัดข้อมูลหรือ train ไม่ทัน ใช้ `GestureClassifier.mlmodel` ในโฟลเดอร์นี้ไปก่อน
+ไฟล์ใน `SensorParts/` ทำงานครบทุกหัวข้อแล้ว copy ไปใส่ project ของทีมได้เลย ดูขั้นตอนใน handbook หน้า "ใส่ใน app ของทีม" ของ Workshop 3 ถ้า train ไม่ทัน ใช้ `EmotionClassifier.mlmodel` ใน `SensorParts/Models/` ไปก่อน

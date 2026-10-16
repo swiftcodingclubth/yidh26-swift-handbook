@@ -10,9 +10,22 @@
 		3A0000000000000000000001 /* Workshop3Starter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Workshop3Starter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3A0000000000000000000011 /* Exceptions for "Workshop3Starter" folder in "Workshop3Starter" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SensorParts/Models/GestureClassifier.mlmodel,
+			);
+			target = 3A0000000000000000000006 /* Workshop3Starter */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3A0000000000000000000002 /* Workshop3Starter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3A0000000000000000000011 /* Exceptions for "Workshop3Starter" folder in "Workshop3Starter" target */,
+			);
 			path = Workshop3Starter;
 			sourceTree = "<group>";
 		};

@@ -1,6 +1,6 @@
-# EmotionData: ข้อมูลสำรองสำหรับ train Text Classifier
+# EmotionData: ข้อมูลสำหรับ train Text Classifier
 
-ข้อมูลสำหรับ train model จำแนกอารมณ์จากข้อความใน Create ML ใช้เมื่อหาข้อมูลเองไม่ทัน ข้อความเป็นภาษาอังกฤษทั้งหมด
+ข้อมูลสำหรับ train model จำแนกอารมณ์จากข้อความใน Create ML ตามหน้า Create ML ของ handbook ข้อความเป็นภาษาอังกฤษทั้งหมด
 
 | ไฟล์ | จำนวน | ใช้ใน Create ML ช่อง |
 |---|---|---|
@@ -29,7 +29,7 @@
 2. **Training Data:** `emotion6_train.csv` · **Validation Data:** Automatic · **Testing Data:** `emotion6_test.csv`
 3. **Algorithm:** Maximum Entropy (train ไม่กี่วินาที)
 4. กด **Train** ควรได้ Testing ประมาณ 88%
-5. **Output → Get** ตั้งชื่อ `EmotionClassifier.mlmodel` แล้วลากไปแทนไฟล์ใน `Workshop3Starter/SensorParts/`
+5. **Output → Get** ตั้งชื่อ `EmotionClassifier.mlmodel` แล้วลากไปแทนไฟล์ใน `Workshop3Starter/SensorParts/Models/`
 
 ## ที่มา
 

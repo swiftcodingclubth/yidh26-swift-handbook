@@ -173,6 +173,10 @@
   40%, 80% { transform: translateX(6px); }
 }
 
+/* ไอคอนเลือก/แนะนำในตาราง เช่น :material-check-decagram:{ .pick } */
+.md-typeset .pick { color: var(--md-primary-fg-color); }
+.md-typeset .pick svg { width: 1.15em; height: 1.15em; vertical-align: -0.2em; }
+
 /* พิมพ์เป็นเล่ม: ซ่อน navigation, ไม่ตัดตารางและ code กลางหน้า */
 @media print {
   .md-header, .md-sidebar, .md-footer, .md-top { display: none !important; }

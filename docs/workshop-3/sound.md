@@ -2,7 +2,7 @@
 
 **Sound Analysis** คือ framework ที่ฟังเสียงจากไมโครโฟนแล้วบอกว่าเป็นเสียงอะไร มี **classifier ในตัวที่รู้จักเสียงกว่า 300 แบบ** เช่น เสียงกริ่ง สุนัขเห่า เด็กร้อง ปรบมือ สัญญาณเตือนไฟไหม้ และเครื่องดนตรี ใช้ได้ทันทีโดยไม่ต้อง train และ run บนเครื่องทั้งหมด เสียงไม่ถูกส่งออกไปไหน ใช้ได้ทั้ง Xcode 26 และ 27
 
-ถ้าต้องการจดจำเสียงเฉพาะที่ classifier ในตัวไม่รู้จัก เช่น เสียงไอแบบต่างๆ ให้ train model เองใน [Create ML](create-ml.md#sound-classifier) แล้วใช้กับโค้ดชุดเดียวกันในหน้านี้
+ถ้าต้องการจดจำเสียงเฉพาะที่ classifier ในตัวไม่รู้จัก เช่น เสียงไอแบบต่างๆ ให้ train model เองด้วย template **Sound Classification** ใน Create ML (ไม่อยู่ใน workshop นี้) แล้วใช้กับโค้ดชุดเดียวกันในหน้านี้
 
 ## ทำงานอย่างไร
 
@@ -115,7 +115,7 @@ request.overlapFactor = 0.5                                                // �
 
 ## ใช้ model เสียงที่ train เอง
 
-เมื่อ train sound classifier ใน [Create ML](create-ml.md#sound-classifier) แล้วลากไฟล์ model เข้า Xcode ให้เปลี่ยนแค่บรรทัดที่สร้าง request ส่วนอื่นเหมือนเดิมทั้งหมด
+เมื่อ train sound classifier ด้วย template Sound Classification ใน Create ML แล้วลากไฟล์ model เข้า Xcode ให้เปลี่ยนแค่บรรทัดที่สร้าง request ส่วนอื่นเหมือนเดิมทั้งหมด
 
 ```swift
 let request = try SNClassifySoundRequest(mlModel: CoughClassifier().model)

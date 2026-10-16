@@ -1,3 +1,10 @@
+// ⚠️ ปิดไว้ ไม่ได้ใช้ใน app: Gesture Classifier ถูกตัดออกจาก Workshop 3 แล้ว
+// เก็บโค้ดไว้อ้างอิงเท่านั้น โค้ดทั้งหมดอยู่ใน comment จึงไม่ถูก compile
+// เปิดใช้: เอา /* บรรทัดล่าง และ */ ท้ายไฟล์ออก ทั้งไฟล์นี้และ Tabs/CoreML/PredictView.swift
+// แล้วเพิ่ม GestureClassifier.mlmodel กลับเข้า target (File inspector → Target Membership)
+// และเพิ่ม NavigationLink ไปที่ PredictView ใน CoreMLTab.swift
+
+/*
 // โค้ดทั้งหมดในไฟล์นี้มาจากหน้า Core ML ใน handbook
 // ใช้คู่กับ GestureClassifier.mlmodel (เปลี่ยนเป็น model ของทีมได้ ถ้าชื่อไฟล์และ input เหมือนกัน) และ MotionWindow ใน Motion.swift
 import CoreML
@@ -28,3 +35,21 @@ final class GesturePredictor {
         return (output.label, output.labelProbability[output.label] ?? 0)
     }
 }
+
+// MARK: - ส่งข้อมูลให้ model ทีละช่วง
+
+struct MotionWindow {
+    let size = 100          // 100 ค่า = 2 วินาทีที่ 50 Hz ต้องเท่ากับตอน train
+    var samples: [CMDeviceMotion] = []
+
+    // ใส่ค่าใหม่ทีละค่า ถ้ายังไม่ครบ 100 ได้ nil
+    // พอครบ 100 ได้ทั้งก้อนไปส่งให้ model แล้วเก็บครึ่งหลังไว้เป็นครึ่งแรกของก้อนถัดไป
+    mutating func add(_ sample: CMDeviceMotion) -> [CMDeviceMotion]? {
+        samples.append(sample)
+        guard samples.count == size else { return nil }
+        let window = samples
+        samples.removeFirst(size / 2)
+        return window
+    }
+}
+*/

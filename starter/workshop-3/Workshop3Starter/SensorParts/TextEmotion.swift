@@ -1,3 +1,4 @@
+// โค้ดในไฟล์นี้มาจากหน้า Core ML หัวข้อ "Model ที่ train เอง: Text Classifier"
 // จำแนกอารมณ์จากข้อความภาษาอังกฤษ ด้วย text classifier ที่ train เองใน Create ML
 // ใช้คู่กับ EmotionClassifier.mlmodel (6 อารมณ์: joy, sadness, anger, fear, love, surprise)
 import CoreML

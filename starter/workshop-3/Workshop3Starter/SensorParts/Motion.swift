@@ -28,23 +28,6 @@ func detectGesture(_ data: CMDeviceMotion) -> String? {
     return nil
 }
 
-// MARK: - ส่งข้อมูลให้ model ทีละช่วง
-
-struct MotionWindow {
-    let size = 100          // 100 ค่า = 2 วินาทีที่ 50 Hz ต้องเท่ากับตอน train
-    var samples: [CMDeviceMotion] = []
-
-    // ใส่ค่าใหม่ทีละค่า ถ้ายังไม่ครบ 100 ได้ nil
-    // พอครบ 100 ได้ทั้งก้อนไปส่งให้ model แล้วเก็บครึ่งหลังไว้เป็นครึ่งแรกของก้อนถัดไป
-    mutating func add(_ sample: CMDeviceMotion) -> [CMDeviceMotion]? {
-        samples.append(sample)
-        guard samples.count == size else { return nil }
-        let window = samples
-        samples.removeFirst(size / 2)
-        return window
-    }
-}
-
 // MARK: - Barometer
 
 let altimeter = CMAltimeter()
