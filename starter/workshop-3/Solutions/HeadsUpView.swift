@@ -15,7 +15,7 @@ func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
     let z = data.gravity.z
     if z > 0.7 { return .down }
     if z < -0.7 { return .up }
-    if abs(z) < 0.3 { return .upright }
+    if z < 0.3 && z > -0.3 { return .upright }
     return nil
 }
 
