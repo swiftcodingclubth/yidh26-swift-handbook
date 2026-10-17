@@ -41,7 +41,7 @@ let b = try await thai.respond(to: "สรุปข้อความนี้: 
 Feature บางอย่างต้องใช้ iOS 27 SDK ซึ่งมีเฉพาะใน Xcode 27 บน {{ mac.apple }}
 
 !!! mchip "{{ mac.apple }} · Xcode 27"
-    ทำได้ครบทุกส่วน: ใช้ on-device AFM 3, ส่ง model บน cluster เข้า `LanguageModelSession` ได้โดยตรง, ใช้ PCC, [Dynamic Profile](dynamic-profiles.md) และส่งรูปให้ AFM 3 วิเคราะห์
+    ทำได้ครบทุกส่วน: ใช้ on-device AFM 3, ส่ง model บน cluster เข้า `LanguageModelSession` ได้โดยตรง, ใช้ PCC และส่งรูปให้ AFM 3 วิเคราะห์
 
 !!! intel "{{ mac.intel }} · Xcode 26"
     ใช้ `LanguageModelSession` กับ on-device AFM 3 ได้ตามปกติ แต่ iOS 26 SDK ยังส่ง model บน cluster เข้า session ไม่ได้ จึงต้องเรียก cluster ผ่าน [`OnPremClient`](hackathon-ai.md) แทน ซึ่งเป็น API แยกที่ใช้งานง่ายแต่ไม่มี `@Generable` และ tool calling
@@ -55,16 +55,15 @@ Feature บางอย่างต้องใช้ iOS 27 SDK ซึ่งม
 | [เลือก model](models.md) | Model แต่ละตัว run ที่ไหน เหมาะกับงานแบบไหน และวิธีเช็กว่าเครื่องรองรับ |
 | [Foundation Models](foundation-models.md) | พื้นฐาน `LanguageModelSession` บน device: ถาม-ตอบ, streaming, `@Generable` |
 | [Tool calling](tool-calling.md) | ให้ model เรียกฟังก์ชันของเราเพื่อดึงข้อมูลหรือทำ action ใน app |
-| [Dynamic Profile](dynamic-profiles.md) | เปลี่ยน instructions, tools และ model ของ session ตาม state (iOS 27) |
 | [HackathonAI](hackathon-ai.md) | Setup API key, ใช้ model บน cluster, fallback และกติกาการใช้ cluster ร่วมกัน |
 
 ## ลงมือปฏิบัติ { #hands-on }
 
-**Thai summarizer** รับข้อความภาษาไทยแล้วสรุปให้สั้นลง เปิด starter repo ของ Workshop 2 แล้วทำตามขั้นตอนนี้
+ทุกคนสร้าง **StudyNotes** app จดโน้ตที่มี AI ช่วยทบทวน จาก [starter repo](https://github.com/swiftcodingclubth/study-notes) ทุก feature run บน device จึงทำได้ทุกเครื่อง เขียนโค้ดใน `NoteAssistant.swift` ตาม `// TODO`
 
-1. **Setup HackathonAI** ใส่ team key ใน `Secrets.plist` และเพิ่ม Info.plist key ดู [Setup](hackathon-ai.md#setup)
-2. **สรุปด้วย on-device model ก่อน** ให้ feature ทำงานได้โดยไม่ต้องพึ่ง network ดู [Foundation Models](foundation-models.md)
-3. **สลับไปใช้ model `.thai` บน cluster** แล้วเทียบผลกับ on-device {{ mac.apple }} ส่ง model เข้า session ดู [เปลี่ยน model ใน session](hackathon-ai.md#model-session) ส่วน {{ mac.intel }} ใช้ [`OnPremClient`](hackathon-ai.md#macbook-intel-onpremclient)
-4. **ใส่ fallback** ถ้าเรียก cluster ไม่สำเร็จ ให้กลับไปใช้ on-device ดู [Fallback](hackathon-ai.md#fallback-cluster)
-5. **แสดงใน UI ว่า model ไหนเป็นคนตอบ** เช่น ป้าย "On-device" หรือ "Cluster · Thai" จะได้รู้ว่า fallback ทำงานอยู่หรือเปล่า และเปรียบเทียบคุณภาพได้
-6. **ทดสอบ fallback** ปิด Wi-Fi บน iPad แล้วสรุปข้อความอีกครั้ง app ต้องยังตอบได้และป้ายเปลี่ยนเป็น "On-device"
+1. **ซ่อนปุ่ม AI** บนเครื่องที่ไม่รองรับ ดู [เช็กว่าเครื่องรองรับไหม](models.md#availability)
+2. **สรุปโน้ต** 2 ประโยค พร้อมสวิตช์ Precise / Creative ดู [Foundation Models](foundation-models.md)
+3. **สร้าง study card** ด้วย `@Generable` ดู [`@Generable`](foundation-models.md#generable-model-structured-output)
+4. **ตั้งเวลาทบทวน** ด้วย tool ที่สร้าง reminder ในแอป Reminders ดู [Tool calling](tool-calling.md)
+5. **Stream study card** ให้ค่อยๆ เติมบนจอ ดู [Streaming](foundation-models.md#streaming)
+6. **ติด tag อัตโนมัติ** ด้วย content tagging model แล้วกรองโน้ตตาม tag

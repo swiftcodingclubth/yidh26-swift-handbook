@@ -1,7 +1,7 @@
 site_name: Swift Workshop Handbook
 site_description: คู่มือ workshop และ code snippets สำหรับผู้เข้าร่วม Hackathon
-site_url: https://tawapnas.github.io/yidh26-swift-handbook/
-repo_url: https://github.com/tawapnas/yidh26-swift-handbook
+site_url: https://swiftcodingclubth.github.io/yidh26-swift-handbook/
+repo_url: https://github.com/swiftcodingclubth/yidh26-swift-handbook
 
 theme:
   name: material
@@ -63,6 +63,8 @@ markdown_extensions:
   # ดึง code จาก starter repos มาแสดงตรงๆ เพื่อให้ snippet ตรงกับโค้ดที่ compile ได้จริง
   - pymdownx.snippets:
       base_path: [".", "../starter-repos"]
+      # ถ้าไฟล์โค้ดที่อ้างถึงหายไป ให้ build ล้มเหลว แทนที่จะแสดง code block ว่าง
+      check_paths: true
 
 nav:
   - หน้าแรก: index.md
@@ -79,7 +81,6 @@ nav:
       - เลือก model: workshop-2/models.md
       - Foundation Models: workshop-2/foundation-models.md
       - Tool calling: workshop-2/tool-calling.md
-      - Dynamic Profile: workshop-2/dynamic-profiles.md
       - HackathonAI: workshop-2/hackathon-ai.md
   - "Workshop 3: Sensors, Core ML & Create ML":
       - workshop-3/index.md
