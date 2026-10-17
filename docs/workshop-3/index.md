@@ -119,7 +119,7 @@ Workshop 2 ใช้ language model ที่มีอยู่แล้ว ส�
 
 ## ลงมือปฏิบัติ { #hands-on }
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ดูวิธีเอามาใช้ใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-3`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-3) ของ repo handbook นี้ ดูวิธีเอามาใช้ใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
 
 ### ลองใช้ starter project { #starter-tour }
 

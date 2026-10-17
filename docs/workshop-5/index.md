@@ -78,4 +78,4 @@ VisionKit ทำ 3 ขั้นนี้ให้อยู่ข้างใน�
 
 ## ลงมือปฏิบัติ { #hands-on }
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-5`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-5) ของ repo handbook นี้ ดูวิธีเอามาใช้ใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-5`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-5) ของ repo handbook นี้ ดูวิธีเอามาใช้ใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
