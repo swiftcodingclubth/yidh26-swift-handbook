@@ -57,7 +57,7 @@ com.apple.developer.kernel.increased-memory-limit = YES
 
 ## โหลดและใช้ model
 
-สร้าง `CoreAILanguageModel` จาก folder ของ model แล้วส่งให้ `LanguageModelSession` เหมือนที่ทำกับ model บน cluster ใน Workshop 2
+สร้าง `CoreAILanguageModel` จาก folder ของ model แล้วส่งให้ `LanguageModelSession` เหมือนที่ทำกับ AI cluster ใน Workshop 2
 
 ```swift
 import FoundationModels
@@ -104,7 +104,7 @@ print(result.emoji, result.message)
 ```
 
 !!! tip "Model เล็ก ต้องช่วยมันหน่อย"
-    Qwen3 0.6B เล็กกว่า AFM มาก ภาษาไทยอาจไม่ดีเท่า ให้เขียน instructions สั้นและชัด, ใช้ `@Generable` บังคับรูปแบบคำตอบ และเรียกเฉพาะเมื่อจำเป็น เช่น ตอนผู้ใช้กดบันทึก ไม่ใช่ทุกครั้งที่พิมพ์ ลองเทียบผลกับ [AFM 3 หรือ model บน cluster](../workshop-2/models.md) แล้วเลือกตัวที่เหมาะกับ app
+    Qwen3 0.6B เล็กกว่า AFM มาก ภาษาไทยอาจไม่ดีเท่า ให้เขียน instructions สั้นและชัด, ใช้ `@Generable` บังคับรูปแบบคำตอบ และเรียกเฉพาะเมื่อจำเป็น เช่น ตอนผู้ใช้กดบันทึก ไม่ใช่ทุกครั้งที่พิมพ์ ลองเทียบผลกับ [AFM 3 หรือ AI cluster](../workshop-2/models.md) แล้วเลือกตัวที่เหมาะกับ app
 
 ## ใช้ร่วมกับ
 

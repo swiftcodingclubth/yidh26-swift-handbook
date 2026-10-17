@@ -139,4 +139,4 @@ Done when: build ผ่าน, iPad Pro เห็นปุ่มและวั�
 | Agent เขียน `CMMotionManager` หรือ `AVAudioEngine` ใหม่ทั้งหมด | Agent ไม่รู้ว่ามีไฟล์อยู่แล้ว | บอกใน prompt ว่ามีไฟล์ไหน และห้ามแก้ ดู[ตัวอย่าง prompt](#agent-prompts) |
 
 !!! danger "เสียงและการเคลื่อนไหวเป็นข้อมูลส่วนบุคคล"
-    Sound Analysis, Core Motion และ Core ML ประมวลผลบน iPad ไม่ส่งข้อมูลออกนอกเครื่อง แต่ถ้า app บันทึกเสียง เก็บข้อมูลการเคลื่อนไหว หรือส่งผลไปที่ cluster หรือ server ต้องแจ้งให้ผู้ใช้ทราบ
+    Sound Analysis, Core Motion และ Core ML ประมวลผลบน iPad ไม่ส่งข้อมูลออกนอกเครื่อง แต่ถ้า app บันทึกเสียง เก็บข้อมูลการเคลื่อนไหว หรือส่งผลไปที่ AI cluster หรือ server ต้องแจ้งให้ผู้ใช้ทราบ

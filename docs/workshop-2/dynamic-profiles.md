@@ -49,13 +49,13 @@ struct Explainer: DynamicInstructions {
 Profile {
     Explainer(state: state)
 }
-.model(OnPremLanguageModel(.thai, teamKey: Secrets.teamKey))
+.model(aiCluster.languageModel(.chat))
 .temperature(0.7)
 ```
 
 | Modifier | ใช้ทำอะไร |
 |---|---|
-| `.model(_:)` | เลือก model ของ profile นี้ เช่น on-device, PCC หรือ model บน cluster |
+| `.model(_:)` | เลือก model ของ profile นี้ เช่น on-device, PCC หรือ [AI cluster](hackathon-ai.md#model-session) |
 | `.reasoningLevel(_:)` | ให้ model คิดก่อนตอบมากหรือน้อย: `.light`, `.moderate`, `.deep` (สำหรับ model บน server ที่รองรับ) |
 | `.temperature(_:)` | ค่ายิ่งสูงคำตอบยิ่งหลากหลาย ค่าต่ำได้คำตอบคงที่กว่า |
 | `.maximumResponseTokens(_:)` | จำกัดความยาวคำตอบ |
@@ -73,7 +73,7 @@ struct TutorProfile: LanguageModelSession.DynamicProfile {
         switch state.mode {
         case .explain:
             Profile { Explainer(state: state) }
-                .model(OnPremLanguageModel(.thai, teamKey: Secrets.teamKey))
+                .model(aiCluster.languageModel(.chat))
                 .temperature(0.7)
         case .quiz:
             Profile { Instructions("ถามคำถามทีละข้อจากเนื้อหาที่คุยกันมา แล้วรอให้ผู้ใช้ตอบ") }
@@ -89,7 +89,7 @@ struct TutorProfile: LanguageModelSession.DynamicProfile {
 ```swift
 let state = TutorState()
 let session = LanguageModelSession(profile: TutorProfile(state: state))
-try await session.respond(to: "อธิบาย optional ใน Swift")   // profile explain บน cluster
+try await session.respond(to: "อธิบาย optional ใน Swift")   // profile explain บน AI cluster
 
 state.mode = .quiz                        // เช่น ตอนกดปุ่ม "เริ่ม quiz"
 try await session.respond(to: "เริ่มเลย")   // profile quiz บน device

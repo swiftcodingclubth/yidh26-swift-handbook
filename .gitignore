@@ -27,6 +27,6 @@ build/
 .build/
 .swiftpm/
 
-# Secrets: HackathonAI team key (see workshop-2/hackathon-ai.md)
+# Secrets: keep API keys out of Git (see workshop-2/hackathon-ai.md)
 Secrets.plist
 /speaker

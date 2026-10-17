@@ -80,7 +80,8 @@ nav:
       - Foundation Models: workshop-2/foundation-models.md
       - Tool calling: workshop-2/tool-calling.md
       - Dynamic Profile: workshop-2/dynamic-profiles.md
-      - HackathonAI: workshop-2/hackathon-ai.md
+      - AI cluster: workshop-2/hackathon-ai.md
+      - "แบบฝึกหัด: Exam coach": workshop-2/exam-coach.md
   - "Workshop 3: Sensors, Core ML & Create ML":
       - workshop-3/index.md
       - Core Motion: workshop-3/core-motion.md

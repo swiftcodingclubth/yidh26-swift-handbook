@@ -9,7 +9,7 @@ Model ไม่รู้ข้อมูลใน app ของเรา เช�
 3. Framework run ฟังก์ชัน `call(arguments:)` ของเรา แล้วส่งผลลัพธ์กลับไปให้ model
 4. Model ใช้ผลลัพธ์นั้นเขียนคำตอบสุดท้าย
 
-ทั้งหมดเกิดใน `respond(to:)` ครั้งเดียว เราไม่ต้องเขียนโค้ดจัดการขั้นตอนเหล่านี้เอง ใช้ได้ทั้ง Xcode 26 และ 27 กับ on-device model ส่วน model บน cluster ต้องใช้ Xcode 27 ดู [HackathonAI](hackathon-ai.md)
+ทั้งหมดเกิดใน `respond(to:)` ครั้งเดียว เราไม่ต้องเขียนโค้ดจัดการขั้นตอนเหล่านี้เอง ใช้ได้ทั้ง Xcode 26 และ 27 กับ on-device model ส่วน tool calling กับ AI cluster ต้องใช้ Xcode 27 ดู[ใช้ AI cluster ใน session](hackathon-ai.md#model-session)
 
 ## 1. Tool ที่ไม่ต้องรับข้อมูล
 
@@ -137,4 +137,4 @@ try await session.respond(to: "ดูโน้ตเรื่อง Git ให�
     - ให้ tool หนึ่งตัวทำงานเดียว ดีกว่าทำหลายอย่างในตัวเดียว
     - คืนผลลัพธ์สั้นๆ เฉพาะที่ model ต้องใช้ ข้อความยาวทำให้ช้าและกิน context
     - On-device model เล็ก ใส่ tool ไม่เกิน 3–5 ตัวต่อ session
-    - Model บน cluster ใช้ tool ได้เฉพาะตัวที่ช่อง "รองรับ" มี tools ดู[ตาราง model](models.md#model-cluster)
+    - Model ของงานใช้ tool ได้เฉพาะตัวที่ช่อง "ทำอะไรได้" มี tool calling ดู[ตาราง model](hackathon-ai.md#models)

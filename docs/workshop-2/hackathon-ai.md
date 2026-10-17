@@ -1,121 +1,184 @@
-# HackathonAI
+# AI cluster
 
-Model บน cluster ของงาน run อยู่บน server จึงต้องเรียกผ่าน network ปกติแล้วต้องเขียนโค้ดส่ง HTTP request, แปลง JSON และจัดการ API key เอง Package **HackathonAI** ทำส่วนนี้ให้ทั้งหมด และทำให้ model บน cluster ใช้กับ `LanguageModelSession` ได้เหมือน on-device model ทุกอย่างที่เรียนในหน้า [Foundation Models](foundation-models.md) จึงใช้กับ cluster ได้เลย
+ในงานมี AI cluster ซึ่งเป็นกลุ่ม Mac ที่ run open-source model ไว้ให้ทุกทีมใช้ฟรีผ่าน Wi-Fi ของงาน เรียกผ่าน package **HackathonAI** ซึ่งจัดการ HTTP request, API key และการแปลง JSON ให้ทั้งหมด ใช้ได้ทั้ง Xcode 26 และ 27
 
-Starter repo ของ Workshop 2 เพิ่ม package นี้ไว้ให้แล้ว
+!!! note "หน้านี้คือ reference"
+    หน้านี้รวมวิธีเรียก AI cluster ทั้งหมดไว้ใช้ตอน hackathon ส่วนแบบฝึกหัดในคลาสอยู่ที่ [Exam coach](exam-coach.md)
 
-## Setup
+## การเชื่อมต่อ { #connection }
 
-### 1. เก็บ API key ไว้นอก Git
+| รายการ | ค่า |
+|---|---|
+| Address | `http://[TBC local IP]:[TBC port]` ใช้ได้เฉพาะใน Wi-Fi ของงาน |
+| API key | แจกให้แต่ละทีมภายหลัง |
+| Swift package | `https://github.com/swiftcodingclubth/yidh26-ai` เวอร์ชัน `0.0.2` (library `HackathonAI`) |
+| Rate limit ต่อทีม | [TBC] |
 
-แต่ละทีมมี API key ของตัวเองบน Team card ไว้ยืนยันตัวตนกับ cluster ถ้า key หลุดขึ้น GitHub คนอื่นจะใช้ quota ของทีมได้ จึงต้องเก็บไว้ในไฟล์ที่ไม่ถูก commit
+ทุก model เรียกผ่าน address เดียวกัน cluster จะส่ง request ไปยังเครื่องที่ run model นั้นให้เอง
 
-1. เพิ่ม `Secrets.plist` ลง `.gitignore` **ก่อน**สร้างไฟล์
+## Model ที่ใช้ได้ { #models }
 
-    ```text
-    // .gitignore
-    Secrets.plist
+!!! warning "Model ID ยังเป็น TBC"
+    ชื่อใน package ข้างล่าง เช่น `.chat` จะชี้ไปที่ model ID จริงเมื่อ network ของงานพร้อม โค้ดของทีมไม่ต้องเปลี่ยน เรียก `models()` เพื่อดูรายชื่อที่ cluster มีอยู่จริง
+
+| ใน package | Model | ทำอะไรได้ | เหมาะกับ |
+|---|---|---|---|
+| `.chat` | **Smart Route** (Gemma 4 26B / Qwen3.6 35B) | ข้อความ, `@Generable`, tool calling | ตัวเริ่มต้น: สรุป, ถาม-ตอบ, ภาษาไทย, ตอบเป็น struct Server เลือก model ให้เองตามคำถาม |
+| `.reasoning` | **Qwen3.8 27B** | ข้อความ, รูป, `@Generable`, tool calling, คิดก่อนตอบ | โจทย์ที่ต้องคิดหลายขั้น, วิเคราะห์เอกสาร, อ่านรูปหรือกราฟ ช้ากว่า `.chat` |
+| `.medical` | **MedGemma 1.5 4B** | ข้อความ | ศัพท์และความรู้ทางการแพทย์ ใช้ synthetic data เท่านั้น |
+| `.ocr` | **Typhoon OCR 1.5 2B** | รูป → ข้อความ | อ่านข้อความภาษาไทยและอังกฤษจากรูปเอกสาร, ป้าย, กระดาน |
+| `.tts` | **Qwen3-TTS 1.7B** | ข้อความ → เสียง | อ่านข้อความออกเสียง |
+| `.asr` | **Qwen3-ASR 1.7B** | เสียง → ข้อความ (ไทย/อังกฤษ) | ถอดเสียงพูด ถ้าต้องใช้แบบ offline ให้ใช้ Whisper ผ่าน [Core AI](../workshop-3/core-ai.md) บน device แทน |
+
+`.chat` และ `.reasoning` แต่ละตัว run บนหลายเครื่อง Smart Route กระจายงานไปที่ 3 เครื่อง ส่วน Qwen3.8 run แยกกัน 4 เครื่องสำหรับทีมที่ต้องใช้ reasoning หนักๆ
+
+## Setup { #setup }
+
+1. เพิ่ม package ให้ app
+    1. File ▸ **Add Package Dependencies…**
+    2. วาง URL นี้ในช่องค้นหา
+
+        ```text
+        https://github.com/swiftcodingclubth/yidh26-ai
+        ```
+
+    3. ตั้ง **Dependency Rule** เป็น **Exact Version** แล้วใส่ `0.0.2`
+    4. กด **Add Package** แล้วติ๊ก **HackathonAI** ให้ target ของ app
+
+    !!! note "ทำไมต้อง Exact Version"
+        ทุกทีมจะใช้โค้ดชุดเดียวกัน และ package จะไม่เปลี่ยนเองระหว่างงาน ถ้าผู้จัดประกาศเวอร์ชันใหม่ ให้ไปที่ project ▸ แท็บ **Package Dependencies** ▸ ดับเบิลคลิก `yidh26-ai` แล้วเปลี่ยนเลขเวอร์ชัน
+2. สร้างไฟล์ `AICluster.swift` แล้วใส่ address และ API key บรรทัดเดียว เรียก `aiCluster` ได้จากทุกที่ใน app
+
+    ```swift
+    import HackathonAI
+
+    let aiCluster = HackathonAI(baseURL: "http://[TBC]:[TBC]", apiKey: "team-XX-xxxx")
     ```
 
-2. สร้าง `Secrets.plist` แล้วใส่ key จาก Team card
+3. เพิ่ม key ใน Info.plist เพื่อให้ app เชื่อมต่อ server ใน local network ได้ ครั้งแรกที่ run ให้กด **Allow** เมื่อ iPad ถาม
 
     ```text
-    // Secrets.plist (ห้าม commit)
-    TeamKey = "team-XX-xxxxxxxx"
+    NSLocalNetworkUsageDescription
+        "Connects to the AI cluster on the event network."
+    NSAppTransportSecurity
+        NSAllowsArbitraryLoads = YES
     ```
 
-3. เช็กด้วย `git status` ว่าไม่เห็น `Secrets.plist` ในรายการไฟล์ที่จะ commit
+    AI cluster ใช้ `http://` กับ IP address ตรงๆ ถ้าไม่ใส่ `NSAllowsArbitraryLoads` iOS จะ block การเชื่อมต่อ **อย่าใส่ `NSAllowsLocalNetworking` คู่กัน** เพราะ iOS จะไม่สนใจ `NSAllowsArbitraryLoads` ทันที และ package จะแจ้ง error `.blockedByAppTransportSecurity`
 
-### 2. เพิ่ม Info.plist key
+!!! danger "อย่า push API key ขึ้น GitHub แบบ public"
+    ถ้า repo ของทีมเป็น public คนอื่นจะเอา key ไปใช้ quota ของทีมได้ ตั้ง repo เป็น private หรือเพิ่ม `AICluster.swift` ลง `.gitignore`
 
-Cluster อยู่ใน network ของงาน iPadOS จึงอาจถามผู้ใช้ก่อนว่าอนุญาตให้ app เชื่อมต่อ local network ไหม ต้องใส่ข้อความอธิบายไว้ใน Info.plist ไม่อย่างนั้นการเชื่อมต่อจะไม่สำเร็จ
+## ถามแล้วได้คำตอบ { #respond }
 
-```text
-NSLocalNetworkUsageDescription
-    "Connects to the hackathon AI server on the venue network."
+```swift
+// รอคำตอบเต็ม
+let answer = try await aiCluster.respond(
+    to: "สรุปเรื่องนี้ใน 3 ประโยค: \(text)",
+    instructions: "ตอบเป็นภาษาไทย สั้นและชัด")
+
+// Streaming: แต่ละรอบได้คำตอบทั้งหมดจนถึงตอนนั้น ใส่ให้ UI ได้เลย
+for try await partial in aiCluster.streamResponse(to: prompt, model: .reasoning) {
+    output = partial
+}
 ```
 
-ครั้งแรกที่ run ให้กด **Allow** เมื่อ iPad ถาม
+ตั้งค่าเพิ่มได้ผ่าน `options` เช่น `options: .init(temperature: 0.2, maximumResponseTokens: 300)`
 
-## เปลี่ยน model ใน session
+## ตอบเป็น Swift struct ด้วย `@Generable` { #generable }
+
+ใช้ `@Generable` struct แบบเดียวกับที่ใช้กับ `LanguageModelSession` ได้เลย package จะส่ง schema ไปให้ model แล้วแปลง JSON ที่ได้กลับมาเป็น struct ให้
+
+```swift
+@Generable
+struct StudyCard {
+    @Guide(description: "A short title")
+    var title: String
+    @Guide(description: "Key points", .count(3))
+    var keyPoints: [String]
+}
+
+let card = try await aiCluster.respond(to: note.body, generating: StudyCard.self)
+```
+
+!!! question "`@Generable` เรียก API ข้างนอกได้ไหม"
+    ได้ `@Generable` แค่บอกว่าคำตอบต้องหน้าตาเป็นอย่างไร (schema) ส่วนใครเป็นคนตอบนั้นแยกกัน ใช้ struct เดียวกันกับ on-device model, `aiCluster.respond(generating:)` หรือ session ที่ใช้ model ของงาน (iOS 27) ก็ได้ ใช้ได้ตั้งแต่ iOS 26
+
+## ส่งรูป, อ่านข้อความในรูป, เสียง { #media }
+
+```swift
+// ถามเกี่ยวกับรูป (ใช้ model ที่รับรูปได้)
+let explanation = try await aiCluster.respond(
+    to: "กราฟนี้บอกอะไร", model: .reasoning, images: [cgImage])
+
+// อ่านข้อความจากรูปด้วย Typhoon OCR
+let text = try await aiCluster.recognizeText(in: cgImage)
+
+// ข้อความ → เสียง แล้วเล่นด้วย AVAudioPlayer
+let audio = try await aiCluster.speak("สวัสดีครับ")
+player = try AVAudioPlayer(data: audio)
+player?.play()
+
+// เสียง → ข้อความ
+let transcript = try await aiCluster.transcribe(try Data(contentsOf: recordingURL), language: "th")
+```
+
+## ใช้ model ของงานใน `LanguageModelSession` { #model-session }
 
 !!! mchip "{{ mac.apple }} · Xcode 27"
-    การส่ง model บน cluster เข้า `LanguageModelSession` ต้องใช้ iOS 27 SDK ครอบโค้ดด้วย `#if compiler(>=6.4)` ตาม[วิธีในหน้าเริ่มต้นใช้งาน](../getting-started.md#project-xcode-26-27) เพื่อให้เพื่อนที่ใช้ Xcode 26 ยัง build project ได้
-
-สร้าง `OnPremLanguageModel` ด้วย constant ของ model ที่ต้องการและ team key แล้วส่งเข้า session ผ่าน parameter `model:` ที่เหลือใช้เหมือนเดิมทุกอย่าง
+    iOS 27 ส่ง model ของงานเข้า `LanguageModelSession` ได้โดยตรง session จะจำบทสนทนา, ใช้ tool calling และ [Dynamic Profile](dynamic-profiles.md) ได้เหมือน on-device model ครอบโค้ดด้วย `#if compiler(>=6.4)` ตาม[วิธีในหน้าเริ่มต้นใช้งาน](../getting-started.md#project-xcode-26-27) เพื่อให้เพื่อนที่ใช้ Xcode 26 ยัง build ได้
 
 ```swift
-import FoundationModels
-import HackathonAI
+#if compiler(>=6.4)
+let session = LanguageModelSession(
+    model: aiCluster.languageModel(.chat),
+    tools: [FindNotesTool()],
+    instructions: Instructions("ตอบเป็นภาษาไทย"))
+let reply = try await session.respond(to: "สรุป note เรื่องสังเคราะห์แสง")
 
-// On-device AFM 3
-let onDevice = LanguageModelSession()
-
-// Model ภาษาไทยบน cluster: API เดิม แค่เปลี่ยน model
-let thai = LanguageModelSession(
-    model: OnPremLanguageModel(.thai, teamKey: Secrets.teamKey),
-    instructions: "Reply in Thai, concisely.")
-let summary = try await thai.respond(to: "Summarize: \(text)")
-
-// @Generable ใช้ได้เหมือนเดิม
-@Generable struct HealthNote {
-    @Guide(description: "A short, plain-language summary")
-    var summary: String
-    var followUps: [String]
-}
-let medical = LanguageModelSession(
-    model: OnPremLanguageModel(.medical, teamKey: Secrets.teamKey))
-let note = try await medical.respond(to: notes, generating: HealthNote.self)
+// ส่งรูปได้ถ้าบอกว่า model รับรูปได้
+let vision = aiCluster.languageModel(.reasoning, supportsVision: true)
+#endif
 ```
 
-## Fallback เมื่อ cluster ใช้ไม่ได้
+!!! intel "{{ mac.intel }} · Xcode 26"
+    ใช้ `aiCluster.respond(...)` และ `streamResponse(...)` แทน session ได้ครบ รวมถึง `@Generable` ถ้าต้องการบทสนทนาหลายรอบ ส่ง array ของ message เอง: `aiCluster.respond(to: [.system("..."), .user("..."), .assistant("..."), .user("...")])`
 
-การเรียก cluster ล้มเหลวได้หลายแบบ: ออกนอก Wi-Fi ของงาน, cluster มีคิวยาว หรือทีมเรียกเกิน rate limit ถ้าไม่จัดการ ผู้ใช้จะเห็น error แล้ว feature ใช้ไม่ได้
+## Fallback เมื่อใช้ AI cluster ไม่ได้ { #fallback }
 
-**Fallback** คือการถอยกลับมาใช้ on-device model เมื่อเรียก cluster ไม่สำเร็จ คำตอบอาจไม่ดีเท่า แต่ app ยังทำงานได้ ส่งชื่อ model กลับไปด้วยเพื่อแสดงใน UI ว่าใครเป็นคนตอบ
+เรียก AI cluster ไม่สำเร็จได้หลายแบบ เช่น ออกนอก Wi-Fi ของงาน, cluster มีคิวยาว หรือทีมเรียกเกิน rate limit ให้ถอยกลับไปใช้ on-device model เพื่อให้ app ยังทำงานได้ และบอกใน UI ว่าใครเป็นคนตอบ
 
 ```swift
-func summarize(_ text: String) async throws -> (String, model: String) {
+func summarize(_ text: String) async throws -> (summary: String, answeredBy: String) {
     do {
-        let reply = try await thai.respond(to: "Summarize: \(text)")
-        return (reply.content, "Cluster · Thai")
+        return (try await aiCluster.respond(to: "สรุป: \(text)"), "AI cluster")
     } catch {
-        // Cluster ใช้ไม่ได้: ถอยกลับมาใช้ on-device
-        let reply = try await LanguageModelSession()
-            .respond(to: "สรุปข้อความนี้: \(text)")
+        let reply = try await LanguageModelSession().respond(to: "สรุป: \(text)")
         return (reply.content, "On-device")
     }
 }
 ```
 
-## {{ mac.intel }}: `OnPremClient`
+Error ที่เจอได้เป็น `HackathonAIError` แยกกรณีได้ถ้าต้องการบอกผู้ใช้ให้ชัด
 
-!!! intel "{{ mac.intel }} · Xcode 26"
-    iOS 26 SDK ยังส่ง model บน cluster เข้า `LanguageModelSession` ไม่ได้ HackathonAI จึงมี `OnPremClient` ให้ใช้แทน เป็น async API ธรรมดาที่ส่ง prompt แล้วได้ข้อความกลับมา รองรับทั้งแบบรอคำตอบเต็มและแบบ streaming แต่ไม่มี `@Generable` และ tool calling
+| Error | ความหมาย |
+|---|---|
+| `.unreachable` | ไม่ได้อยู่ใน Wi-Fi ของงาน หรือ cluster ล่ม |
+| `.blockedByAppTransportSecurity` | ยังไม่ได้ใส่ `NSAllowsArbitraryLoads` ใน Info.plist |
+| `.unauthorized` | API key ผิด |
+| `.rateLimited(retryAfter:)` | เรียกถี่เกินไป รอตามเวลาที่บอกแล้วค่อยลองใหม่ |
+| `.modelNotFound` | ไม่มี model ชื่อนี้ เรียก `models()` ดูชื่อที่มี |
 
-```swift
-import HackathonAI
+ถ้าต้องการซ่อน feature ที่ต้องใช้ AI cluster ตอนอยู่นอกงาน เช็กก่อนด้วย `await aiCluster.isReachable()`
 
-let client = OnPremClient(teamKey: Secrets.teamKey)
+## Production habits { #habits }
 
-// รอคำตอบเต็ม
-let reply = try await client.respond(to: prompt, model: .thai)
+!!! warning "แบ่งกันใช้"
+    ทุกทีมใช้ AI cluster ชุดเดียวกัน และแต่ละทีมมี rate limit
 
-// Streaming: ได้ข้อความทีละส่วน
-for try await chunk in client.streamResponse(to: prompt, model: .general) {
-    output += chunk
-}
-```
-
-Fallback ใช้หลักเดียวกัน: ครอบด้วย `do`/`catch` แล้วถอยกลับมาใช้ `LanguageModelSession()` บน device
-
-## Production habits
-
-!!! warning "แบ่ง cluster กันใช้"
-    ทุกทีมใช้ cluster ชุดเดียวกัน และแต่ละทีมมี rate limit ถ้าทีมไหนส่ง request เยอะเกิน จะโดนปฏิเสธชั่วคราว
-
-    - อย่าเรียก model ใน loop หรือทุกครั้งที่ผู้ใช้พิมพ์ตัวอักษร ให้เรียกเมื่อกดปุ่มหรือพิมพ์เสร็จ
-    - จำกัดความยาวคำตอบเท่าที่จำเป็น คำตอบยาวใช้เวลาและทรัพยากรมากขึ้น
+    - อย่าเรียก model ใน loop หรือทุกครั้งที่ผู้ใช้พิมพ์ ให้เรียกเมื่อกดปุ่มหรือพิมพ์เสร็จ
+    - จำกัดความยาวคำตอบด้วย `maximumResponseTokens` เท่าที่จำเป็น
+    - ใช้ `.chat` เป็นหลัก ใช้ `.reasoning` เฉพาะงานที่ต้องคิดจริงๆ เพราะช้ากว่าและมีเครื่องน้อยกว่า
     - ถ้าโดน rate limit อย่ากดซ้ำทันที รอสักครู่หรือใช้ fallback
 
 !!! danger "ข้อมูลสุขภาพ"
@@ -123,4 +186,4 @@ Fallback ใช้หลักเดียวกัน: ครอบด้วย
     - ผลจาก `.medical` เป็นข้อมูลเบื้องต้น **ไม่ใช่การวินิจฉัยหรือคำแนะนำการรักษา** และต้องบอกผู้ใช้ชัดเจนใน UI
 
 !!! tip "Demo ที่ไม่พัง"
-    Judging ต้อง demo ใน Wi-Fi ของงาน แต่ network อาจมีปัญหาได้เสมอ ให้มี on-device fallback ไว้ app จะยังใช้ได้แม้ต่อ cluster ไม่ได้ ลองปิด Wi-Fi แล้ว run ดูก่อน demo
+    Judging ต้อง demo ใน Wi-Fi ของงาน แต่ network อาจมีปัญหาได้เสมอ ให้มี on-device fallback ไว้ ลองปิด Wi-Fi แล้ว run ดูก่อน demo

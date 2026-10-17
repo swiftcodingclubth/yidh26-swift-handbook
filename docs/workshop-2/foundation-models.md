@@ -2,7 +2,7 @@
 
 **Foundation Models** คือ framework ของ Apple สำหรับใช้ language model ใน app หัวใจของมันคือ `LanguageModelSession` ซึ่งเป็นตัวแทนของ "บทสนทนา" หนึ่งครั้งกับ model: เราส่ง prompt เข้าไป แล้วได้คำตอบกลับมา
 
-ใช้ได้ทั้ง Xcode 26 และ 27 โค้ดทุกตัวอย่างในหน้านี้ใช้กับ on-device AFM 3 และใช้กับ model บน cluster ได้เหมือนกันเมื่อ[เปลี่ยน model](hackathon-ai.md)
+ใช้ได้ทั้ง Xcode 26 และ 27 โค้ดทุกตัวอย่างในหน้านี้ใช้กับ on-device AFM 3 และใช้กับ AI cluster ได้เหมือนกันเมื่อ[เปลี่ยน model](hackathon-ai.md#model-session)
 
 !!! intel "{{ mac.intel }} · Xcode 26"
     Simulator บน {{ mac.intel }} ไม่รองรับ Apple Intelligence ให้ run บน iPad เสมอ
