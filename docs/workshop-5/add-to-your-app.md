@@ -4,9 +4,9 @@
 
 ## 0. ดาวน์โหลด starter project { #get-starter }
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-5`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-5) ของ repo handbook นี้
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-5`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-5) ของ repo handbook นี้
 
-1. เปิด [repo handbook](https://github.com/tawapnas/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
+1. เปิด [repo handbook](https://github.com/swiftcodingclubth/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
 2. เปิด `starter/workshop-5/Workshop5Starter.xcodeproj`
 3. เลือก target **Workshop5Starter** → **Signing & Capabilities** → เลือก **Team** ของตัวเอง แล้ว run บน iPad
 

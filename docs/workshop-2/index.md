@@ -51,7 +51,6 @@ Feature บางอย่างต้องใช้ iOS 27 SDK ซึ่งม
 | [เลือก model](models.md) | Model แต่ละตัว run ที่ไหน เหมาะกับงานแบบไหน และวิธีเช็กว่าเครื่องรองรับ |
 | [Foundation Models](foundation-models.md) | พื้นฐาน `LanguageModelSession` บน device: ถาม-ตอบ, streaming, `@Generable` |
 | [Tool calling](tool-calling.md) | ให้ model เรียกฟังก์ชันของเราเพื่อดึงข้อมูลหรือทำ action ใน app |
-| [Dynamic Profile](dynamic-profiles.md) | เปลี่ยน instructions, tools และ model ของ session ตาม state (iOS 27) |
 | [AI cluster](hackathon-ai.md) | Reference: model ที่มีในงาน, setup, วิธีเรียก, fallback และกติกาการใช้ร่วมกัน |
 | [แบบฝึกหัด: Exam coach](exam-coach.md) | ต่อยอด StudyNotes ด้วยข้อสอบที่ยากขึ้นเมื่อตอบถูก โดยใช้ AI cluster |
 

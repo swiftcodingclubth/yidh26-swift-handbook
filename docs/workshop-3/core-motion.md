@@ -339,7 +339,7 @@ func detectSwing(_ data: CMDeviceMotion) -> Bool {
 
 ถือ iPad แนวนอนแปะหน้าผาก จอหันออกให้เพื่อนเห็นคำ เพื่อนใบ้ แล้ว **ก้มหน้า = ตอบถูก** และ **เงยหน้า = ข้าม** เป็นเกมที่ไม่มีใน use case ต้องเอาสิ่งที่เรียนมาประกอบเอง
 
-เปิดหน้า **เกมใบ้คำ** ในแท็บ Motion ของ starter หน้าจอ คำ คะแนน และการนับคำทำไว้ให้แล้ว เหลือเขียนแค่ `detectTilt` ใน `Tabs/Motion/HeadsUpView.swift` ซึ่งตอนนี้คืน `nil` ไว้ก่อน เกมจึงยังไม่ขยับ
+เปิดหน้า **เกมใบ้คำ** ในแท็บ Motion ของ starter หน้าจอ คำ คะแนน และการนับคำทำไว้ให้แล้ว เหลือเขียนแค่ `detectTilt` ใน `Tabs/Motion/HeadsUpView.swift` ซึ่งตอนนี้ทุกบรรทัดคืน `nil` ไว้ก่อน เกมจึงยังไม่ขยับ
 
 | ท่า | จอหันไปทาง | `gravity.z` ประมาณ |
 |---|---|---|
@@ -348,11 +348,15 @@ func detectSwing(_ data: CMDeviceMotion) -> Bool {
 | เงยหน้า | เพดาน | -1 |
 
 1. **ดูค่าจริง** เปิด GravityView ถือเครื่องแปะหน้าผาก แล้วจดค่า `gravity.z` ตอนตั้งตรง ก้ม และเงย
-2. **TODO: เขียน `detectTilt`** คืน `.down` / `.up` / `.upright` ตามค่า `gravity.z` และคืน `nil` เมื่ออยู่ระหว่างกลาง
+2. **TODO: เติมว่าต้อง return อะไร** เงื่อนไขเขียนไว้ให้แล้ว เปลี่ยน `nil` ใน 3 บรรทัดแรกเป็น `.down` / `.up` / `.upright` ให้ถูกท่า ส่วนบรรทัดสุดท้ายคือช่วงระหว่างกลาง ปล่อยเป็น `nil` ไว้
 
     ```swift
     func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
-        return nil   // TODO
+        let z = data.gravity.z
+        if z > 0.7 { return nil }
+        if z < -0.7 { return nil }
+        if z < 0.3 && z > -0.3 { return nil }
+        return nil   // ตอนนี้ยังไม่รู้จักท่าไหนเลย เกมจึงยังไม่ขยับ
     }
     ```
 
@@ -402,7 +406,7 @@ startMotionUpdates { data in
                 let z = data.gravity.z
                 if z > 0.7 { return .down }
                 if z < -0.7 { return .up }
-                if abs(z) < 0.3 { return .upright }
+                if z < 0.3 && z > -0.3 { return .upright }
                 return nil   // ช่วงกลาง 0.3 ถึง 0.7 กันค่าแกว่งไปมาตรงเส้นเกณฑ์
             }
             ```

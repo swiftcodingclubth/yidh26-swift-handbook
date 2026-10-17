@@ -74,7 +74,7 @@ App Intents, widget และ Control Center มีตั้งแต่ Xcode 2
 
 ## ลงมือปฏิบัติ { #hands-on }
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-4`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-4) ของ repo handbook นี้ มี 2 แบบ: `Start` ใช้ทำ code-along และ `Finished` ที่ทำเสร็จแล้ว ดูวิธีเปิดใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-4`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-4) ของ repo handbook นี้ มี 2 แบบ: `Start` ใช้ทำ code-along และ `Finished` ที่ทำเสร็จแล้ว ดูวิธีเปิดใน[ใส่ใน app ของทีม](add-to-your-app.md#get-starter)
 
 ### 1. ทำตามไปด้วยกัน: My Drink
 

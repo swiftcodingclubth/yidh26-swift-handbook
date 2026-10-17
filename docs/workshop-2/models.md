@@ -28,7 +28,7 @@
 
 Model ทั้งหมดที่ run บน AI cluster ของงาน, ความสามารถของแต่ละตัว และวิธีเรียก อยู่ที่หน้า [AI cluster](hackathon-ai.md#models)
 
-## เช็กว่าเครื่องรองรับไหม
+## เช็กว่าเครื่องรองรับไหม { #availability }
 
 ไม่ใช่ทุกเครื่องจะใช้ on-device model ได้ เช่น iPad รุ่นเก่า หรือเครื่องที่ผู้ใช้ปิด Apple Intelligence ไว้ ถ้าเรียกใช้โดยไม่เช็กก่อน app จะ error ให้เช็ก `availability` ก่อนแสดง feature และเตรียมทางเลือกไว้ทุกกรณี
 

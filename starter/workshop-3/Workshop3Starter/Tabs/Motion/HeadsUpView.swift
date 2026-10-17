@@ -8,10 +8,14 @@ import SwiftUI
 /// ท่าของศีรษะตอนถือเครื่องแปะหน้าผาก
 enum HeadTilt { case down, up, upright }
 
-/// TODO: จับท่าจาก gravity.z
+/// TODO: เปลี่ยน nil ใน 3 บรรทัดแรกเป็นท่าที่ถูกต้อง
 /// เปิด GravityView ถือเครื่องแปะหน้าผาก แล้วดูค่า z ตอนตั้งตรง ก้มหน้า และเงยหน้า
 /// ก้มหน้า (จอหันลงพื้น) → .down · เงยหน้า (จอหันขึ้นเพดาน) → .up · ตั้งตรง → .upright · อยู่ระหว่างกลาง → nil
 func detectTilt(_ data: CMDeviceMotion) -> HeadTilt? {
+    let z = data.gravity.z
+    if z > 0.7 { return nil }
+    if z < -0.7 { return nil }
+    if z < 0.3 && z > -0.3 { return nil }
     return nil   // ตอนนี้ยังไม่รู้จักท่าไหนเลย เกมจึงยังไม่ขยับ
 }
 

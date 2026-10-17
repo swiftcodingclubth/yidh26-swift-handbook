@@ -13,7 +13,7 @@
 | ต้องใส่ model ใน app | ไม่ต้อง | ใส่ไฟล์เล็ก ๆ | ใส่ไฟล์ใหญ่ หลายร้อย MB ขึ้นไป |
 | ใช้เมื่อ | งานภาษาทั่วไป | จดจำท่าทาง เสียง ภาพแบบที่กำหนดเอง | ต้องการ model เฉพาะที่ AFM ไม่มี หรืออยากเลือก model เอง |
 
-จุดสำคัญคือ language model ของ Core AI **ใช้กับ `LanguageModelSession` ได้เหมือน AFM** ทุกอย่างที่เรียนใน Workshop 2 ทั้ง [Foundation Models](../workshop-2/foundation-models.md), [Tool calling](../workshop-2/tool-calling.md) และ [Dynamic Profile](../workshop-2/dynamic-profiles.md) จึงใช้กับ Core AI ได้ทันที
+จุดสำคัญคือ language model ของ Core AI **ใช้กับ `LanguageModelSession` ได้เหมือน AFM** ทุกอย่างที่เรียนใน Workshop 2 ทั้ง [Foundation Models](../workshop-2/foundation-models.md) และ [Tool calling](../workshop-2/tool-calling.md) จึงใช้กับ Core AI ได้ทันที
 
 ## Model สำเร็จรูปจาก Apple
 
@@ -105,10 +105,6 @@ print(result.emoji, result.message)
 
 !!! tip "Model เล็ก ต้องช่วยมันหน่อย"
     Qwen3 0.6B เล็กกว่า AFM มาก ภาษาไทยอาจไม่ดีเท่า ให้เขียน instructions สั้นและชัด, ใช้ `@Generable` บังคับรูปแบบคำตอบ และเรียกเฉพาะเมื่อจำเป็น เช่น ตอนผู้ใช้กดบันทึก ไม่ใช่ทุกครั้งที่พิมพ์ ลองเทียบผลกับ [AFM 3 หรือ AI cluster](../workshop-2/models.md) แล้วเลือกตัวที่เหมาะกับ app
-
-## ใช้ร่วมกับ
-
-- [Dynamic Profile](../workshop-2/dynamic-profiles.md#profiles): ส่ง Core AI model เข้า `.model()` ได้ เช่น ใช้ AFM ตอนคุยทั่วไป แล้วสลับไป Core AI model ที่เลือกเองตอนให้คำแนะนำ
 
 ## ไปต่อ
 

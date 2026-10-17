@@ -4,14 +4,14 @@
 
 ## 0. ดาวน์โหลด starter project { #get-starter }
 
-Starter project อยู่ในโฟลเดอร์ `starter/` ของ [repo handbook](https://github.com/tawapnas/yidh26-swift-handbook) นี้
+Starter project อยู่ในโฟลเดอร์ `starter/` ของ [repo handbook](https://github.com/swiftcodingclubth/yidh26-swift-handbook) นี้
 
 | โฟลเดอร์ | ใช้ทำอะไร |
 |---|---|
-| [`workshop-3`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3) | app ตัวอย่าง แท็บละหัวข้อ: Motion, Sound, LiDAR, Core ML และโฟลเดอร์ `SensorParts/` กับ `MLParts/` ที่ copy ไปใช้ได้ |
-| [`workshop-3/EmotionData`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-3/EmotionData) | ข้อมูลสำหรับ train text classifier ใน [Create ML](create-ml.md) |
+| [`workshop-3`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-3) | app ตัวอย่าง แท็บละหัวข้อ: Motion, Sound, LiDAR, Core ML และโฟลเดอร์ `SensorParts/` กับ `MLParts/` ที่ copy ไปใช้ได้ |
+| [`workshop-3/EmotionData`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-3/EmotionData) | ข้อมูลสำหรับ train text classifier ใน [Create ML](create-ml.md) |
 
-1. เปิด [repo handbook](https://github.com/tawapnas/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
+1. เปิด [repo handbook](https://github.com/swiftcodingclubth/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
 2. เปิด `starter/workshop-3/Workshop3Starter.xcodeproj`
 3. เลือก target **Workshop3Starter** → **Signing & Capabilities** → เลือก **Team** ของตัวเอง แล้ว run บน iPad
 
