@@ -61,7 +61,11 @@ func summarize(_ note: Note, creative: Bool) async throws {
 
 ## โค้ดใหม่: AI cluster { #after }
 
-เพิ่ม `import HackathonAI` บนสุดของ `NoteAssistant.swift` แล้วแก้ `summarize` เป็นแบบนี้
+เพิ่ม `import HackathonAI` บนสุดของ `NoteAssistant.swift` แล้วแก้ `summarize` ตาม Xcode ที่ใช้
+
+### {{ mac.apple }} · Xcode 27 { #xcode-27 }
+
+ใช้ `LanguageModelSession` เหมือนเดิม ต่างกันแค่ส่ง `aiCluster.languageModel(HackathonAI.smartRoute)` เข้าไปเป็น model
 
 ```swift
 func summarize(_ note: Note, creative: Bool) async throws {
@@ -88,12 +92,11 @@ func summarize(_ note: Note, creative: Bool) async throws {
         )
         let response = try await session.respond(to: prompt, options: options)
         note.summary = response.content
-        return                         // จบตรงนี้ ไม่ต้องทำโค้ด Xcode 26 ข้างล่าง
+        return
     }
     #endif
 
-    // Xcode 26 / iOS 26: ส่ง model ของงานเข้า LanguageModelSession ไม่ได้
-    // จึงเรียก AI cluster ตรงๆ ซึ่งคืนค่าเป็น String จึงไม่ต้องใช้ .content
+    // iPad ที่ยังเป็น iOS 26 หรือเพื่อนในทีมที่ใช้ Xcode 26 จะมาทำตรงนี้แทน
     note.summary = try await aiCluster.respond(
         to: prompt,
         model: HackathonAI.smartRoute,
@@ -104,11 +107,36 @@ func summarize(_ note: Note, creative: Bool) async throws {
 }
 ```
 
-สิ่งที่เปลี่ยน
+ต้องมีโค้ดส่วนล่างไว้ด้วย เพราะ deployment target ของ project คือ iOS 26 และเพื่อนในทีมอาจใช้ Xcode 26 ดู[ใช้ project เดียวกันทั้ง Xcode 26 และ 27](../getting-started.md#project-xcode-26-27)
 
-- ย้าย instructions และ prompt ออกมาเป็นตัวแปร เพราะใช้ทั้ง 2 ทาง
-- {{ mac.apple }} · Xcode 27: โค้ดเหมือนเดิมทุกอย่าง ต่างกันแค่ส่ง `aiCluster.languageModel(HackathonAI.smartRoute)` เข้า `LanguageModelSession`
-- {{ mac.intel }} · Xcode 26: ใช้ `aiCluster.respond(...)` แทน session และใช้ `HackathonAI.Options` แทน `GenerationOptions`
+### {{ mac.intel }} · Xcode 26 { #xcode-26 }
+
+iOS 26 SDK ส่ง model ของ AI cluster เข้า `LanguageModelSession` ไม่ได้ จึงเรียก `aiCluster.respond(...)` ตรงๆ แทน
+
+```swift
+func summarize(_ note: Note, creative: Bool) async throws {
+    isWorking = true
+    defer { isWorking = false }
+
+    note.summary = try await aiCluster.respond(
+        to: "Title: \(note.title)\n\n\(note.body)",
+        model: HackathonAI.smartRoute,
+        instructions: """
+            You summarize a student's study notes. \
+            Reply with exactly two sentences, in the same language as the note. \
+            Only use facts that appear in the note.
+            """,
+        options: HackathonAI.Options(
+            temperature: creative ? 1.0 : 0.2,
+            maximumResponseTokens: 120))
+}
+```
+
+สิ่งที่เปลี่ยนจากโค้ดเดิม
+
+- ไม่มี `LanguageModelSession` แล้ว ส่ง instructions เข้า `respond` ตรงๆ
+- ใช้ `HackathonAI.Options` แทน `GenerationOptions`
+- `respond` คืนค่าเป็น `String` จึงไม่ต้องใช้ `.content`
 
 ## ลองดู { #try }
 
