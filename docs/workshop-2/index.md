@@ -37,10 +37,10 @@ let b = try await aiCluster.respond(to: "Make a study card: \(text)", generating
 Feature บางอย่างต้องใช้ iOS 27 SDK ซึ่งมีเฉพาะใน Xcode 27 บน {{ mac.apple }}
 
 !!! mchip "{{ mac.apple }} · Xcode 27"
-    ทำได้ครบทุกส่วน: ใช้ on-device AFM 3, ส่ง model ของ AI cluster เข้า `LanguageModelSession` ได้โดยตรง, ใช้ PCC, [Dynamic Profile](dynamic-profiles.md) และส่งรูปให้ AFM 3 วิเคราะห์
+    ทำได้ครบทุกส่วน: ใช้ on-device AFM 3, ส่ง model ของ AI cluster เข้า `LanguageModelSession` ได้โดยตรง, ใช้ PCC และส่งรูปให้ AFM 3 วิเคราะห์
 
 !!! intel "{{ mac.intel }} · Xcode 26"
-    ใช้ `LanguageModelSession` กับ on-device AFM 3 ได้ตามปกติ และเรียก AI cluster ผ่าน `aiCluster.respond(...)` ได้ รวมถึง `@Generable` แต่ iOS 26 SDK ยังส่ง model ของงานเข้า session ไม่ได้ จึงไม่มี tool calling และ Dynamic Profile กับ AI cluster
+    ใช้ `LanguageModelSession` กับ on-device AFM 3 ได้ตามปกติ และเรียก AI cluster ผ่าน `aiCluster.respond(...)` ได้ รวมถึง `@Generable` แต่ iOS 26 SDK ยังส่ง model ของงานเข้า session ไม่ได้ จึงไม่มี tool calling กับ AI cluster
 
 ## หัวข้อหลัก { #pages }
 
@@ -56,9 +56,15 @@ Feature บางอย่างต้องใช้ iOS 27 SDK ซึ่งม
 
 ## ลงมือปฏิบัติ { #hands-on }
 
-ใช้ app **StudyNotes** ตลอด workshop เริ่มจากทำ feature บน on-device ตามหน้า [Foundation Models](foundation-models.md), [Tool calling](tool-calling.md) และ [Dynamic Profile](dynamic-profiles.md) แล้วต่อยอดด้วย model ที่ใหญ่กว่าใน [แบบฝึกหัด Exam coach](exam-coach.md)
+ทุกคนสร้าง **StudyNotes** app จดโน้ตที่มี AI ช่วยทบทวน จาก [starter repo](https://github.com/swiftcodingclubth/study-notes) เริ่มจาก feature ที่ run บน device ซึ่งทำได้ทุกเครื่อง เขียนโค้ดใน `NoteAssistant.swift` ตาม `// TODO` แล้วต่อยอดด้วย model ที่ใหญ่กว่าใน [แบบฝึกหัด Exam coach](exam-coach.md)
 
-1. **ใส่ address และ API key** ใน `AICluster.swift` ดู [Setup](hackathon-ai.md#setup)
-2. **ทำ Exam coach** ตามขั้นตอนใน[แบบฝึกหัด](exam-coach.md)
-3. **แสดงใน UI ว่า model ไหนเป็นคนตอบ** เช่น ป้าย "AI cluster" หรือ "On-device" จะได้รู้ว่า fallback ทำงานอยู่หรือเปล่า
-4. **ทดสอบ fallback** ปิด Wi-Fi บน iPad แล้วทำข้อสอบอีกครั้ง app ต้องยังทำงานได้และป้ายเปลี่ยนเป็น "On-device"
+1. **ซ่อนปุ่ม AI** บนเครื่องที่ไม่รองรับ ดู [เช็กว่าเครื่องรองรับไหม](models.md#availability)
+2. **สรุปโน้ต** 2 ประโยค พร้อมสวิตช์ Precise / Creative ดู [Foundation Models](foundation-models.md)
+3. **สร้าง study card** ด้วย `@Generable` ดู [`@Generable`](foundation-models.md#generable-model-structured-output)
+4. **ตั้งเวลาทบทวน** ด้วย tool ที่สร้าง reminder ในแอป Reminders ดู [Tool calling](tool-calling.md)
+5. **Stream study card** ให้ค่อยๆ เติมบนจอ ดู [Streaming](foundation-models.md#streaming)
+6. **ติด tag อัตโนมัติ** ด้วย content tagging model แล้วกรองโน้ตตาม tag
+7. **ใส่ address และ API key** ใน `AICluster.swift` ดู [Setup](hackathon-ai.md#setup)
+8. **ทำ Exam coach** ตามขั้นตอนใน[แบบฝึกหัด](exam-coach.md)
+9. **แสดงใน UI ว่า model ไหนเป็นคนตอบ** เช่น ป้าย "AI cluster" หรือ "On-device" จะได้รู้ว่า fallback ทำงานอยู่หรือเปล่า
+10. **ทดสอบ fallback** ปิด Wi-Fi บน iPad แล้วทำข้อสอบอีกครั้ง app ต้องยังทำงานได้และป้ายเปลี่ยนเป็น "On-device"

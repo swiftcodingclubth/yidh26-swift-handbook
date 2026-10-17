@@ -126,7 +126,7 @@ let transcript = try await aiCluster.transcribe(try Data(contentsOf: recordingUR
 ## ใช้ model ของงานใน `LanguageModelSession` { #model-session }
 
 !!! mchip "{{ mac.apple }} · Xcode 27"
-    iOS 27 ส่ง model ของงานเข้า `LanguageModelSession` ได้โดยตรง session จะจำบทสนทนา, ใช้ tool calling และ [Dynamic Profile](dynamic-profiles.md) ได้เหมือน on-device model ครอบโค้ดด้วย `#if compiler(>=6.4)` ตาม[วิธีในหน้าเริ่มต้นใช้งาน](../getting-started.md#project-xcode-26-27) เพื่อให้เพื่อนที่ใช้ Xcode 26 ยัง build ได้
+    iOS 27 ส่ง model ของงานเข้า `LanguageModelSession` ได้โดยตรง session จะจำบทสนทนา, ใช้ tool calling ได้เหมือน on-device model ครอบโค้ดด้วย `#if compiler(>=6.4)` ตาม[วิธีในหน้าเริ่มต้นใช้งาน](../getting-started.md#project-xcode-26-27) เพื่อให้เพื่อนที่ใช้ Xcode 26 ยัง build ได้
 
 ```swift
 #if compiler(>=6.4)
