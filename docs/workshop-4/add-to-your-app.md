@@ -4,14 +4,14 @@
 
 ## 0. ดาวน์โหลด starter project { #get-starter }
 
-Starter project อยู่ในโฟลเดอร์ [`starter/workshop-4`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-4) ของ repo handbook นี้
+Starter project อยู่ในโฟลเดอร์ [`starter/workshop-4`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-4) ของ repo handbook นี้
 
 | โฟลเดอร์ | ใช้ทำอะไร |
 |---|---|
 | `Start/` | ใช้ทำ code-along มีหน้าจอ, widget และ App Group พร้อมแล้ว พร้อม `TODO` ตรงที่ต้องเขียนโค้ด |
 | `Finished/` | ทำครบทุกหัวข้อแล้ว รวม Siri AI และ AppIntentsTesting ใช้ดูคำตอบหรือ copy ไฟล์ |
 
-1. เปิด [repo handbook](https://github.com/tawapnas/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
+1. เปิด [repo handbook](https://github.com/swiftcodingclubth/yidh26-swift-handbook) กด **Code → Download ZIP** แล้วแตกไฟล์ (หรือใช้ `git clone` ก็ได้)
 2. เปิด `starter/workshop-4/Start/WaterLog.xcodeproj`
 3. เลือก **Team** ใน **Signing & Capabilities** ของทุก target (`WaterLog`, `WaterLogWidgets` และ `WaterLogUITests` ใน `Finished`) แล้ว run scheme **WaterLog** บน iPad
 
@@ -75,7 +75,7 @@ Run บน iPad แล้วทดสอบทีละข้อ ข้อที
 
 ### ให้ agent อ่านคู่มือของ Apple ก่อน { #apple-skills }
 
-Apple เขียนคู่มือ App Intents สำหรับ coding agent ไว้ 2 ชุด (agent skill) อยู่ในโฟลเดอร์ [`starter/workshop-4/agent-skills`](https://github.com/tawapnas/yidh26-swift-handbook/tree/main/starter/workshop-4/agent-skills) agent ที่อ่านคู่มือนี้จะเขียนโค้ดตาม API ปัจจุบัน และไม่ใช้ API ที่เลิกใช้แล้ว
+Apple เขียนคู่มือ App Intents สำหรับ coding agent ไว้ 2 ชุด (agent skill) อยู่ในโฟลเดอร์ [`starter/workshop-4/agent-skills`](https://github.com/swiftcodingclubth/yidh26-swift-handbook/tree/main/starter/workshop-4/agent-skills) agent ที่อ่านคู่มือนี้จะเขียนโค้ดตาม API ปัจจุบัน และไม่ใช้ API ที่เลิกใช้แล้ว
 
 | Skill | ใช้เมื่อ |
 |---|---|
