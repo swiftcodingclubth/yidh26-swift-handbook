@@ -82,7 +82,7 @@ nav:
       - Foundation Models: workshop-2/foundation-models.md
       - Tool calling: workshop-2/tool-calling.md
       - AI cluster: workshop-2/hackathon-ai.md
-      - "แบบฝึกหัด: Exam coach": workshop-2/exam-coach.md
+      - "แบบฝึกหัด: สรุปด้วย AI cluster": workshop-2/summarize-ai-cluster.md
   - "Workshop 3: Sensors, Core ML & Create ML":
       - workshop-3/index.md
       - Core Motion: workshop-3/core-motion.md

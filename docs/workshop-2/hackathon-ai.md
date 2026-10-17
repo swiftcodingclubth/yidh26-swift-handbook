@@ -3,13 +3,13 @@
 ในงานมี AI cluster ซึ่งเป็นกลุ่ม Mac ที่ run open-source model ไว้ให้ทุกทีมใช้ฟรีผ่าน Wi-Fi ของงาน เรียกผ่าน package **HackathonAI** ซึ่งจัดการ HTTP request, API key และการแปลง JSON ให้ทั้งหมด ใช้ได้ทั้ง Xcode 26 และ 27
 
 !!! note "หน้านี้คือ reference"
-    หน้านี้รวมวิธีเรียก AI cluster ทั้งหมดไว้ใช้ตอน hackathon ส่วนแบบฝึกหัดในคลาสอยู่ที่ [Exam coach](exam-coach.md)
+    หน้านี้รวมวิธีเรียก AI cluster ทั้งหมดไว้ใช้ตอน hackathon ส่วนแบบฝึกหัดในคลาสอยู่ที่ [สรุปโน้ตด้วย AI cluster](summarize-ai-cluster.md)
 
 ## การเชื่อมต่อ { #connection }
 
 | รายการ | ค่า |
 |---|---|
-| Address | `http://[TBC local IP]:[TBC port]` ใช้ได้เฉพาะใน Wi-Fi ของงาน |
+| Address | `http://10.1.117.186:3949` ใช้ได้เฉพาะใน Wi-Fi ของงาน |
 | API key | แจกให้แต่ละทีมภายหลัง |
 | Swift package | `https://github.com/swiftcodingclubth/yidh26-ai` เวอร์ชัน `0.0.2` (library `HackathonAI`) |
 | Rate limit ต่อทีม | [TBC] |
@@ -18,19 +18,19 @@
 
 ## Model ที่ใช้ได้ { #models }
 
-!!! warning "Model ID ยังเป็น TBC"
-    ชื่อใน package ข้างล่าง เช่น `.chat` จะชี้ไปที่ model ID จริงเมื่อ network ของงานพร้อม โค้ดของทีมไม่ต้องเปลี่ยน เรียก `models()` เพื่อดูรายชื่อที่ cluster มีอยู่จริง
+!!! warning "ใช้ `HackathonAI.smartRoute` แทน `.chat`"
+    Smart Route ของงานใช้ model ID `@route/sccth-gq` ซึ่งไม่ตรงกับ `.chat` ที่มากับ package ให้ประกาศ `HackathonAI.smartRoute` ตาม [Setup ข้อ 2](#setup) แล้วส่งเข้า `model:` ทุกครั้ง Model อื่นในตารางยังเป็น TBC เรียก `models()` เพื่อดูรายชื่อที่ cluster มีอยู่จริง
 
 | ใน package | Model | ทำอะไรได้ | เหมาะกับ |
 |---|---|---|---|
-| `.chat` | **Smart Route** (Gemma 4 26B / Qwen3.6 35B) | ข้อความ, `@Generable`, tool calling | ตัวเริ่มต้น: สรุป, ถาม-ตอบ, ภาษาไทย, ตอบเป็น struct Server เลือก model ให้เองตามคำถาม |
-| `.reasoning` | **Qwen3.8 27B** | ข้อความ, รูป, `@Generable`, tool calling, คิดก่อนตอบ | โจทย์ที่ต้องคิดหลายขั้น, วิเคราะห์เอกสาร, อ่านรูปหรือกราฟ ช้ากว่า `.chat` |
+| `HackathonAI.smartRoute` | **Smart Route** (Gemma 4 26B / Qwen3.6 35B) | ข้อความ, `@Generable`, tool calling | ตัวเริ่มต้น: สรุป, ถาม-ตอบ, ภาษาไทย, ตอบเป็น struct Server เลือก model ให้เองตามคำถาม |
+| `.reasoning` | **Qwen3.8 27B** | ข้อความ, รูป, `@Generable`, tool calling, คิดก่อนตอบ | โจทย์ที่ต้องคิดหลายขั้น, วิเคราะห์เอกสาร, อ่านรูปหรือกราฟ ช้ากว่า Smart Route |
 | `.medical` | **MedGemma 1.5 4B** | ข้อความ | ศัพท์และความรู้ทางการแพทย์ ใช้ synthetic data เท่านั้น |
 | `.ocr` | **Typhoon OCR 1.5 2B** | รูป → ข้อความ | อ่านข้อความภาษาไทยและอังกฤษจากรูปเอกสาร, ป้าย, กระดาน |
 | `.tts` | **Qwen3-TTS 1.7B** | ข้อความ → เสียง | อ่านข้อความออกเสียง |
 | `.asr` | **Qwen3-ASR 1.7B** | เสียง → ข้อความ (ไทย/อังกฤษ) | ถอดเสียงพูด ถ้าต้องใช้แบบ offline ให้ใช้ Whisper ผ่าน [Core AI](../workshop-3/core-ai.md) บน device แทน |
 
-`.chat` และ `.reasoning` แต่ละตัว run บนหลายเครื่อง Smart Route กระจายงานไปที่ 3 เครื่อง ส่วน Qwen3.8 run แยกกัน 4 เครื่องสำหรับทีมที่ต้องใช้ reasoning หนักๆ
+Smart Route และ `.reasoning` แต่ละตัว run บนหลายเครื่อง Smart Route กระจายงานไปที่ 3 เครื่อง ส่วน Qwen3.8 run แยกกัน 4 เครื่องสำหรับทีมที่ต้องใช้ reasoning หนักๆ
 
 ## Setup { #setup }
 
@@ -47,12 +47,16 @@
 
     !!! note "ทำไมต้อง Exact Version"
         ทุกทีมจะใช้โค้ดชุดเดียวกัน และ package จะไม่เปลี่ยนเองระหว่างงาน ถ้าผู้จัดประกาศเวอร์ชันใหม่ ให้ไปที่ project ▸ แท็บ **Package Dependencies** ▸ ดับเบิลคลิก `yidh26-ai` แล้วเปลี่ยนเลขเวอร์ชัน
-2. สร้างไฟล์ `AICluster.swift` แล้วใส่ address และ API key บรรทัดเดียว เรียก `aiCluster` ได้จากทุกที่ใน app
+2. สร้างไฟล์ `AICluster.swift` แล้วใส่ address, API key และ model ID ของ Smart Route เรียก `aiCluster` และ `HackathonAI.smartRoute` ได้จากทุกที่ใน app
 
     ```swift
     import HackathonAI
 
-    let aiCluster = HackathonAI(baseURL: "http://[TBC]:[TBC]", apiKey: "team-XX-xxxx")
+    let aiCluster = HackathonAI(baseURL: "http://10.1.117.186:3949", apiKey: "team-XX-xxxx")
+
+    extension HackathonAI {
+        static let smartRoute: ModelID = "@route/sccth-gq"
+    }
     ```
 
 3. เพิ่ม key ใน Info.plist เพื่อให้ app เชื่อมต่อ server ใน local network ได้ ครั้งแรกที่ run ให้กด **Allow** เมื่อ iPad ถาม
@@ -75,6 +79,7 @@
 // รอคำตอบเต็ม
 let answer = try await aiCluster.respond(
     to: "สรุปเรื่องนี้ใน 3 ประโยค: \(text)",
+    model: HackathonAI.smartRoute,
     instructions: "ตอบเป็นภาษาไทย สั้นและชัด")
 
 // Streaming: แต่ละรอบได้คำตอบทั้งหมดจนถึงตอนนั้น ใส่ให้ UI ได้เลย
@@ -98,7 +103,7 @@ struct StudyCard {
     var keyPoints: [String]
 }
 
-let card = try await aiCluster.respond(to: note.body, generating: StudyCard.self)
+let card = try await aiCluster.respond(to: note.body, generating: StudyCard.self, model: HackathonAI.smartRoute)
 ```
 
 !!! question "`@Generable` เรียก API ข้างนอกได้ไหม"
@@ -131,7 +136,7 @@ let transcript = try await aiCluster.transcribe(try Data(contentsOf: recordingUR
 ```swift
 #if compiler(>=6.4)
 let session = LanguageModelSession(
-    model: aiCluster.languageModel(.chat),
+    model: aiCluster.languageModel(HackathonAI.smartRoute),
     tools: [FindNotesTool()],
     instructions: Instructions("ตอบเป็นภาษาไทย"))
 let reply = try await session.respond(to: "สรุป note เรื่องสังเคราะห์แสง")
@@ -151,7 +156,7 @@ let vision = aiCluster.languageModel(.reasoning, supportsVision: true)
 ```swift
 func summarize(_ text: String) async throws -> (summary: String, answeredBy: String) {
     do {
-        return (try await aiCluster.respond(to: "สรุป: \(text)"), "AI cluster")
+        return (try await aiCluster.respond(to: "สรุป: \(text)", model: HackathonAI.smartRoute), "AI cluster")
     } catch {
         let reply = try await LanguageModelSession().respond(to: "สรุป: \(text)")
         return (reply.content, "On-device")
@@ -178,7 +183,7 @@ Error ที่เจอได้เป็น `HackathonAIError` แยกกร
 
     - อย่าเรียก model ใน loop หรือทุกครั้งที่ผู้ใช้พิมพ์ ให้เรียกเมื่อกดปุ่มหรือพิมพ์เสร็จ
     - จำกัดความยาวคำตอบด้วย `maximumResponseTokens` เท่าที่จำเป็น
-    - ใช้ `.chat` เป็นหลัก ใช้ `.reasoning` เฉพาะงานที่ต้องคิดจริงๆ เพราะช้ากว่าและมีเครื่องน้อยกว่า
+    - ใช้ Smart Route เป็นหลัก ใช้ `.reasoning` เฉพาะงานที่ต้องคิดจริงๆ เพราะช้ากว่าและมีเครื่องน้อยกว่า
     - ถ้าโดน rate limit อย่ากดซ้ำทันที รอสักครู่หรือใช้ fallback
 
 !!! danger "ข้อมูลสุขภาพ"
