@@ -63,9 +63,9 @@ func summarize(_ note: Note, creative: Bool) async throws {
 
 เพิ่ม `import HackathonAI` บนสุดของ `NoteAssistant.swift` แล้วแก้ `summarize` ตาม Xcode ที่ใช้
 
-### {{ mac.apple }} · Xcode 27 { #xcode-27 }
+### Xcode 27 + iOS 27 { #xcode-27 }
 
-ใช้ `LanguageModelSession` เหมือนเดิม ต่างกันแค่ส่ง `aiCluster.languageModel(HackathonAI.smartRoute)` เข้าไปเป็น model
+ต้องใช้ทั้ง Xcode 27 (iOS 27 SDK) ตอน build และ iPad ที่เป็น iOS 27 ตอน run ใช้ `LanguageModelSession` เหมือนเดิม ต่างกันแค่ส่ง `aiCluster.languageModel(HackathonAI.smartRoute)` เข้าไปเป็น model
 
 ```swift
 func summarize(_ note: Note, creative: Bool) async throws {
@@ -109,7 +109,7 @@ func summarize(_ note: Note, creative: Bool) async throws {
 
 ต้องมีโค้ดส่วนล่างไว้ด้วย เพราะ deployment target ของ project คือ iOS 26 และเพื่อนในทีมอาจใช้ Xcode 26 ดู[ใช้ project เดียวกันทั้ง Xcode 26 และ 27](../getting-started.md#project-xcode-26-27)
 
-### {{ mac.intel }} · Xcode 26 { #xcode-26 }
+### Xcode 26 { #xcode-26 }
 
 iOS 26 SDK ส่ง model ของ AI cluster เข้า `LanguageModelSession` ไม่ได้ จึงเรียก `aiCluster.respond(...)` ตรงๆ แทน
 
