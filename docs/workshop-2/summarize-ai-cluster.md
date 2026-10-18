@@ -15,22 +15,18 @@
         https://github.com/swiftcodingclubth/yidh26-ai
         ```
 
-    3. ตั้ง **Dependency Rule** เป็น **Exact Version** แล้วใส่ `0.0.2`
+    3. ตั้ง **Dependency Rule** เป็น **Exact Version** แล้วใส่ `0.0.3`
     4. กด **Add Package** แล้วติ๊ก **HackathonAI** ให้ target ของ app
 
-3. สร้างไฟล์ `AICluster.swift` ใส่ address, API key ของทีม และ model ที่จะใช้
+3. สร้างไฟล์ `AICluster.swift` ใส่ API key ของทีม package รู้ address ของ AI cluster อยู่แล้ว
 
     ```swift
     import HackathonAI
 
-    let aiCluster = HackathonAI(baseURL: "http://10.1.117.186:3949", apiKey: "API key ของทีม")
-
-    extension HackathonAI {
-        static let smartRoute: ModelID = "@route/sccth-gq"
-    }
+    let aiCluster = HackathonAI(apiKey: "API key ของทีม")
     ```
 
-    `smartRoute` คือ model ID ของ Smart Route ที่ผู้จัดเตรียมไว้ ให้ใช้ตัวนี้แทน `.chat` ที่มากับ package
+    โค้ดข้างล่างใช้ `.chat` ซึ่งคือ Smart Route ของ AI cluster
 
 4. เพิ่ม key ใน Info.plist ตาม [Setup ข้อ 3](hackathon-ai.md#setup) เพื่อให้ app ต่อ server ใน local network ได้ ครั้งแรกที่ run ให้กด **Allow** เมื่อ iPad ถาม
 5. เช็กว่า iPad ต่อ Wi-Fi ของงานอยู่
@@ -65,7 +61,7 @@ func summarize(_ note: Note, creative: Bool) async throws {
 
 ### Xcode 27 + iOS 27 { #xcode-27 }
 
-ต้องใช้ทั้ง Xcode 27 (iOS 27 SDK) ตอน build และ iPad ที่เป็น iOS 27 ตอน run ใช้ `LanguageModelSession` เหมือนเดิม ต่างกันแค่ส่ง `aiCluster.languageModel(HackathonAI.smartRoute)` เข้าไปเป็น model
+ต้องใช้ทั้ง Xcode 27 (iOS 27 SDK) ตอน build และ iPad ที่เป็น iOS 27 ตอน run ใช้ `LanguageModelSession` เหมือนเดิม ต่างกันแค่ส่ง `aiCluster.languageModel(.chat)` เข้าไปเป็น model
 
 ```swift
 func summarize(_ note: Note, creative: Bool) async throws {
@@ -83,7 +79,7 @@ func summarize(_ note: Note, creative: Bool) async throws {
     #if compiler(>=6.4)                // Xcode 27 เท่านั้น
     if #available(iOS 27, *) {         // iPad ต้องเป็น iOS 27
         let session = LanguageModelSession(
-            model: aiCluster.languageModel(HackathonAI.smartRoute),   // เปลี่ยนเป็น model ของ AI cluster
+            model: aiCluster.languageModel(.chat),   // เปลี่ยนเป็น model ของ AI cluster
             instructions: instructions)
 
         let options = GenerationOptions(
@@ -99,7 +95,7 @@ func summarize(_ note: Note, creative: Bool) async throws {
     // iPad ที่ยังเป็น iOS 26 หรือเพื่อนในทีมที่ใช้ Xcode 26 จะมาทำตรงนี้แทน
     note.summary = try await aiCluster.respond(
         to: prompt,
-        model: HackathonAI.smartRoute,
+        model: .chat,
         instructions: instructions,
         options: HackathonAI.Options(
             temperature: creative ? 1.0 : 0.2,
@@ -120,7 +116,7 @@ func summarize(_ note: Note, creative: Bool) async throws {
 
     note.summary = try await aiCluster.respond(
         to: "Title: \(note.title)\n\n\(note.body)",
-        model: HackathonAI.smartRoute,
+        model: .chat,
         instructions: """
             You summarize a student's study notes. \
             Reply with exactly two sentences, in the same language as the note. \

@@ -15,7 +15,7 @@ Workshop นี้ทำให้ app ของทีมใช้ language model
 
 - **On-device AFM 3**: Apple Foundation Models รุ่นที่ 3 run บน iPad เลย ฟรี ข้อมูลไม่ออกจากเครื่อง ตอบเร็ว และใช้ได้แม้ไม่มี internet แต่ model มีขนาดเล็ก เหมาะกับงานสั้นๆ ที่ไม่ซับซ้อน
 - **Private Cloud Compute (PCC)**: AFM 3 ที่ run บน server ของ Apple เก่งกว่าบน device และ Apple ออกแบบให้ข้อมูลยังเป็นส่วนตัว แต่ต้องต่อ internet
-- **AI cluster**: กลุ่ม Mac ที่ผู้จัด run open-source model ไว้ให้ เช่น Gemma 4, Qwen3.8, MedGemma และ Typhoon OCR ใช้ได้เฉพาะใน Wi-Fi ของงาน ดู[รายชื่อ model](hackathon-ai.md#models)
+- **AI cluster**: กลุ่ม Mac ที่ผู้จัด run open-source model ไว้ให้ เช่น Gemma 4, Qwen3.6, MedGemma และ Typhoon OCR ใช้ได้เฉพาะใน Wi-Fi ของงาน ดู[รายชื่อ model](hackathon-ai.md#models)
 
 ### เปลี่ยนประเภทของ Language model ได้ง่ายๆ
 

@@ -9,28 +9,28 @@
 
 | รายการ | ค่า |
 |---|---|
-| Address | `http://[TBC local IP]:[TBC port]` ใช้ได้เฉพาะใน Wi-Fi ของงาน |
+| Address | `http://10.1.17.156:3949` ใช้ได้เฉพาะใน Wi-Fi ของงาน package ตั้งค่าไว้ให้แล้ว |
 | API key | แจกให้แต่ละทีมภายหลัง |
-| Swift package | `https://github.com/swiftcodingclubth/yidh26-ai` เวอร์ชัน `0.0.2` (library `HackathonAI`) |
+| Swift package | `https://github.com/swiftcodingclubth/yidh26-ai` เวอร์ชัน `0.0.3` (library `HackathonAI`) |
 | Rate limit ต่อทีม | [TBC] |
 
 ทุก model เรียกผ่าน address เดียวกัน cluster จะส่ง request ไปยังเครื่องที่ run model นั้นให้เอง
 
 ## Model ที่ใช้ได้ { #models }
 
-!!! warning "Model ID ยังเป็น TBC"
-    ชื่อใน package ข้างล่าง เช่น `.chat` จะชี้ไปที่ model ID จริงเมื่อ network ของงานพร้อม โค้ดของทีมไม่ต้องเปลี่ยน เรียก `models()` เพื่อดูรายชื่อที่ cluster มีอยู่จริง
+!!! note "ชื่อ model ใน package"
+    ชื่อข้างล่าง เช่น `.chat` ชี้ไปที่ model ID จริงบน AI cluster แล้ว เรียก `models()` เพื่อดูรายชื่อทั้งหมดที่ cluster มี และส่ง ID ไหนก็ได้เป็น `model:` เช่น `model: "@pool/gemma4-pool"`
 
 | ใน package | Model | ทำอะไรได้ | เหมาะกับ |
 |---|---|---|---|
 | `.chat` | **Smart Route** (Gemma 4 26B / Qwen3.6 35B) | ข้อความ, `@Generable`, tool calling | ตัวเริ่มต้น: สรุป, ถาม-ตอบ, ภาษาไทย, ตอบเป็น struct Server เลือก model ให้เองตามคำถาม |
-| `.reasoning` | **Qwen3.8 27B** | ข้อความ, รูป, `@Generable`, tool calling, คิดก่อนตอบ | โจทย์ที่ต้องคิดหลายขั้น, วิเคราะห์เอกสาร, อ่านรูปหรือกราฟ ช้ากว่า `.chat` |
+| `.reasoning` | **Qwen3.6 35B** | ข้อความ, รูป, `@Generable`, tool calling, คิดก่อนตอบ | โจทย์ที่ต้องคิดหลายขั้น, วิเคราะห์เอกสาร, อ่านรูปหรือกราฟ ช้ากว่า `.chat` |
 | `.medical` | **MedGemma 1.5 4B** | ข้อความ | ศัพท์และความรู้ทางการแพทย์ ใช้ synthetic data เท่านั้น |
 | `.ocr` | **Typhoon OCR 1.5 2B** | รูป → ข้อความ | อ่านข้อความภาษาไทยและอังกฤษจากรูปเอกสาร, ป้าย, กระดาน |
 | `.tts` | **Qwen3-TTS 1.7B** | ข้อความ → เสียง | อ่านข้อความออกเสียง |
 | `.asr` | **Qwen3-ASR 1.7B** | เสียง → ข้อความ (ไทย/อังกฤษ) | ถอดเสียงพูด ถ้าต้องใช้แบบ offline ให้ใช้ Whisper ผ่าน [Core AI](../workshop-3/core-ai.md) บน device แทน |
 
-`.chat` และ `.reasoning` แต่ละตัว run บนหลายเครื่อง Smart Route กระจายงานไปที่ 3 เครื่อง ส่วน Qwen3.8 run แยกกัน 4 เครื่องสำหรับทีมที่ต้องใช้ reasoning หนักๆ
+`.chat` (Smart Route) กระจายงานไปที่ 3 เครื่อง ส่วน `.reasoning` run บนเครื่องเดียว จึงรับคนได้น้อยกว่า ใช้เฉพาะงานที่ต้องคิดหลายขั้นจริงๆ
 
 ## Setup { #setup }
 
@@ -42,18 +42,20 @@
         https://github.com/swiftcodingclubth/yidh26-ai
         ```
 
-    3. ตั้ง **Dependency Rule** เป็น **Exact Version** แล้วใส่ `0.0.2`
+    3. ตั้ง **Dependency Rule** เป็น **Exact Version** แล้วใส่ `0.0.3`
     4. กด **Add Package** แล้วติ๊ก **HackathonAI** ให้ target ของ app
 
     !!! note "ทำไมต้อง Exact Version"
         ทุกทีมจะใช้โค้ดชุดเดียวกัน และ package จะไม่เปลี่ยนเองระหว่างงาน ถ้าผู้จัดประกาศเวอร์ชันใหม่ ให้ไปที่ project ▸ แท็บ **Package Dependencies** ▸ ดับเบิลคลิก `yidh26-ai` แล้วเปลี่ยนเลขเวอร์ชัน
-2. สร้างไฟล์ `AICluster.swift` แล้วใส่ address และ API key บรรทัดเดียว เรียก `aiCluster` ได้จากทุกที่ใน app
+2. สร้างไฟล์ `AICluster.swift` แล้วใส่ API key ของทีมบรรทัดเดียว package รู้ address ของ AI cluster อยู่แล้ว เรียก `aiCluster` ได้จากทุกที่ใน app
 
     ```swift
     import HackathonAI
 
-    let aiCluster = HackathonAI(baseURL: "http://[TBC]:[TBC]", apiKey: "team-XX-xxxx")
+    let aiCluster = HackathonAI(apiKey: "team-XX-xxxx")
     ```
+
+    ถ้าจะต่อ server อื่นที่เป็น OpenAI-compatible ให้ใส่ address เองด้วย `HackathonAI(baseURL: "http://...", apiKey: "...")` ชื่อ model ใน package เป็นของ AI cluster จึงใช้กับ server อื่นไม่ได้ เรียก `models()` ดู ID ของ server นั้นแล้วส่งเป็น `model:` ทุกครั้ง
 
 3. เพิ่ม key ใน Info.plist เพื่อให้ app เชื่อมต่อ server ใน local network ได้ ครั้งแรกที่ run ให้กด **Allow** เมื่อ iPad ถาม
 
@@ -106,6 +108,9 @@ let card = try await aiCluster.respond(to: note.body, generating: StudyCard.self
 
 ## ส่งรูป, อ่านข้อความในรูป, เสียง { #media }
 
+!!! warning "`.tts` และ `.asr` ยังใช้ไม่ได้"
+    ตอนนี้ AI cluster ยังไม่เปิด endpoint เสียงให้ model สองตัวนี้ `speak` และ `transcribe` จะได้ error `.server` (400 "Model does not support this gateway endpoint") ผู้จัดจะแจ้งเมื่อเปิดแล้ว ระหว่างนี้ใช้ `AVSpeechSynthesizer` อ่านออกเสียง และ Speech framework หรือ Whisper ผ่าน [Core AI](../workshop-3/core-ai.md) ถอดเสียงบน device แทน
+
 ```swift
 // ถามเกี่ยวกับรูป (ใช้ model ที่รับรูปได้)
 let explanation = try await aiCluster.respond(
@@ -119,7 +124,7 @@ let audio = try await aiCluster.speak("สวัสดีครับ")
 player = try AVAudioPlayer(data: audio)
 player?.play()
 
-// เสียง → ข้อความ
+// เสียง → ข้อความ (ไฟล์ .m4a ถ้าเป็นนามสกุลอื่นให้ใส่ fileName: "recording.wav")
 let transcript = try await aiCluster.transcribe(try Data(contentsOf: recordingURL), language: "th")
 ```
 
@@ -170,6 +175,8 @@ Error ที่เจอได้เป็น `HackathonAIError` แยกกร
 | `.modelNotFound` | ไม่มี model ชื่อนี้ เรียก `models()` ดูชื่อที่มี |
 
 ถ้าต้องการซ่อน feature ที่ต้องใช้ AI cluster ตอนอยู่นอกงาน เช็กก่อนด้วย `await aiCluster.isReachable()`
+
+ทุก request และ error จะขึ้นใน Xcode console เองพร้อม URL และ model ที่ใช้ (subsystem `HackathonAI`) แม้ app จะ catch error ไว้แล้ว ใช้ดูว่าเรียกผิดตรงไหน ไม่มี API key หรือ prompt อยู่ใน log
 
 ## Production habits { #habits }
 
